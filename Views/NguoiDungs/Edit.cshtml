@@ -32,6 +32,10 @@
             <input asp-for="FullName" class="form-control" />
             <span asp-validation-for="FullName" class="text-danger"></span>
         </div>
+        <div class="form-group">
+            <label for="roleId">Vai trò</label>
+            <select name="roleId" id="roleId" class="form-control" asp-items="ViewBag.RoleId"></select>
+        </div>
         <div class="form-group form-check">
             <input class="form-check-input" asp-for="IsActive" />
             <label class="form-check-label" asp-for="IsActive">Đang hoạt động</label>
