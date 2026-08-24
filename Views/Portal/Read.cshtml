@@ -1,0 +1,66 @@
+@model HTSV.Models.TaiLieu
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "_PortalLayout";
+    bool hasAccess = (bool)(ViewData["HasAccess"] ?? false);
+    bool isLoggedIn = User.Identity != null && User.Identity.IsAuthenticated;
+    var latestVersion = Model.PhienBanTaiLieus.OrderByDescending(v => v.VersionNo).FirstOrDefault();
+}
+
+<a asp-action="Library" class="text-muted">&larr; Quay lại thư viện</a>
+
+<div class="page-header mt-2">
+    <div>
+        <h1>@Model.Title</h1>
+        <div class="text-muted">@Model.Course.Subject.Name &middot; @Model.Type</div>
+    </div>
+    <span class="library-badge @(Model.IsFree ? "free" : "paid")">@(Model.IsFree ? "Miễn phí" : (Model.Price.HasValue ? Model.Price.Value.ToString("N0") + " đ" : "Có phí"))</span>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Description))
+{
+    <p>@Model.Description</p>
+}
+
+@if (hasAccess)
+{
+    <div class="document-reader protected-content">
+        <h2 class="h6 mb-3">Nội dung tài liệu</h2>
+        @if (latestVersion != null)
+        {
+            <p><strong>File:</strong> @latestVersion.FilePath</p>
+            <p class="text-muted">
+                Phiên bản @latestVersion.VersionNo
+                @(latestVersion.PageCount.HasValue ? $"· {latestVersion.PageCount} trang" : "")
+                @(latestVersion.FileSize.HasValue ? $"· {latestVersion.FileSize / 1024} KB" : "")
+            </p>
+        }
+        else
+        {
+            <p class="text-muted">Tài liệu chưa có file được tải lên.</p>
+        }
+    </div>
+}
+else
+{
+    <div class="document-reader document-locked">
+        <div class="lock-icon">@await Html.PartialAsync("_Icon", "lock")</div>
+        @if (!isLoggedIn)
+        {
+            <p>Đăng nhập để đọc tài liệu này.</p>
+            <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+        }
+        else if (Model.IsSellable && Model.Price.HasValue)
+        {
+            <p>Tài liệu có phí &ndash; mua để mở khóa nội dung.</p>
+            <form asp-action="Buy" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-primary">Mua ngay &ndash; @Model.Price.Value.ToString("N0") đ</button>
+            </form>
+        }
+        else
+        {
+            <p>Bạn chưa có quyền truy cập tài liệu này.</p>
+        }
+    </div>
+}

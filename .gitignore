@@ -1,0 +1,16 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Claude Code local project settings
+.claude/
+
+# OS files
+Thumbs.db
+.DS_Store

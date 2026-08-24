@@ -1,0 +1,89 @@
+@model IEnumerable<HTSV.Models.DeThi>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ScopeType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScopeConfig)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalQuestions)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DurationMinutes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TheoryCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PracticalCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedByUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScopeType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScopeConfig)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalQuestions)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DurationMinutes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TheoryCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicationCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PracticalCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedByUser.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

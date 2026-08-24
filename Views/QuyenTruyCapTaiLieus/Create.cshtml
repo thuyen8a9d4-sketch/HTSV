@@ -1,0 +1,50 @@
+@model HTSV.Models.QuyenTruyCapTaiLieu
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>QuyenTruyCapTaiLieu</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaterialId" class="control-label"></label>
+                <select asp-for="MaterialId" class ="form-control" asp-items="ViewBag.MaterialId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="GrantedVia" class="control-label"></label>
+                <input asp-for="GrantedVia" class="form-control" />
+                <span asp-validation-for="GrantedVia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderId" class="control-label"></label>
+                <select asp-for="OrderId" class ="form-control" asp-items="ViewBag.OrderId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExpiresAt" class="control-label"></label>
+                <input asp-for="ExpiresAt" class="form-control" />
+                <span asp-validation-for="ExpiresAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

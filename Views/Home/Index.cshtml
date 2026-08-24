@@ -1,0 +1,84 @@
+@model HTSV.Controllers.DashboardViewModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Bảng điều khiển</h1>
+        <div class="text-muted">Tổng quan hệ thống HTSV</div>
+    </div>
+</div>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-value">@Model.SinhVienCount</div>
+        <div class="stat-label">Sinh viên</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">@Model.GiangVienCount</div>
+        <div class="stat-label">Giảng viên</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">@Model.MonHocCount</div>
+        <div class="stat-label">Môn học</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">@Model.LopHocPhanCount</div>
+        <div class="stat-label">Lớp học phần</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">@Model.DeThiCount</div>
+        <div class="stat-label">Đề thi</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">@Model.TaiLieuCount</div>
+        <div class="stat-label">Tài liệu</div>
+    </div>
+</div>
+
+<h2 class="h5 mb-3">Truy cập nhanh</h2>
+<div class="quick-links">
+    <a class="quick-link-card" asp-controller="Schedules" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "calendar")</span>
+        <span>
+            <div class="quick-link-title">Lịch học</div>
+            <div class="quick-link-sub">Xem lịch học theo tuần</div>
+        </span>
+    </a>
+    <a class="quick-link-card" asp-controller="MonHocs" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "file")</span>
+        <span>
+            <div class="quick-link-title">Môn học</div>
+            <div class="quick-link-sub">Danh sách môn học</div>
+        </span>
+    </a>
+    <a class="quick-link-card" asp-controller="DeThis" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "clipboard")</span>
+        <span>
+            <div class="quick-link-title">Thi cử</div>
+            <div class="quick-link-sub">Đề thi &amp; ngân hàng câu hỏi</div>
+        </span>
+    </a>
+    <a class="quick-link-card" asp-controller="TaiLieus" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "file")</span>
+        <span>
+            <div class="quick-link-title">Tài liệu</div>
+            <div class="quick-link-sub">Giáo trình, đề cương</div>
+        </span>
+    </a>
+    <a class="quick-link-card" asp-controller="BaiConfessions" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "message")</span>
+        <span>
+            <div class="quick-link-title">Confession</div>
+            <div class="quick-link-sub">Cộng đồng sinh viên</div>
+        </span>
+    </a>
+    <a class="quick-link-card" asp-controller="SanPhams" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "cart")</span>
+        <span>
+            <div class="quick-link-title">Bán hàng</div>
+            <div class="quick-link-sub">Sản phẩm &amp; đơn hàng</div>
+        </span>
+    </a>
+</div>

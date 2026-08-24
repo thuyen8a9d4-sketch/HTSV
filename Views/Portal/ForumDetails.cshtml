@@ -1,0 +1,57 @@
+@model HTSV.Models.BaiConfession
+@{
+    ViewData["Title"] = "Bài viết";
+    Layout = "_PortalLayout";
+    bool isLoggedIn = User.Identity != null && User.Identity.IsAuthenticated;
+    bool liked = false;
+    if (isLoggedIn)
+    {
+        var uid = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        liked = Model.LuotThiches.Any(l => l.UserId == uid);
+    }
+}
+
+<a asp-action="Forum" class="text-muted">&larr; Quay lại diễn đàn</a>
+
+<div class="forum-post mt-3">
+    <div class="forum-post-author">@(Model.IsAnonymous ? "Ẩn danh" : Model.AuthorUser.FullName)</div>
+    <div class="forum-post-meta">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm") @(Model.Category != null ? "· " + Model.Category.Name : "")</div>
+    <div class="forum-post-content">@Model.Content</div>
+    <div class="forum-post-actions">
+        @if (isLoggedIn)
+        {
+            <form asp-action="Like" method="post" class="d-inline">
+                <input type="hidden" name="confessionId" value="@Model.Id" />
+                <button type="submit" class="@(liked ? "liked" : "")">@await Html.PartialAsync("_Icon", "heart") @Model.LuotThiches.Count</button>
+            </form>
+        }
+        else
+        {
+            <span>@await Html.PartialAsync("_Icon", "heart") @Model.LuotThiches.Count</span>
+        }
+        <span>@await Html.PartialAsync("_Icon", "message") @Model.BinhLuans.Count bình luận</span>
+    </div>
+</div>
+
+<h2 class="h6 mt-4 mb-2">Bình luận</h2>
+
+@if (isLoggedIn)
+{
+    <form asp-action="Comment" method="post" class="mb-3">
+        <input type="hidden" name="confessionId" value="@Model.Id" />
+        <textarea name="content" class="form-control mb-2" rows="2" placeholder="Viết bình luận..." required></textarea>
+        <button type="submit" class="btn btn-primary btn-sm">Gửi</button>
+    </form>
+}
+else
+{
+    <p class="text-muted"><a asp-controller="Account" asp-action="Login">Đăng nhập</a> để bình luận.</p>
+}
+
+@foreach (var c in Model.BinhLuans.OrderBy(c => c.CreatedAt))
+{
+    <div class="comment-item">
+        <div class="comment-author">@(c.IsAnonymous ? "Ẩn danh" : c.AuthorUser.FullName)</div>
+        <div class="comment-content">@c.Content</div>
+    </div>
+}
