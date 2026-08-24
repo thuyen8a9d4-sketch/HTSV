@@ -15,6 +15,10 @@
                 <span class="brand-mark">HT</span>
                 <span class="brand-text">HTSV</span>
             </div>
+            @if (TempData["Message"] != null)
+            {
+                <div class="portal-alert mb-3">@TempData["Message"]</div>
+            }
             @RenderBody()
         </div>
     </div>

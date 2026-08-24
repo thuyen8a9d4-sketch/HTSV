@@ -53,6 +53,8 @@ public partial class QuanLyHocTapContext : DbContext
 
     public virtual DbSet<LuotThich> LuotThiches { get; set; }
 
+    public virtual DbSet<MaXacThuc> MaXacThucs { get; set; }
+
     public virtual DbSet<MonHoc> MonHocs { get; set; }
 
     public virtual DbSet<NganHangCauHoi> NganHangCauHois { get; set; }
@@ -731,6 +733,19 @@ public partial class QuanLyHocTapContext : DbContext
                         j.HasKey("RoleId", "PermissionId");
                         j.ToTable("VaiTro_Quyen");
                     });
+        });
+
+        modelBuilder.Entity<MaXacThuc>(entity =>
+        {
+            entity.ToTable("MaXacThuc");
+
+            entity.Property(e => e.Code).HasMaxLength(6);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_MaXacThuc_NguoiDung");
         });
 
         OnModelCreatingPartial(modelBuilder);

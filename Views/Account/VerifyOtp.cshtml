@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "Xác thực OTP";
+    Layout = "_AuthLayout";
+    var userId = ViewData["UserId"];
+}
+
+<h2 class="auth-title">Xác thực OTP</h2>
+<p class="auth-subtitle">Mã xác thực gồm 6 số đã được gửi tới email của bạn</p>
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+<form asp-action="VerifyOtp" method="post">
+    <input type="hidden" name="userId" value="@userId" />
+    <div class="form-group">
+        <label>Mã OTP</label>
+        <input name="code" class="form-control" maxlength="6" autofocus required />
+    </div>
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
+    </div>
+</form>
+
+<form asp-action="ResendOtp" method="post" class="mt-2">
+    <input type="hidden" name="userId" value="@userId" />
+    <button type="submit" class="btn btn-outline-secondary w-100 btn-sm">Gửi lại mã OTP</button>
+</form>
