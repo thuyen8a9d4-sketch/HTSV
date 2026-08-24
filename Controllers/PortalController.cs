@@ -152,13 +152,26 @@ public class PortalController : Controller
 
     public async Task<IActionResult> Library(string? q)
     {
-        var query = _context.TaiLieus.AsQueryable();
+        var query = _context.TaiLieus.Where(t => t.Status == "published").AsQueryable();
         if (!string.IsNullOrWhiteSpace(q))
         {
             query = query.Where(t => t.Title.Contains(q));
         }
         var docs = await query.OrderByDescending(t => t.CreatedAt).ToListAsync();
         ViewData["Query"] = q;
+        return View(docs);
+    }
+
+    public async Task<IActionResult> MyUploads()
+    {
+        if (!IsLoggedIn)
+        {
+            return RequireLogin();
+        }
+        var docs = await _context.TaiLieus
+            .Where(t => t.OwnerUserId == CurrentUserId)
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync();
         return View(docs);
     }
 
@@ -172,7 +185,14 @@ public class PortalController : Controller
             return NotFound();
         }
 
-        var hasAccess = doc.IsFree;
+        var isOwner = IsLoggedIn && doc.OwnerUserId == CurrentUserId;
+        var isAdmin = User.IsInRole("ADMIN");
+        if (doc.Status != "published" && !isOwner && !isAdmin)
+        {
+            return NotFound();
+        }
+
+        var hasAccess = doc.IsFree || isOwner || isAdmin;
         if (!hasAccess && IsLoggedIn)
         {
             hasAccess = await _context.QuyenTruyCapTaiLieus.AnyAsync(g =>
@@ -181,6 +201,97 @@ public class PortalController : Controller
         }
         ViewData["HasAccess"] = hasAccess;
         return View(doc);
+    }
+
+    [HttpGet]
+    public IActionResult UploadMaterial()
+    {
+        if (!IsLoggedIn || !(User.IsInRole("LECTURER") || User.IsInRole("ADMIN")))
+        {
+            return RequireLogin();
+        }
+        return View();
+    }
+
+    private static readonly string[] AllowedExtensions = { ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx", ".zip", ".rar" };
+    private const long MaxFileSizeBytes = 20 * 1024 * 1024; // 20 MB
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [RequestSizeLimit(MaxFileSizeBytes)]
+    public async Task<IActionResult> UploadMaterial(string title, string description, string type, IFormFile? file)
+    {
+        if (!IsLoggedIn || !(User.IsInRole("LECTURER") || User.IsInRole("ADMIN")))
+        {
+            return RequireLogin();
+        }
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            ModelState.AddModelError(string.Empty, "Vui lòng nhập tiêu đề.");
+        }
+        if (file == null || file.Length == 0)
+        {
+            ModelState.AddModelError(string.Empty, "Vui lòng chọn file để tải lên.");
+        }
+        else
+        {
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (!AllowedExtensions.Contains(ext))
+            {
+                ModelState.AddModelError(string.Empty, "Định dạng file không được hỗ trợ. Chỉ chấp nhận: " + string.Join(", ", AllowedExtensions));
+            }
+            else if (file.Length > MaxFileSizeBytes)
+            {
+                ModelState.AddModelError(string.Empty, "File vượt quá dung lượng cho phép (20 MB).");
+            }
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+
+        var courseId = await _context.LopHocPhans.Select(c => c.Id).FirstOrDefaultAsync();
+        var doc = new TaiLieu
+        {
+            CourseId = courseId,
+            OwnerUserId = CurrentUserId,
+            Type = string.IsNullOrWhiteSpace(type) ? "OTHER" : type,
+            Title = title,
+            Description = description,
+            IsFree = false,
+            IsSellable = false,
+            Price = null,
+            Status = "pending",
+            CreatedAt = DateTime.Now,
+        };
+        _context.TaiLieus.Add(doc);
+        await _context.SaveChangesAsync();
+
+        var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        Directory.CreateDirectory(uploadsDir);
+        var savedFileName = $"{Guid.NewGuid()}{Path.GetExtension(file!.FileName)}";
+        var savedPath = Path.Combine(uploadsDir, savedFileName);
+        using (var stream = new FileStream(savedPath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        _context.PhienBanTaiLieus.Add(new PhienBanTaiLieu
+        {
+            MaterialId = doc.Id,
+            VersionNo = 1,
+            FilePath = $"/uploads/{savedFileName}",
+            FileSize = file.Length,
+            MimeType = file.ContentType,
+            PageCount = null,
+            UploadedAt = DateTime.Now,
+        });
+        await _context.SaveChangesAsync();
+
+        TempData["Message"] = "Giáo trình đã được gửi và đang chờ Admin duyệt.";
+        return RedirectToAction(nameof(MyUploads));
     }
 
     [HttpPost]
@@ -193,7 +304,7 @@ public class PortalController : Controller
         }
 
         var doc = await _context.TaiLieus.FindAsync(id);
-        if (doc == null || !doc.IsSellable || doc.Price is null)
+        if (doc == null || doc.Status != "published" || !doc.IsSellable || doc.Price is null)
         {
             return NotFound();
         }

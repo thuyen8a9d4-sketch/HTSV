@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Đăng giáo trình";
+    Layout = "_PortalLayout";
+}
+
+<div class="page-header">
+    <h1>Đăng giáo trình</h1>
+</div>
+
+<div class="form-card">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+    <form asp-action="UploadMaterial" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Tiêu đề</label>
+            <input name="title" class="form-control" required />
+        </div>
+        <div class="form-group mt-2">
+            <label>Mô tả</label>
+            <textarea name="description" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group mt-2">
+            <label>Loại tài liệu</label>
+            <select name="type" class="form-control">
+                <option value="SLIDE">Slide bài giảng</option>
+                <option value="LESSON_PLAN">Giáo án</option>
+                <option value="TEXTBOOK">Giáo trình</option>
+                <option value="OTHER">Khác</option>
+            </select>
+        </div>
+        <div class="form-group mt-2">
+            <label>File đính kèm</label>
+            <input type="file" name="file" class="form-control" required />
+            <div class="form-text">Chấp nhận: PDF, Word, PowerPoint, Excel, ZIP/RAR &ndash; tối đa 20 MB.</div>
+        </div>
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Gửi (chờ Admin duyệt)</button>
+            <a asp-action="Library" class="btn btn-outline-secondary">Hủy</a>
+        </div>
+    </form>
+</div>

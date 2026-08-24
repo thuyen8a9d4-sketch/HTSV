@@ -14,3 +14,7 @@ obj/
 # OS files
 Thumbs.db
 .DS_Store
+
+# User-uploaded files (not part of source)
+wwwroot/uploads/*
+!wwwroot/uploads/.gitkeep

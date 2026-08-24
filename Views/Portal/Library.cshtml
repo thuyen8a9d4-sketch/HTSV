@@ -10,6 +10,13 @@
         <h1>Thư viện tài liệu</h1>
         <div class="text-muted">@(string.IsNullOrEmpty(query) ? "Tất cả tài liệu" : $"Kết quả tìm kiếm cho \"{query}\"")</div>
     </div>
+    @if (User.IsInRole("LECTURER") || User.IsInRole("ADMIN"))
+    {
+        <div>
+            <a asp-action="UploadMaterial" class="btn btn-primary">+ Đăng giáo trình</a>
+            <a asp-action="MyUploads" class="btn btn-outline-secondary">Giáo trình của tôi</a>
+        </div>
+    }
 </div>
 
 @if (!Model.Any())

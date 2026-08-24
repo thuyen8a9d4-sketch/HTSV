@@ -9,11 +9,18 @@
         <h1>Sách đăng lên</h1>
         <div class="text-muted">Quản lý sách/tài liệu trong thư viện</div>
     </div>
-    @if (User.IsInRole("ADMIN") || User.IsInRole("LECTURER"))
-    {
-        <a asp-action="Create" class="btn btn-primary">+ Đăng sách</a>
-    }
+    <a asp-action="Create" class="btn btn-primary">+ Đăng sách</a>
 </div>
+
+@{
+    var pendingCount = Model.Count(t => t.Status == "pending");
+}
+@if (pendingCount > 0)
+{
+    <div class="portal-alert" style="background:#fff7e0;border-color:#f5d98a;color:#7a5b00;">
+        Có @pendingCount giáo trình do giảng viên gửi lên đang chờ duyệt.
+    </div>
+}
 
 <div class="data-table-card">
     <table class="data-table">
@@ -36,7 +43,20 @@
                 <td>@item.Type</td>
                 <td>@(item.IsFree ? "Có" : "Không")</td>
                 <td>@(item.Price.HasValue ? item.Price.Value.ToString("N0") + " đ" : "-")</td>
-                <td>@item.Status</td>
+                <td>
+                    @if (item.Status == "pending")
+                    {
+                        <span class="library-badge paid">Chờ duyệt</span>
+                    }
+                    else if (item.Status == "published")
+                    {
+                        <span class="library-badge free">Đã duyệt</span>
+                    }
+                    else
+                    {
+                        @item.Status
+                    }
+                </td>
                 <td>@item.OwnerUser.Username</td>
                 <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
                 <td class="row-actions">

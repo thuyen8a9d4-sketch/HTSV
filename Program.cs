@@ -11,11 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews(options =>
 {
-    // Dashboard/back-office (this scaffolded CRUD area) is Admin/Lecturer only by default.
+    // Dashboard/back-office (this scaffolded CRUD area) is Admin-only by default.
+    // Lecturer works entirely through the public Portal, same as Student, with an
+    // extra material-upload capability there (see PortalController.UploadMaterial).
     // Public-facing controllers (Account, Portal) opt out via [AllowAnonymous].
     var dashboardPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
-        .RequireRole("ADMIN", "LECTURER")
+        .RequireRole("ADMIN")
         .Build();
     options.Filters.Add(new AuthorizeFilter(dashboardPolicy));
 });

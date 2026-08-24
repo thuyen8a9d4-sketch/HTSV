@@ -47,7 +47,7 @@ namespace HTSV.Controllers
         }
 
         // GET: TaiLieus/Create
-        [Authorize(Roles = "ADMIN,LECTURER")]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Create()
         {
             ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Username");
@@ -59,7 +59,7 @@ namespace HTSV.Controllers
         // silently assigned to a default course record to satisfy the database's foreign key.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "ADMIN,LECTURER")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Create([Bind("Id,OwnerUserId,Type,Title,Description,IsFree,IsSellable,Price,Status,CreatedAt")] TaiLieu taiLieu)
         {
             taiLieu.CourseId = await GetDefaultCourseIdAsync();
@@ -79,7 +79,7 @@ namespace HTSV.Controllers
         }
 
         // GET: TaiLieus/Edit/5
-        [Authorize(Roles = "ADMIN,LECTURER")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -99,7 +99,7 @@ namespace HTSV.Controllers
         // POST: TaiLieus/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "ADMIN,LECTURER")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,OwnerUserId,Type,Title,Description,IsFree,IsSellable,Price,Status,CreatedAt")] TaiLieu taiLieu)
         {
             if (id != taiLieu.Id)
@@ -140,7 +140,7 @@ namespace HTSV.Controllers
         }
 
         // GET: TaiLieus/Delete/5
-        [Authorize(Roles = "ADMIN,LECTURER")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -163,7 +163,7 @@ namespace HTSV.Controllers
         // POST: TaiLieus/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "ADMIN,LECTURER")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var taiLieu = await _context.TaiLieus.FindAsync(id);

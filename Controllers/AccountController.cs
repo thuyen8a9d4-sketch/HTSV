@@ -223,7 +223,7 @@ namespace HTSV.Controllers
             }
 
             var codes = roleCodes ?? User.FindAll(ClaimTypes.Role).Select(c => c.Value);
-            if (codes.Any(c => c == "ADMIN" || c == "LECTURER"))
+            if (codes.Any(c => c == "ADMIN"))
             {
                 return RedirectToAction("Index", "Home");
             }
