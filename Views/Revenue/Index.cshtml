@@ -1,0 +1,63 @@
+@model HTSV.Controllers.RevenueViewModel
+@{
+    ViewData["Title"] = "Kiểm toán & Doanh thu";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Kiểm toán &amp; Doanh thu</h1>
+        <div class="text-muted">Thống kê nguồn tiền thu về từ bán sách</div>
+    </div>
+</div>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-value">@Model.TotalRevenue.ToString("N0") đ</div>
+        <div class="stat-label">Tổng doanh thu</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">@Model.RevenueThisMonth.ToString("N0") đ</div>
+        <div class="stat-label">Doanh thu tháng này</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">@Model.PaidOrders / @Model.TotalOrders</div>
+        <div class="stat-label">Đơn đã thanh toán / tổng đơn</div>
+    </div>
+</div>
+
+<h2 class="portal-section-title">Lịch sử giao dịch</h2>
+<div class="data-table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Người mua</th>
+                <th>Sách</th>
+                <th>Số tiền</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
+                <th>Ngày thanh toán</th>
+                <th>Cổng thanh toán</th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (var o in Model.Orders)
+{
+            <tr>
+                <td>#@o.Id</td>
+                <td>@o.User.Username</td>
+                <td>@string.Join(", ", o.QuyenTruyCapTaiLieus.Select(g => g.Material.Title))</td>
+                <td>@o.TotalAmount.ToString("N0") đ</td>
+                <td>@o.Status</td>
+                <td>@o.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@(o.PaidAt.HasValue ? o.PaidAt.Value.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                <td>@string.Join(", ", o.ThanhToans.Select(t => t.Provider))</td>
+            </tr>
+}
+        </tbody>
+    </table>
+    @if (!Model.Orders.Any())
+    {
+        <p class="text-muted p-3 mb-0">Chưa có giao dịch nào.</p>
+    }
+</div>

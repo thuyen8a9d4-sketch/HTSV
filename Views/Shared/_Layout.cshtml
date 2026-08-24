@@ -27,97 +27,50 @@
 
                 <div class="sidebar-group">
                     <button type="button" class="sidebar-group-toggle">
-                        <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "calendar")</span> Học tập
+                        <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "message")</span> Bài đăng
                         <span class="chevron">@await Html.PartialAsync("_Icon", "chevron-down")</span>
                     </button>
                     <div class="sidebar-submenu">
-                        <a class="sidebar-sublink @active("Schedules")" asp-controller="Schedules" asp-action="Index">Lịch học</a>
-                        <a class="sidebar-sublink @active("MonHocs")" asp-controller="MonHocs" asp-action="Index">Môn học</a>
-                        <a class="sidebar-sublink @active("ChuongMonHocs")" asp-controller="ChuongMonHocs" asp-action="Index">Chương môn học</a>
-                        <a class="sidebar-sublink @active("LopHocPhans")" asp-controller="LopHocPhans" asp-action="Index">Lớp học phần</a>
-                        <a class="sidebar-sublink @active("DangKyHocPhans")" asp-controller="DangKyHocPhans" asp-action="Index">Đăng ký học phần</a>
-                        <a class="sidebar-sublink @active("BuoiHocs")" asp-controller="BuoiHocs" asp-action="Index">Buổi học</a>
-                        <a class="sidebar-sublink @active("DeCuongs")" asp-controller="DeCuongs" asp-action="Index">Đề cương</a>
+                        <a class="sidebar-sublink @active("BaiConfessions")" asp-controller="BaiConfessions" asp-action="Index">Bài đăng</a>
+                        <a class="sidebar-sublink @active("DanhMucConfessions")" asp-controller="DanhMucConfessions" asp-action="Index">Danh mục</a>
+                        <a class="sidebar-sublink @active("BaoCaos")" asp-controller="BaoCaos" asp-action="Index">Báo cáo vi phạm</a>
+                        <a class="sidebar-sublink @active("NhatKyKiemDuyets")" asp-controller="NhatKyKiemDuyets" asp-action="Index">Nhật ký kiểm duyệt</a>
                     </div>
                 </div>
+
+                <a class="sidebar-link @active("BinhLuans")" asp-controller="BinhLuans" asp-action="Index">
+                    <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "flag")</span> Bình luận
+                </a>
+
+                <div class="sidebar-group">
+                    <button type="button" class="sidebar-group-toggle">
+                        <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "book")</span> Sách
+                        <span class="chevron">@await Html.PartialAsync("_Icon", "chevron-down")</span>
+                    </button>
+                    <div class="sidebar-submenu">
+                        <a class="sidebar-sublink @active("TaiLieus")" asp-controller="TaiLieus" asp-action="Index">Sách đăng lên</a>
+                        <a class="sidebar-sublink @active("PhienBanTaiLieus")" asp-controller="PhienBanTaiLieus" asp-action="Index">Phiên bản file</a>
+                    </div>
+                </div>
+
+                <a class="sidebar-link @active("Revenue")" asp-controller="Revenue" asp-action="Index">
+                    <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "chart")</span> Kiểm toán &amp; Doanh thu
+                </a>
 
                 @if (User.IsInRole("ADMIN"))
                 {
                     <div class="sidebar-group">
                         <button type="button" class="sidebar-group-toggle">
-                            <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "users")</span> Người dùng
+                            <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "users")</span> Tài khoản &amp; Phân quyền
                             <span class="chevron">@await Html.PartialAsync("_Icon", "chevron-down")</span>
                         </button>
                         <div class="sidebar-submenu">
-                            <a class="sidebar-sublink @active("NguoiDungs")" asp-controller="NguoiDungs" asp-action="Index">Người dùng</a>
+                            <a class="sidebar-sublink @active("NguoiDungs")" asp-controller="NguoiDungs" asp-action="Index">Tài khoản</a>
                             <a class="sidebar-sublink @active("VaiTros")" asp-controller="VaiTros" asp-action="Index">Vai trò</a>
                             <a class="sidebar-sublink @active("Quyens")" asp-controller="Quyens" asp-action="Index">Quyền</a>
-                            <a class="sidebar-sublink @active("SinhViens")" asp-controller="SinhViens" asp-action="Index">Sinh viên</a>
-                            <a class="sidebar-sublink @active("GiangViens")" asp-controller="GiangViens" asp-action="Index">Giảng viên</a>
                         </div>
                     </div>
                 }
-
-                <div class="sidebar-group">
-                    <button type="button" class="sidebar-group-toggle">
-                        <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "clipboard")</span> Thi cử
-                        <span class="chevron">@await Html.PartialAsync("_Icon", "chevron-down")</span>
-                    </button>
-                    <div class="sidebar-submenu">
-                        <a class="sidebar-sublink @active("DeThis")" asp-controller="DeThis" asp-action="Index">Đề thi</a>
-                        <a class="sidebar-sublink @active("CauHoiDeThis")" asp-controller="CauHoiDeThis" asp-action="Index">Câu hỏi đề thi</a>
-                        <a class="sidebar-sublink @active("DapAns")" asp-controller="DapAns" asp-action="Index">Đáp án</a>
-                        <a class="sidebar-sublink @active("CauTraLois")" asp-controller="CauTraLois" asp-action="Index">Câu trả lời</a>
-                        <a class="sidebar-sublink @active("NganHangCauHois")" asp-controller="NganHangCauHois" asp-action="Index">Ngân hàng câu hỏi</a>
-                        <a class="sidebar-sublink @active("LuotLamBais")" asp-controller="LuotLamBais" asp-action="Index">Lượt làm bài</a>
-                    </div>
-                </div>
-
-                <div class="sidebar-group">
-                    <button type="button" class="sidebar-group-toggle">
-                        <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "file")</span> Tài liệu
-                        <span class="chevron">@await Html.PartialAsync("_Icon", "chevron-down")</span>
-                    </button>
-                    <div class="sidebar-submenu">
-                        <a class="sidebar-sublink @active("TaiLieus")" asp-controller="TaiLieus" asp-action="Index">Tài liệu</a>
-                        <a class="sidebar-sublink @active("TaiLieuKienThucs")" asp-controller="TaiLieuKienThucs" asp-action="Index">Tài liệu kiến thức</a>
-                        <a class="sidebar-sublink @active("PhienBanTaiLieus")" asp-controller="PhienBanTaiLieus" asp-action="Index">Phiên bản tài liệu</a>
-                        <a class="sidebar-sublink @active("QuyenTruyCapTaiLieus")" asp-controller="QuyenTruyCapTaiLieus" asp-action="Index">Quyền truy cập tài liệu</a>
-                        <a class="sidebar-sublink @active("DoanKienThucs")" asp-controller="DoanKienThucs" asp-action="Index">Đoạn kiến thức</a>
-                    </div>
-                </div>
-
-                <div class="sidebar-group">
-                    <button type="button" class="sidebar-group-toggle">
-                        <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "message")</span> Confession
-                        <span class="chevron">@await Html.PartialAsync("_Icon", "chevron-down")</span>
-                    </button>
-                    <div class="sidebar-submenu">
-                        <a class="sidebar-sublink @active("BaiConfessions")" asp-controller="BaiConfessions" asp-action="Index">Bài confession</a>
-                        <a class="sidebar-sublink @active("DanhMucConfessions")" asp-controller="DanhMucConfessions" asp-action="Index">Danh mục confession</a>
-                        <a class="sidebar-sublink @active("BinhLuans")" asp-controller="BinhLuans" asp-action="Index">Bình luận</a>
-                        <a class="sidebar-sublink @active("LuotThiches")" asp-controller="LuotThiches" asp-action="Index">Lượt thích</a>
-                        <a class="sidebar-sublink @active("NhatKyKiemDuyets")" asp-controller="NhatKyKiemDuyets" asp-action="Index">Nhật ký kiểm duyệt</a>
-                        <a class="sidebar-sublink @active("BaoCaos")" asp-controller="BaoCaos" asp-action="Index">Báo cáo</a>
-                    </div>
-                </div>
-
-                <div class="sidebar-group">
-                    <button type="button" class="sidebar-group-toggle">
-                        <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "cart")</span> Bán hàng
-                        <span class="chevron">@await Html.PartialAsync("_Icon", "chevron-down")</span>
-                    </button>
-                    <div class="sidebar-submenu">
-                        <a class="sidebar-sublink @active("SanPhams")" asp-controller="SanPhams" asp-action="Index">Sản phẩm</a>
-                        <a class="sidebar-sublink @active("DonHangs")" asp-controller="DonHangs" asp-action="Index">Đơn hàng</a>
-                        <a class="sidebar-sublink @active("ChiTietDonHangs")" asp-controller="ChiTietDonHangs" asp-action="Index">Chi tiết đơn hàng</a>
-                        <a class="sidebar-sublink @active("ThanhToans")" asp-controller="ThanhToans" asp-action="Index">Thanh toán</a>
-                    </div>
-                </div>
-
-                <a class="sidebar-link @active("Home") @(ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
-                    <span class="sidebar-icon">@await Html.PartialAsync("_Icon", "shield")</span> Privacy
-                </a>
             </nav>
         </aside>
 
@@ -154,7 +107,7 @@
                 @RenderBody()
             </main>
             <footer class="app-footer">
-                &copy; 2026 - HTSV - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                &copy; 2026 - HTSV
             </footer>
         </div>
     </div>

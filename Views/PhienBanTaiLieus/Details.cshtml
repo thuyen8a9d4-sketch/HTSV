@@ -1,60 +1,32 @@
 @model HTSV.Models.PhienBanTaiLieu
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết phiên bản file";
 }
 
-<h1>Details</h1>
+<div class="page-header">
+    <h1>Chi tiết phiên bản file</h1>
+</div>
 
-<div>
-    <h4>PhienBanTaiLieu</h4>
-    <hr />
+<div class="card-surface p-4">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VersionNo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VersionNo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FilePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FilePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FileSize)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FileSize)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MimeType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MimeType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PageCount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PageCount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UploadedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UploadedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Material)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Material.Id)
-        </dd>
+        <dt class="col-sm-3">Sách</dt>
+        <dd class="col-sm-9">@Model.Material.Title</dd>
+        <dt class="col-sm-3">Số phiên bản</dt>
+        <dd class="col-sm-9">@Model.VersionNo</dd>
+        <dt class="col-sm-3">Đường dẫn file</dt>
+        <dd class="col-sm-9">@Model.FilePath</dd>
+        <dt class="col-sm-3">Dung lượng</dt>
+        <dd class="col-sm-9">@(Model.FileSize.HasValue ? (Model.FileSize.Value / 1024) + " KB" : "-")</dd>
+        <dt class="col-sm-3">Loại file</dt>
+        <dd class="col-sm-9">@Model.MimeType</dd>
+        <dt class="col-sm-3">Số trang</dt>
+        <dd class="col-sm-9">@Model.PageCount</dd>
+        <dt class="col-sm-3">Ngày tải lên</dt>
+        <dd class="col-sm-9">@Model.UploadedAt.ToString("dd/MM/yyyy HH:mm")</dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary btn-sm">Sửa</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Quay lại danh sách</a>
 </div>

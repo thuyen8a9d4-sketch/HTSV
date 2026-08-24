@@ -50,27 +50,31 @@ namespace HTSV.Controllers
         [Authorize(Roles = "ADMIN,LECTURER")]
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.LopHocPhans, "Id", "Id");
-            ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Id");
+            ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Username");
             return View();
         }
 
         // POST: TaiLieus/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // CourseId is not exposed in the form (the app no longer manages courses) - it's
+        // silently assigned to a default course record to satisfy the database's foreign key.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "ADMIN,LECTURER")]
-        public async Task<IActionResult> Create([Bind("Id,CourseId,OwnerUserId,Type,Title,Description,IsFree,IsSellable,Price,Status,CreatedAt")] TaiLieu taiLieu)
+        public async Task<IActionResult> Create([Bind("Id,OwnerUserId,Type,Title,Description,IsFree,IsSellable,Price,Status,CreatedAt")] TaiLieu taiLieu)
         {
+            taiLieu.CourseId = await GetDefaultCourseIdAsync();
+            // Course/OwnerUser are EF navigation properties, not posted by the form (only the
+            // *Id scalars are) - remove them so their implicit "required" validation doesn't
+            // block submission of an otherwise-valid model.
+            ModelState.Remove(nameof(TaiLieu.Course));
+            ModelState.Remove(nameof(TaiLieu.OwnerUser));
             if (ModelState.IsValid)
             {
                 _context.Add(taiLieu);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.LopHocPhans, "Id", "Id", taiLieu.CourseId);
-            ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Id", taiLieu.OwnerUserId);
+            ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Username", taiLieu.OwnerUserId);
             return View(taiLieu);
         }
 
@@ -88,29 +92,34 @@ namespace HTSV.Controllers
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.LopHocPhans, "Id", "Id", taiLieu.CourseId);
-            ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Id", taiLieu.OwnerUserId);
+            ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Username", taiLieu.OwnerUserId);
             return View(taiLieu);
         }
 
         // POST: TaiLieus/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "ADMIN,LECTURER")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,OwnerUserId,Type,Title,Description,IsFree,IsSellable,Price,Status,CreatedAt")] TaiLieu taiLieu)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,OwnerUserId,Type,Title,Description,IsFree,IsSellable,Price,Status,CreatedAt")] TaiLieu taiLieu)
         {
             if (id != taiLieu.Id)
             {
                 return NotFound();
             }
 
+            ModelState.Remove(nameof(TaiLieu.Course));
+            ModelState.Remove(nameof(TaiLieu.OwnerUser));
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(taiLieu);
+                    var existing = await _context.TaiLieus.FindAsync(id);
+                    if (existing == null)
+                    {
+                        return NotFound();
+                    }
+                    taiLieu.CourseId = existing.CourseId;
+                    _context.Entry(existing).CurrentValues.SetValues(taiLieu);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -126,8 +135,7 @@ namespace HTSV.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.LopHocPhans, "Id", "Id", taiLieu.CourseId);
-            ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Id", taiLieu.OwnerUserId);
+            ViewData["OwnerUserId"] = new SelectList(_context.NguoiDungs, "Id", "Username", taiLieu.OwnerUserId);
             return View(taiLieu);
         }
 
@@ -171,6 +179,16 @@ namespace HTSV.Controllers
         private bool TaiLieuExists(int id)
         {
             return _context.TaiLieus.Any(e => e.Id == id);
+        }
+
+        private async Task<int> GetDefaultCourseIdAsync()
+        {
+            var id = await _context.LopHocPhans.Select(c => c.Id).FirstOrDefaultAsync();
+            if (id == 0)
+            {
+                throw new InvalidOperationException("Không tìm thấy bản ghi LopHocPhan mặc định để gán cho sách.");
+            }
+            return id;
         }
     }
 }

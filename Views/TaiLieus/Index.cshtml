@@ -1,92 +1,51 @@
 @model IEnumerable<HTSV.Models.TaiLieu>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Sách đăng lên";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Sách đăng lên</h1>
+        <div class="text-muted">Quản lý sách/tài liệu trong thư viện</div>
+    </div>
+    @if (User.IsInRole("ADMIN") || User.IsInRole("LECTURER"))
+    {
+        <a asp-action="Create" class="btn btn-primary">+ Đăng sách</a>
+    }
+</div>
 
-@if (User.IsInRole("ADMIN") || User.IsInRole("LECTURER"))
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsFree)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsSellable)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OwnerUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="data-table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Loại</th>
+                <th>Miễn phí</th>
+                <th>Giá</th>
+                <th>Trạng thái</th>
+                <th>Người đăng</th>
+                <th>Ngày đăng</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsFree)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsSellable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OwnerUser.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Type</td>
+                <td>@(item.IsFree ? "Có" : "Không")</td>
+                <td>@(item.Price.HasValue ? item.Price.Value.ToString("N0") + " đ" : "-")</td>
+                <td>@item.Status</td>
+                <td>@item.OwnerUser.Username</td>
+                <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                <td class="row-actions">
+                    <a asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
+                </td>
+            </tr>
 }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>

@@ -23,7 +23,7 @@
     <div class="library-card">
         <span class="library-badge @(doc.IsFree ? "free" : "paid")">@(doc.IsFree ? "Miễn phí" : (doc.Price.HasValue ? doc.Price.Value.ToString("N0") + " đ" : "Có phí"))</span>
         <div class="library-card-title">@doc.Title</div>
-        <div class="library-card-subject">@doc.Course.Subject.Name &middot; @doc.Type</div>
+        <div class="library-card-subject">@doc.Type</div>
         <a asp-action="Read" asp-route-id="@doc.Id" class="btn btn-outline-secondary btn-sm mt-2">Xem chi tiết</a>
     </div>
 }

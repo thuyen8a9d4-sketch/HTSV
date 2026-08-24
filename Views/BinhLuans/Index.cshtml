@@ -1,59 +1,44 @@
 @model IEnumerable<HTSV.Models.BinhLuan>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Bình luận";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Bình luận</h1>
+        <div class="text-muted">Quản lý bình luận trên bài đăng</div>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Thêm mới</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsAnonymous)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AuthorUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Confession)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="data-table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nội dung</th>
+                <th>Ẩn danh</th>
+                <th>Ngày tạo</th>
+                <th>Người bình luận</th>
+                <th>Bài đăng</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAnonymous)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AuthorUser.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Confession.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+            <tr>
+                <td>@(item.Content.Length > 60 ? item.Content.Substring(0, 60) + "..." : item.Content)</td>
+                <td>@(item.IsAnonymous ? "Có" : "Không")</td>
+                <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.AuthorUser.Username</td>
+                <td>#@item.ConfessionId</td>
+                <td class="row-actions">
+                    <a asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
+                </td>
+            </tr>
 }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>

@@ -1,60 +1,32 @@
 @model HTSV.Models.NhatKyKiemDuyet
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết nhật ký kiểm duyệt";
 }
 
-<h1>Details</h1>
+<div class="page-header">
+    <h1>Chi tiết nhật ký kiểm duyệt</h1>
+</div>
 
-<div>
-    <h4>NhatKyKiemDuyet</h4>
-    <hr />
+<div class="card-surface p-4">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Action)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Action)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OldStatus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OldStatus)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NewStatus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NewStatus)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Note)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Note)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Confession)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Confession.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModeratorUser)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModeratorUser.Id)
-        </dd>
+        <dt class="col-sm-3">Bài đăng</dt>
+        <dd class="col-sm-9">#@Model.ConfessionId</dd>
+        <dt class="col-sm-3">Người kiểm duyệt</dt>
+        <dd class="col-sm-9">@Model.ModeratorUser.Username</dd>
+        <dt class="col-sm-3">Hành động</dt>
+        <dd class="col-sm-9">@Model.Action</dd>
+        <dt class="col-sm-3">Trạng thái cũ</dt>
+        <dd class="col-sm-9">@Model.OldStatus</dd>
+        <dt class="col-sm-3">Trạng thái mới</dt>
+        <dd class="col-sm-9">@Model.NewStatus</dd>
+        <dt class="col-sm-3">Ghi chú</dt>
+        <dd class="col-sm-9">@Model.Note</dd>
+        <dt class="col-sm-3">Ngày tạo</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary btn-sm">Sửa</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Quay lại danh sách</a>
 </div>

@@ -1,30 +1,22 @@
 @model HTSV.Models.DanhMucConfession
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết danh mục";
 }
 
-<h1>Details</h1>
+<div class="page-header">
+    <h1>Chi tiết danh mục</h1>
+</div>
 
-<div>
-    <h4>DanhMucConfession</h4>
-    <hr />
+<div class="card-surface p-4">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Slug)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Slug)
-        </dd>
+        <dt class="col-sm-3">Tên</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+        <dt class="col-sm-3">Slug</dt>
+        <dd class="col-sm-9">@Model.Slug</dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary btn-sm">Sửa</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Quay lại danh sách</a>
 </div>

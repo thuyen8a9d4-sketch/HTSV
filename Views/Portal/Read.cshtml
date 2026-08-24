@@ -12,7 +12,7 @@
 <div class="page-header mt-2">
     <div>
         <h1>@Model.Title</h1>
-        <div class="text-muted">@Model.Course.Subject.Name &middot; @Model.Type</div>
+        <div class="text-muted">@Model.Type</div>
     </div>
     <span class="library-badge @(Model.IsFree ? "free" : "paid")">@(Model.IsFree ? "Miễn phí" : (Model.Price.HasValue ? Model.Price.Value.ToString("N0") + " đ" : "Có phí"))</span>
 </div>

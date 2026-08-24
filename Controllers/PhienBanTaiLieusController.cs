@@ -58,6 +58,7 @@ namespace HTSV.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,MaterialId,VersionNo,FilePath,FileSize,MimeType,PageCount,UploadedAt")] PhienBanTaiLieu phienBanTaiLieu)
         {
+            ModelState.Remove(nameof(PhienBanTaiLieu.Material));
             if (ModelState.IsValid)
             {
                 _context.Add(phienBanTaiLieu);
@@ -97,6 +98,7 @@ namespace HTSV.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove(nameof(PhienBanTaiLieu.Material));
             if (ModelState.IsValid)
             {
                 try

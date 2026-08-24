@@ -1,43 +1,47 @@
 @model HTSV.Models.BaoCao
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm báo cáo";
 }
 
-<h1>Create</h1>
-
-<h4>BaoCao</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ConfessionId" class="control-label"></label>
-                <select asp-for="ConfessionId" class ="form-control" asp-items="ViewBag.ConfessionId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="CommentId" class="control-label"></label>
-                <select asp-for="CommentId" class ="form-control" asp-items="ViewBag.CommentId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReporterUserId" class="control-label"></label>
-                <select asp-for="ReporterUserId" class ="form-control" asp-items="ViewBag.ReporterUserId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reason" class="control-label"></label>
-                <input asp-for="Reason" class="form-control" />
-                <span asp-validation-for="Reason" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="page-header">
+    <h1>Thêm báo cáo</h1>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="form-card">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="ConfessionId">Bài đăng</label>
+            <select asp-for="ConfessionId" class="form-control" asp-items="ViewBag.ConfessionId"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="CommentId">Bình luận</label>
+            <select asp-for="CommentId" class="form-control" asp-items="ViewBag.CommentId"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="ReporterUserId">Người báo cáo</label>
+            <select asp-for="ReporterUserId" class="form-control" asp-items="ViewBag.ReporterUserId"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Reason">Lý do</label>
+            <input asp-for="Reason" class="form-control" />
+            <span asp-validation-for="Reason" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Status">Trạng thái</label>
+            <input asp-for="Status" class="form-control" />
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CreatedAt">Ngày tạo</label>
+            <input asp-for="CreatedAt" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Lưu" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

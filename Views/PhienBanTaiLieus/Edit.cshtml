@@ -1,62 +1,57 @@
 @model HTSV.Models.PhienBanTaiLieu
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa phiên bản file";
 }
 
-<h1>Edit</h1>
-
-<h4>PhienBanTaiLieu</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="MaterialId" class="control-label"></label>
-                <select asp-for="MaterialId" class="form-control" asp-items="ViewBag.MaterialId"></select>
-                <span asp-validation-for="MaterialId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VersionNo" class="control-label"></label>
-                <input asp-for="VersionNo" class="form-control" />
-                <span asp-validation-for="VersionNo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FilePath" class="control-label"></label>
-                <input asp-for="FilePath" class="form-control" />
-                <span asp-validation-for="FilePath" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FileSize" class="control-label"></label>
-                <input asp-for="FileSize" class="form-control" />
-                <span asp-validation-for="FileSize" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MimeType" class="control-label"></label>
-                <input asp-for="MimeType" class="form-control" />
-                <span asp-validation-for="MimeType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PageCount" class="control-label"></label>
-                <input asp-for="PageCount" class="form-control" />
-                <span asp-validation-for="PageCount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UploadedAt" class="control-label"></label>
-                <input asp-for="UploadedAt" class="form-control" />
-                <span asp-validation-for="UploadedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="page-header">
+    <h1>Sửa phiên bản file</h1>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="form-card">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="MaterialId">Sách</label>
+            <select asp-for="MaterialId" class="form-control" asp-items="ViewBag.MaterialId"></select>
+            <span asp-validation-for="MaterialId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="VersionNo">Số phiên bản</label>
+            <input asp-for="VersionNo" class="form-control" />
+            <span asp-validation-for="VersionNo" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FilePath">Đường dẫn file</label>
+            <input asp-for="FilePath" class="form-control" />
+            <span asp-validation-for="FilePath" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FileSize">Dung lượng (byte)</label>
+            <input asp-for="FileSize" class="form-control" />
+            <span asp-validation-for="FileSize" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="MimeType">Loại file</label>
+            <input asp-for="MimeType" class="form-control" />
+            <span asp-validation-for="MimeType" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PageCount">Số trang</label>
+            <input asp-for="PageCount" class="form-control" />
+            <span asp-validation-for="PageCount" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="UploadedAt">Ngày tải lên</label>
+            <input asp-for="UploadedAt" class="form-control" />
+            <span asp-validation-for="UploadedAt" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Lưu" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

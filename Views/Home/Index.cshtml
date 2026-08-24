@@ -6,79 +6,75 @@
 <div class="page-header">
     <div>
         <h1>Bảng điều khiển</h1>
-        <div class="text-muted">Tổng quan hệ thống HTSV</div>
+        <div class="text-muted">Tổng quan hệ thống</div>
     </div>
 </div>
 
 <div class="stat-grid">
     <div class="stat-card">
-        <div class="stat-value">@Model.SinhVienCount</div>
-        <div class="stat-label">Sinh viên</div>
+        <div class="stat-value">@Model.PostCount</div>
+        <div class="stat-label">Bài đăng (@Model.PendingPostCount chờ duyệt)</div>
     </div>
     <div class="stat-card">
-        <div class="stat-value">@Model.GiangVienCount</div>
-        <div class="stat-label">Giảng viên</div>
+        <div class="stat-value">@Model.CommentCount</div>
+        <div class="stat-label">Bình luận</div>
     </div>
     <div class="stat-card">
-        <div class="stat-value">@Model.MonHocCount</div>
-        <div class="stat-label">Môn học</div>
+        <div class="stat-value">@Model.ReportCount</div>
+        <div class="stat-label">Báo cáo vi phạm</div>
     </div>
     <div class="stat-card">
-        <div class="stat-value">@Model.LopHocPhanCount</div>
-        <div class="stat-label">Lớp học phần</div>
+        <div class="stat-value">@Model.BookCount</div>
+        <div class="stat-label">Sách đăng lên</div>
     </div>
     <div class="stat-card">
-        <div class="stat-value">@Model.DeThiCount</div>
-        <div class="stat-label">Đề thi</div>
+        <div class="stat-value">@Model.AccountCount</div>
+        <div class="stat-label">Tài khoản</div>
     </div>
     <div class="stat-card">
-        <div class="stat-value">@Model.TaiLieuCount</div>
-        <div class="stat-label">Tài liệu</div>
+        <div class="stat-value">@Model.TotalRevenue.ToString("N0") đ</div>
+        <div class="stat-label">Tổng doanh thu</div>
     </div>
 </div>
 
 <h2 class="h5 mb-3">Truy cập nhanh</h2>
 <div class="quick-links">
-    <a class="quick-link-card" asp-controller="Schedules" asp-action="Index">
-        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "calendar")</span>
-        <span>
-            <div class="quick-link-title">Lịch học</div>
-            <div class="quick-link-sub">Xem lịch học theo tuần</div>
-        </span>
-    </a>
-    <a class="quick-link-card" asp-controller="MonHocs" asp-action="Index">
-        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "file")</span>
-        <span>
-            <div class="quick-link-title">Môn học</div>
-            <div class="quick-link-sub">Danh sách môn học</div>
-        </span>
-    </a>
-    <a class="quick-link-card" asp-controller="DeThis" asp-action="Index">
-        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "clipboard")</span>
-        <span>
-            <div class="quick-link-title">Thi cử</div>
-            <div class="quick-link-sub">Đề thi &amp; ngân hàng câu hỏi</div>
-        </span>
-    </a>
-    <a class="quick-link-card" asp-controller="TaiLieus" asp-action="Index">
-        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "file")</span>
-        <span>
-            <div class="quick-link-title">Tài liệu</div>
-            <div class="quick-link-sub">Giáo trình, đề cương</div>
-        </span>
-    </a>
     <a class="quick-link-card" asp-controller="BaiConfessions" asp-action="Index">
         <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "message")</span>
         <span>
-            <div class="quick-link-title">Confession</div>
-            <div class="quick-link-sub">Cộng đồng sinh viên</div>
+            <div class="quick-link-title">Bài đăng</div>
+            <div class="quick-link-sub">Duyệt/quản lý bài đăng</div>
         </span>
     </a>
-    <a class="quick-link-card" asp-controller="SanPhams" asp-action="Index">
-        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "cart")</span>
+    <a class="quick-link-card" asp-controller="BinhLuans" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "flag")</span>
         <span>
-            <div class="quick-link-title">Bán hàng</div>
-            <div class="quick-link-sub">Sản phẩm &amp; đơn hàng</div>
+            <div class="quick-link-title">Bình luận</div>
+            <div class="quick-link-sub">Quản lý bình luận</div>
         </span>
     </a>
+    <a class="quick-link-card" asp-controller="TaiLieus" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "book")</span>
+        <span>
+            <div class="quick-link-title">Sách</div>
+            <div class="quick-link-sub">Quản lý sách đăng lên</div>
+        </span>
+    </a>
+    <a class="quick-link-card" asp-controller="Revenue" asp-action="Index">
+        <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "chart")</span>
+        <span>
+            <div class="quick-link-title">Doanh thu</div>
+            <div class="quick-link-sub">Kiểm toán &amp; thống kê</div>
+        </span>
+    </a>
+    @if (User.IsInRole("ADMIN"))
+    {
+        <a class="quick-link-card" asp-controller="NguoiDungs" asp-action="Index">
+            <span class="quick-link-icon">@await Html.PartialAsync("_Icon", "users")</span>
+            <span>
+                <div class="quick-link-title">Tài khoản</div>
+                <div class="quick-link-sub">Cấp quyền, tạo/sửa/xóa tài khoản</div>
+            </span>
+        </a>
+    }
 </div>

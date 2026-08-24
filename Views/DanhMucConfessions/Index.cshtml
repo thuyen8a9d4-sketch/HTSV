@@ -1,41 +1,38 @@
 @model IEnumerable<HTSV.Models.DanhMucConfession>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh mục bài đăng";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Danh mục bài đăng</h1>
+        <div class="text-muted">Quản lý danh mục cho bài đăng diễn đàn</div>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Thêm mới</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Slug)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="data-table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Tên</th>
+                <th>Slug</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Slug)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Slug</td>
+                <td class="row-actions">
+                    <a asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
+                </td>
+            </tr>
 }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>

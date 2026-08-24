@@ -20,20 +20,15 @@ public class HomeController : Controller
     {
         var vm = new DashboardViewModel
         {
-            SinhVienCount = await _context.SinhViens.CountAsync(),
-            GiangVienCount = await _context.GiangViens.CountAsync(),
-            MonHocCount = await _context.MonHocs.CountAsync(),
-            LopHocPhanCount = await _context.LopHocPhans.CountAsync(),
-            DeThiCount = await _context.DeThis.CountAsync(),
-            TaiLieuCount = await _context.TaiLieus.CountAsync(),
+            PostCount = await _context.BaiConfessions.CountAsync(),
+            PendingPostCount = await _context.BaiConfessions.CountAsync(p => p.Status == "pending"),
+            CommentCount = await _context.BinhLuans.CountAsync(),
+            ReportCount = await _context.BaoCaos.CountAsync(),
+            BookCount = await _context.TaiLieus.CountAsync(),
+            AccountCount = await _context.NguoiDungs.CountAsync(),
+            TotalRevenue = await _context.DonHangs.Where(o => o.Status == "paid").SumAsync(o => (decimal?)o.TotalAmount) ?? 0,
         };
         return View(vm);
-    }
-
-    [AllowAnonymous]
-    public IActionResult Privacy()
-    {
-        return View();
     }
 
     [AllowAnonymous]
@@ -46,10 +41,11 @@ public class HomeController : Controller
 
 public class DashboardViewModel
 {
-    public int SinhVienCount { get; set; }
-    public int GiangVienCount { get; set; }
-    public int MonHocCount { get; set; }
-    public int LopHocPhanCount { get; set; }
-    public int DeThiCount { get; set; }
-    public int TaiLieuCount { get; set; }
+    public int PostCount { get; set; }
+    public int PendingPostCount { get; set; }
+    public int CommentCount { get; set; }
+    public int ReportCount { get; set; }
+    public int BookCount { get; set; }
+    public int AccountCount { get; set; }
+    public decimal TotalRevenue { get; set; }
 }

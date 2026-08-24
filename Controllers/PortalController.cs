@@ -152,7 +152,7 @@ public class PortalController : Controller
 
     public async Task<IActionResult> Library(string? q)
     {
-        var query = _context.TaiLieus.Include(t => t.Course).ThenInclude(c => c.Subject).AsQueryable();
+        var query = _context.TaiLieus.AsQueryable();
         if (!string.IsNullOrWhiteSpace(q))
         {
             query = query.Where(t => t.Title.Contains(q));
@@ -165,7 +165,6 @@ public class PortalController : Controller
     public async Task<IActionResult> Read(int id)
     {
         var doc = await _context.TaiLieus
-            .Include(t => t.Course).ThenInclude(c => c.Subject)
             .Include(t => t.PhienBanTaiLieus)
             .FirstOrDefaultAsync(t => t.Id == id);
         if (doc == null)

@@ -1,62 +1,57 @@
 @model HTSV.Models.NhatKyKiemDuyet
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa nhật ký kiểm duyệt";
 }
 
-<h1>Edit</h1>
-
-<h4>NhatKyKiemDuyet</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ConfessionId" class="control-label"></label>
-                <select asp-for="ConfessionId" class="form-control" asp-items="ViewBag.ConfessionId"></select>
-                <span asp-validation-for="ConfessionId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModeratorUserId" class="control-label"></label>
-                <select asp-for="ModeratorUserId" class="form-control" asp-items="ViewBag.ModeratorUserId"></select>
-                <span asp-validation-for="ModeratorUserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Action" class="control-label"></label>
-                <input asp-for="Action" class="form-control" />
-                <span asp-validation-for="Action" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OldStatus" class="control-label"></label>
-                <input asp-for="OldStatus" class="form-control" />
-                <span asp-validation-for="OldStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewStatus" class="control-label"></label>
-                <input asp-for="NewStatus" class="form-control" />
-                <span asp-validation-for="NewStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Note" class="control-label"></label>
-                <input asp-for="Note" class="form-control" />
-                <span asp-validation-for="Note" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="page-header">
+    <h1>Sửa nhật ký kiểm duyệt</h1>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="form-card">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="ConfessionId">Bài đăng</label>
+            <select asp-for="ConfessionId" class="form-control" asp-items="ViewBag.ConfessionId"></select>
+            <span asp-validation-for="ConfessionId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ModeratorUserId">Người kiểm duyệt</label>
+            <select asp-for="ModeratorUserId" class="form-control" asp-items="ViewBag.ModeratorUserId"></select>
+            <span asp-validation-for="ModeratorUserId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Action">Hành động</label>
+            <input asp-for="Action" class="form-control" />
+            <span asp-validation-for="Action" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="OldStatus">Trạng thái cũ</label>
+            <input asp-for="OldStatus" class="form-control" />
+            <span asp-validation-for="OldStatus" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="NewStatus">Trạng thái mới</label>
+            <input asp-for="NewStatus" class="form-control" />
+            <span asp-validation-for="NewStatus" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Note">Ghi chú</label>
+            <input asp-for="Note" class="form-control" />
+            <span asp-validation-for="Note" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CreatedAt">Ngày tạo</label>
+            <input asp-for="CreatedAt" class="form-control" />
+            <span asp-validation-for="CreatedAt" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Lưu" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

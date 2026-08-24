@@ -60,6 +60,8 @@ namespace HTSV.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ConfessionId,ModeratorUserId,Action,OldStatus,NewStatus,Note,CreatedAt")] NhatKyKiemDuyet nhatKyKiemDuyet)
         {
+            ModelState.Remove(nameof(NhatKyKiemDuyet.Confession));
+            ModelState.Remove(nameof(NhatKyKiemDuyet.ModeratorUser));
             if (ModelState.IsValid)
             {
                 _context.Add(nhatKyKiemDuyet);
@@ -101,6 +103,8 @@ namespace HTSV.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove(nameof(NhatKyKiemDuyet.Confession));
+            ModelState.Remove(nameof(NhatKyKiemDuyet.ModeratorUser));
             if (ModelState.IsValid)
             {
                 try

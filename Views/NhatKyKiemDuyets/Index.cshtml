@@ -1,71 +1,48 @@
 @model IEnumerable<HTSV.Models.NhatKyKiemDuyet>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Nhật ký kiểm duyệt";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Nhật ký kiểm duyệt</h1>
+        <div class="text-muted">Lịch sử duyệt/từ chối bài đăng</div>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Thêm mới</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Action)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OldStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NewStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Confession)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModeratorUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="data-table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Bài đăng</th>
+                <th>Người kiểm duyệt</th>
+                <th>Hành động</th>
+                <th>Trạng thái cũ</th>
+                <th>Trạng thái mới</th>
+                <th>Ghi chú</th>
+                <th>Ngày tạo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Action)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OldStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NewStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Confession.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModeratorUser.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+            <tr>
+                <td>#@item.ConfessionId</td>
+                <td>@item.ModeratorUser.Username</td>
+                <td>@item.Action</td>
+                <td>@item.OldStatus</td>
+                <td>@item.NewStatus</td>
+                <td>@item.Note</td>
+                <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                <td class="row-actions">
+                    <a asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
+                </td>
+            </tr>
 }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
