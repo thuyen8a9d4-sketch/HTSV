@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AcademicPrismaModule } from '../../academic-prisma/academic-prisma.module';
+import { SettingsModule } from '../settings/settings.module';
 import { UsersModule } from '../users/users.module';
 import { CommerceController } from './commerce/commerce.controller';
 import { CommerceService } from './commerce/commerce.service';
@@ -16,7 +17,7 @@ import { RatingsService } from './ratings/ratings.service';
 import { SubjectsAdminController } from './subjects/subjects-admin.controller';
 
 @Module({
-  imports: [AcademicPrismaModule, UsersModule],
+  imports: [AcademicPrismaModule, UsersModule, SettingsModule],
   controllers: [
     MaterialsController,
     MaterialsAdminController,

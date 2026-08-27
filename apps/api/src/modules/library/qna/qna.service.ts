@@ -61,6 +61,10 @@ export class QnaService {
     if (answer.question.askerUserId !== requesterUserId) {
       throw new ForbiddenException('Chỉ người đặt câu hỏi mới được chọn câu trả lời hay nhất');
     }
+    await this.prisma.cauTraLoiTaiLieu.updateMany({
+      where: { questionId: answer.questionId },
+      data: { isAccepted: false },
+    });
     await this.prisma.cauTraLoiTaiLieu.update({ where: { id: answerId }, data: { isAccepted: true } });
     return this.prisma.cauHoiTaiLieu.update({
       where: { id: answer.questionId },

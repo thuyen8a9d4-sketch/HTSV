@@ -6,12 +6,19 @@ import {
   PaymentStatus,
   TaiLieuStatus,
 } from '../../../generated/academic-client';
+import { SettingsService } from '../../settings/settings.service';
 
 @Injectable()
 export class CommerceService {
-  constructor(private readonly prisma: AcademicPrismaService) {}
+  constructor(
+    private readonly prisma: AcademicPrismaService,
+    private readonly settingsService: SettingsService,
+  ) {}
 
   async buy(userId: number, materialId: number) {
+    if (!(await this.settingsService.isMonetizationEnabled())) {
+      throw new BadRequestException('Tính năng mua tài liệu trả phí hiện đang tắt');
+    }
     const material = await this.prisma.taiLieu.findUnique({ where: { id: materialId } });
     if (
       !material ||

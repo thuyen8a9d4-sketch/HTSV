@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
 import { AssignPermissionsDto } from './dto/assign-permissions.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+
+const CORE_SYSTEM_ROLE_CODES = ['ADMIN', 'LECTURER', 'STUDENT'];
 
 @Injectable()
 export class RolesService {
@@ -34,7 +36,12 @@ export class RolesService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
+    const role = await this.findOne(id);
+    if (CORE_SYSTEM_ROLE_CODES.includes(role.code)) {
+      throw new BadRequestException(
+        `Không thể xóa vai trò hệ thống "${role.code}" - toàn bộ gán quyền của người dùng sẽ bị mất theo.`,
+      );
+    }
     await this.prisma.vaiTro.delete({ where: { id } });
   }
 

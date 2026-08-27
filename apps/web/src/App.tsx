@@ -10,6 +10,7 @@ import { PermissionsPage } from './features/admin/PermissionsPage';
 import { ReportsPage } from './features/admin/ReportsPage';
 import { RevenuePage } from './features/admin/RevenuePage';
 import { RolesPage } from './features/admin/RolesPage';
+import { SettingsPage } from './features/admin/SettingsPage';
 import { SubjectsPage } from './features/admin/SubjectsPage';
 import { UsersPage } from './features/admin/UsersPage';
 import { ForgotPasswordPage } from './features/auth/ForgotPasswordPage';
@@ -87,6 +88,7 @@ function App() {
           <Route path="/admin/reports" element={<ReportsPage />} />
           <Route path="/admin/library" element={<LibraryAdminPage />} />
           <Route path="/admin/subjects" element={<SubjectsPage />} />
+          <Route path="/admin/settings" element={<SettingsPage />} />
           <Route path="/admin/revenue" element={<RevenuePage />} />
           <Route path="/admin/users" element={<UsersPage />} />
           <Route path="/admin/roles" element={<RolesPage />} />

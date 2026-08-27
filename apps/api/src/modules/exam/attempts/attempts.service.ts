@@ -19,17 +19,30 @@ export class AttemptsService {
     });
     if (!exam) throw new NotFoundException('Không tìm thấy đề thi');
 
-    const attempt = await this.prisma.luotLamBai.create({
-      data: { examId, studentUserId },
+    const existing = await this.prisma.luotLamBai.findFirst({
+      where: { examId, studentUserId, status: AttemptStatus.IN_PROGRESS },
     });
+    const attempt = existing ?? (await this.prisma.luotLamBai.create({ data: { examId, studentUserId } }));
+
+    const previousAnswers = existing
+      ? await this.prisma.cauTraLoi.findMany({ where: { attemptId: attempt.id } })
+      : [];
+    const selectedByQuestion = new Map(previousAnswers.map((a) => [a.examQuestionId, a.selectedOptionId]));
 
     const questions = exam.cauHoiDeThis.map((cq) => ({
       examQuestionId: cq.id,
       content: cq.question.content,
       options: cq.question.dapAns.map((a) => ({ id: a.id, optionLabel: a.optionLabel, content: a.content })),
+      selectedOptionId: selectedByQuestion.get(cq.id) ?? null,
     }));
 
-    return { attemptId: attempt.id, examId, durationMinutes: exam.durationMinutes, questions };
+    return {
+      attemptId: attempt.id,
+      examId,
+      durationMinutes: exam.durationMinutes,
+      startedAt: attempt.startedAt,
+      questions,
+    };
   }
 
   async answer(attemptId: number, studentUserId: number, dto: SubmitAnswerDto) {
@@ -52,18 +65,18 @@ export class AttemptsService {
 
     const cauTraLois = await this.prisma.cauTraLoi.findMany({ where: { attemptId: attempt.id } });
     let correctCount = 0;
-    let wrongCount = 0;
     for (const answer of cauTraLois) {
       const option = answer.selectedOptionId
         ? await this.prisma.dapAn.findUnique({ where: { id: answer.selectedOptionId } })
         : null;
       const isCorrect = option?.isCorrect ?? false;
       if (isCorrect) correctCount++;
-      else wrongCount++;
       await this.prisma.cauTraLoi.update({ where: { id: answer.id }, data: { isCorrect } });
     }
 
+    // Unanswered questions count as wrong, so wrongCount always sums to totalQuestions.
     const totalQuestions = await this.prisma.cauHoiDeThi.count({ where: { examId: attempt.examId } });
+    const wrongCount = totalQuestions - correctCount;
     const score = totalQuestions > 0 ? (correctCount / totalQuestions) * 10 : 0;
 
     return this.prisma.luotLamBai.update({

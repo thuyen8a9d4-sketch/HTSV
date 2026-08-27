@@ -31,7 +31,7 @@ export class ForumService {
     return posts.map(sanitizeAuthor);
   }
 
-  async findPostById(id: number, isAdmin: boolean) {
+  async findPostById(id: number, viewer: { userId: number; roles: string[] } | null) {
     const post = await this.prisma.baiConfession.findUnique({
       where: { id },
       include: {
@@ -45,7 +45,9 @@ export class ForumService {
       },
     });
     if (!post) throw new NotFoundException('Không tìm thấy bài đăng');
-    if (post.status !== ConfessionStatus.APPROVED && !isAdmin) {
+    const isOwner = viewer?.userId === post.authorUserId;
+    const isAdmin = viewer?.roles.includes('ADMIN') ?? false;
+    if (post.status !== ConfessionStatus.APPROVED && !isOwner && !isAdmin) {
       throw new NotFoundException('Không tìm thấy bài đăng');
     }
     return sanitizeAuthor(post);

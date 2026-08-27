@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: '/admin/users', label: 'Người dùng' },
   { to: '/admin/roles', label: 'Vai trò' },
   { to: '/admin/permissions', label: 'Quyền' },
+  { to: '/admin/settings', label: 'Cài đặt hệ thống' },
 ];
 
 export function AdminLayout() {

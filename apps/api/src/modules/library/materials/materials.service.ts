@@ -4,6 +4,7 @@ import { writeFileSync } from 'fs';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { AcademicPrismaService } from '../../../academic-prisma/academic-prisma.service';
 import { TaiLieuStatus } from '../../../generated/academic-client';
+import { SettingsService } from '../../settings/settings.service';
 import { UsersService } from '../../users/users.service';
 import { ensureUploadsDir, materialFilePath } from '../storage.util';
 import { CreateMaterialDto } from './dto/create-material.dto';
@@ -18,6 +19,7 @@ export class MaterialsService {
   constructor(
     private readonly prisma: AcademicPrismaService,
     private readonly usersService: UsersService,
+    private readonly settingsService: SettingsService,
   ) {}
 
   async search(filters: SearchMaterialsDto) {
@@ -66,6 +68,7 @@ export class MaterialsService {
 
   async checkAccess(material: { id: number; isFree: boolean; ownerUserId: number }, userId: number | null) {
     if (material.isFree) return true;
+    if (!(await this.settingsService.isMonetizationEnabled())) return true;
     if (userId && material.ownerUserId === userId) return true;
     if (!userId) return false;
     const grant = await this.prisma.quyenTruyCapTaiLieu.findUnique({

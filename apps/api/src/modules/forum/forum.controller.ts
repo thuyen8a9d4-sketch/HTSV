@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { OptionalJwtAuthGuard } from '../../common/guards/optional-jwt-auth.guard';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -25,9 +26,10 @@ export class ForumController {
   }
 
   @Public()
+  @UseGuards(OptionalJwtAuthGuard)
   @Get('posts/:id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.forumService.findPostById(id, false);
+  findOne(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: AuthenticatedUser | null) {
+    return this.forumService.findPostById(id, user);
   }
 
   @Roles('STUDENT', 'LECTURER', 'ADMIN')

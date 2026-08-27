@@ -13,6 +13,14 @@ enum SubjectLevel {
   ADVANCED
 }
 
+model CaiDatHeThong {
+  id                  Int      @id @default(autoincrement())
+  monetizationEnabled Boolean  @default(true)
+  updatedAt           DateTime @updatedAt
+
+  @@map("CaiDatHeThong")
+}
+
 enum TaiLieuType {
   SLIDE
   LESSON_PLAN

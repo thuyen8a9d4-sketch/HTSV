@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiClient } from '../../lib/api-client';
 import { useAuthStore } from '../../lib/auth-store';
+import { useSettings } from '../../lib/use-settings';
 
 interface Subject {
   id: number;
@@ -22,6 +23,8 @@ interface Material {
 
 export function LibraryCatalogPage() {
   const user = useAuthStore((s) => s.user);
+  const { data: settings } = useSettings();
+  const monetizationEnabled = settings?.monetizationEnabled ?? true;
   const [q, setQ] = useState('');
   const [subjectId, setSubjectId] = useState<number | undefined>();
 
@@ -85,8 +88,12 @@ export function LibraryCatalogPage() {
             <div className="mb-1 text-xs text-slate-500">{m.subject?.name ?? m.type}</div>
             <div className="mb-2 font-semibold text-slate-900">{m.title}</div>
             <div className="flex items-center justify-between text-sm">
-              <span className={m.isFree ? 'text-green-600' : 'text-slate-700'}>
-                {m.isFree ? 'Miễn phí' : m.price ? `${Number(m.price).toLocaleString('vi-VN')}đ` : ''}
+              <span className={m.isFree || !monetizationEnabled ? 'text-green-600' : 'text-slate-700'}>
+                {!monetizationEnabled || m.isFree
+                  ? 'Miễn phí'
+                  : m.price
+                    ? `${Number(m.price).toLocaleString('vi-VN')}đ`
+                    : ''}
               </span>
               {m.ratingCount > 0 && (
                 <span className="text-amber-500">
