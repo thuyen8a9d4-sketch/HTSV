@@ -1,0 +1,531 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/academic-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SubjectLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum TaiLieuType {
+  SLIDE
+  LESSON_PLAN
+  TEXTBOOK
+  OTHER
+}
+
+enum TaiLieuStatus {
+  DRAFT
+  PENDING
+  PUBLISHED
+  REJECTED
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum AccessGrantSource {
+  PURCHASE
+  FREE
+  ADMIN_GRANT
+}
+
+enum QuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum QuestionStatus {
+  AI_GENERATED
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum ExamScopeType {
+  BY_SUBJECT
+  BY_CHAPTER
+  CUSTOM
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+}
+
+enum FlashcardSetStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum CardMasteryStatus {
+  NEW
+  LEARNING
+  MASTERED
+}
+
+enum DocumentQuestionStatus {
+  OPEN
+  ANSWERED
+  CLOSED
+}
+
+// ---------- Curriculum ----------
+
+model MonHoc {
+  id            Int           @id @default(autoincrement())
+  code          String        @unique @db.VarChar(20)
+  name          String        @db.VarChar(150)
+  description   String?
+  thumbnailPath String?       @db.VarChar(500)
+  level         SubjectLevel?
+
+  chuongMonHocs   ChuongMonHoc[]
+  deCuongs        DeCuong[]
+  taiLieus        TaiLieu[]
+  boTheGhiNhos    BoTheGhiNho[]
+  nganHangCauHois NganHangCauHoi[]
+  deThis          DeThi[]
+  taiLieuKienThucs TaiLieuKienThuc[]
+
+  @@map("MonHoc")
+}
+
+model ChuongMonHoc {
+  id            Int     @id @default(autoincrement())
+  subjectId     Int
+  chapterNo     Int
+  title         String  @db.VarChar(200)
+  weightPercent Decimal? @db.Decimal(5, 2)
+
+  subject         MonHoc           @relation(fields: [subjectId], references: [id])
+  nganHangCauHois NganHangCauHoi[]
+  doanKienThucs   DoanKienThuc[]
+
+  @@unique([subjectId, chapterNo])
+  @@map("ChuongMonHoc")
+}
+
+model DeCuong {
+  id        Int      @id @default(autoincrement())
+  subjectId Int
+  title     String   @db.VarChar(200)
+  createdAt DateTime @default(now())
+
+  subject MonHoc @relation(fields: [subjectId], references: [id])
+
+  @@map("DeCuong")
+}
+
+// ---------- Documents / Library ----------
+
+model TaiLieu {
+  id                Int           @id @default(autoincrement())
+  ownerUserId       Int
+  subjectId         Int?
+  type              TaiLieuType
+  title             String        @db.VarChar(200)
+  description       String?
+  isFree            Boolean       @default(false)
+  isSellable        Boolean       @default(false)
+  price             Decimal?      @db.Decimal(18, 2)
+  status            TaiLieuStatus @default(DRAFT)
+  previewPageLimit  Int           @default(2)
+  averageRating     Decimal?      @db.Decimal(3, 2)
+  ratingCount       Int           @default(0)
+  createdAt         DateTime      @default(now())
+
+  subject             MonHoc?               @relation(fields: [subjectId], references: [id])
+  phienBanTaiLieus    PhienBanTaiLieu[]
+  quyenTruyCaps       QuyenTruyCapTaiLieu[]
+  sanPham             SanPham?
+  taiLieuKienThucs    TaiLieuKienThuc[]
+  boTheGhiNhos        BoTheGhiNho[]
+  cauHoiTaiLieus      CauHoiTaiLieu[]
+  danhGiaTaiLieus     DanhGiaTaiLieu[]
+
+  @@index([status, type])
+  @@index([subjectId])
+  @@index([ownerUserId])
+  @@index([title])
+  @@map("TaiLieu")
+}
+
+model PhienBanTaiLieu {
+  id         Int      @id @default(autoincrement())
+  materialId Int
+  versionNo  Int
+  filePath   String   @db.VarChar(500)
+  fileSize   Int
+  mimeType   String   @db.VarChar(100)
+  pageCount  Int?
+  uploadedAt DateTime @default(now())
+
+  material TaiLieu @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([materialId, versionNo])
+  @@map("PhienBanTaiLieu")
+}
+
+model TaiLieuKienThuc {
+  id              Int              @id @default(autoincrement())
+  materialId      Int
+  subjectId       Int
+  title           String           @db.VarChar(200)
+  processedStatus ProcessingStatus @default(PENDING)
+  createdAt       DateTime         @default(now())
+
+  material      TaiLieu        @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  subject       MonHoc         @relation(fields: [subjectId], references: [id])
+  doanKienThucs DoanKienThuc[]
+
+  @@map("TaiLieuKienThuc")
+}
+
+model DoanKienThuc {
+  id                   Int      @id @default(autoincrement())
+  knowledgeDocumentId  Int
+  subjectChapterId     Int
+  sourceRef            String?  @db.VarChar(200)
+  createdAt            DateTime @default(now())
+
+  knowledgeDocument TaiLieuKienThuc  @relation(fields: [knowledgeDocumentId], references: [id], onDelete: Cascade)
+  subjectChapter    ChuongMonHoc     @relation(fields: [subjectChapterId], references: [id])
+  nganHangCauHois   NganHangCauHoi[]
+
+  @@map("DoanKienThuc")
+}
+
+// ---------- Commerce ----------
+
+model SanPham {
+  id         Int      @id @default(autoincrement())
+  materialId Int      @unique
+  name       String   @db.VarChar(200)
+  price      Decimal  @db.Decimal(18, 2)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  material          TaiLieu             @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  chiTietDonHangs   ChiTietDonHang[]
+
+  @@map("SanPham")
+}
+
+model DonHang {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  status      OrderStatus @default(PENDING)
+  totalAmount Decimal     @db.Decimal(18, 2)
+  createdAt   DateTime    @default(now())
+  paidAt      DateTime?
+
+  chiTietDonHangs      ChiTietDonHang[]
+  thanhToans           ThanhToan[]
+  quyenTruyCapTaiLieus QuyenTruyCapTaiLieu[]
+
+  @@index([userId, status])
+  @@map("DonHang")
+}
+
+model ChiTietDonHang {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int     @default(1)
+  unitPrice Decimal @db.Decimal(18, 2)
+
+  order   DonHang @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product SanPham @relation(fields: [productId], references: [id])
+
+  @@map("ChiTietDonHang")
+}
+
+model ThanhToan {
+  id            Int           @id @default(autoincrement())
+  orderId       Int
+  amount        Decimal       @db.Decimal(18, 2)
+  provider      String        @db.VarChar(50)
+  providerTxnId String?       @db.VarChar(100)
+  status        PaymentStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  confirmedAt   DateTime?
+
+  order DonHang @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("ThanhToan")
+}
+
+model QuyenTruyCapTaiLieu {
+  id          Int               @id @default(autoincrement())
+  userId      Int
+  materialId  Int
+  grantedVia  AccessGrantSource
+  orderId     Int?
+  grantedAt   DateTime          @default(now())
+  expiresAt   DateTime?
+
+  material TaiLieu  @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  order    DonHang? @relation(fields: [orderId], references: [id])
+
+  @@unique([userId, materialId])
+  @@map("QuyenTruyCapTaiLieu")
+}
+
+// ---------- Flashcards (Quizlet-style) ----------
+
+model BoTheGhiNho {
+  id           Int                @id @default(autoincrement())
+  materialId   Int?
+  subjectId    Int?
+  ownerUserId  Int
+  title        String             @db.VarChar(200)
+  description  String?
+  isPublic     Boolean            @default(true)
+  status       FlashcardSetStatus @default(DRAFT)
+  cardCount    Int                @default(0)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  material TaiLieu?      @relation(fields: [materialId], references: [id])
+  subject  MonHoc?       @relation(fields: [subjectId], references: [id])
+  cards    TheGhiNho[]
+  progress TienDoHocTap[]
+
+  @@index([ownerUserId])
+  @@index([status, isPublic])
+  @@index([subjectId])
+  @@map("BoTheGhiNho")
+}
+
+model TheGhiNho {
+  id         Int     @id @default(autoincrement())
+  setId      Int
+  term       String
+  definition String
+  imagePath  String? @db.VarChar(500)
+  position   Int
+
+  set     BoTheGhiNho     @relation(fields: [setId], references: [id], onDelete: Cascade)
+  results KetQuaTheThe[]
+
+  @@index([setId, position])
+  @@map("TheGhiNho")
+}
+
+model TienDoHocTap {
+  id              Int       @id @default(autoincrement())
+  setId           Int
+  studentUserId   Int
+  roundsCompleted Int       @default(0)
+  masteredCount   Int       @default(0)
+  lastStudiedAt   DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  set BoTheGhiNho @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+  @@unique([setId, studentUserId])
+  @@map("TienDoHocTap")
+}
+
+model KetQuaTheThe {
+  id             Int               @id @default(autoincrement())
+  cardId         Int
+  studentUserId  Int
+  masteryStatus  CardMasteryStatus @default(NEW)
+  correctStreak  Int               @default(0)
+  lastReviewedAt DateTime?
+
+  card TheGhiNho @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, studentUserId])
+  @@index([studentUserId, masteryStatus])
+  @@map("KetQuaTheThe")
+}
+
+// ---------- Document Q&A (Chegg-style) ----------
+
+model CauHoiTaiLieu {
+  id           Int                    @id @default(autoincrement())
+  materialId   Int
+  askerUserId  Int
+  title        String                 @db.VarChar(200)
+  body         String
+  status       DocumentQuestionStatus @default(OPEN)
+  createdAt    DateTime               @default(now())
+
+  material TaiLieu             @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  answers  CauTraLoiTaiLieu[]
+
+  @@index([materialId, status])
+  @@index([askerUserId])
+  @@map("CauHoiTaiLieu")
+}
+
+model CauTraLoiTaiLieu {
+  id              Int      @id @default(autoincrement())
+  questionId      Int
+  responderUserId Int
+  body            String
+  isAccepted      Boolean  @default(false)
+  upvoteCount     Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  question CauHoiTaiLieu @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("CauTraLoiTaiLieu")
+}
+
+// ---------- Ratings (Coursera-style) ----------
+
+model DanhGiaTaiLieu {
+  id             Int      @id @default(autoincrement())
+  materialId     Int
+  reviewerUserId Int
+  rating         Int
+  comment        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  material TaiLieu @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([materialId, reviewerUserId])
+  @@index([materialId])
+  @@map("DanhGiaTaiLieu")
+}
+
+// ---------- Exam engine ----------
+
+model NganHangCauHoi {
+  id                    Int            @id @default(autoincrement())
+  subjectId             Int
+  subjectChapterId      Int?
+  questionType          QuestionType
+  difficulty            Difficulty     @default(MEDIUM)
+  content               String
+  explanation           String?
+  sourceKnowledgeChunkId Int?
+  status                QuestionStatus @default(AI_GENERATED)
+  createdByUserId       Int?
+  reviewedByUserId      Int?
+  createdAt             DateTime       @default(now())
+
+  subject             MonHoc         @relation(fields: [subjectId], references: [id])
+  subjectChapter      ChuongMonHoc?  @relation(fields: [subjectChapterId], references: [id])
+  sourceKnowledgeChunk DoanKienThuc? @relation(fields: [sourceKnowledgeChunkId], references: [id])
+  dapAns              DapAn[]
+  cauHoiDeThis        CauHoiDeThi[]
+
+  @@index([subjectId, difficulty])
+  @@map("NganHangCauHoi")
+}
+
+model DapAn {
+  id           Int     @id @default(autoincrement())
+  questionId   Int
+  optionLabel  String  @db.VarChar(2)
+  content      String
+  isCorrect    Boolean
+
+  question NganHangCauHoi @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  cauTraLois CauTraLoi[]
+
+  @@unique([questionId, optionLabel])
+  @@map("DapAn")
+}
+
+model DeThi {
+  id               Int           @id @default(autoincrement())
+  createdByUserId  Int
+  subjectId        Int
+  scopeType        ExamScopeType
+  scopeConfig      Json
+  totalQuestions   Int
+  durationMinutes  Int?
+  theoryCount      Int           @default(0)
+  applicationCount Int           @default(0)
+  practicalCount   Int           @default(0)
+  createdAt        DateTime      @default(now())
+
+  subject      MonHoc        @relation(fields: [subjectId], references: [id])
+  cauHoiDeThis CauHoiDeThi[]
+  luotLamBais  LuotLamBai[]
+
+  @@map("DeThi")
+}
+
+model CauHoiDeThi {
+  id         Int @id @default(autoincrement())
+  examId     Int
+  questionId Int
+  orderNo    Int @default(0)
+
+  exam        DeThi          @relation(fields: [examId], references: [id], onDelete: Cascade)
+  question    NganHangCauHoi @relation(fields: [questionId], references: [id])
+  cauTraLois  CauTraLoi[]
+
+  @@unique([examId, questionId])
+  @@map("CauHoiDeThi")
+}
+
+model LuotLamBai {
+  id             Int           @id @default(autoincrement())
+  examId         Int
+  studentUserId  Int
+  startedAt      DateTime      @default(now())
+  submittedAt    DateTime?
+  score          Decimal?      @db.Decimal(5, 2)
+  correctCount   Int?
+  wrongCount     Int?
+  status         AttemptStatus @default(IN_PROGRESS)
+
+  exam       DeThi        @relation(fields: [examId], references: [id])
+  cauTraLois CauTraLoi[]
+
+  @@map("LuotLamBai")
+}
+
+model CauTraLoi {
+  id              Int      @id @default(autoincrement())
+  attemptId       Int
+  examQuestionId  Int
+  selectedOptionId Int?
+  isCorrect       Boolean?
+  answeredAt      DateTime?
+
+  attempt      LuotLamBai   @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  examQuestion CauHoiDeThi  @relation(fields: [examQuestionId], references: [id])
+  selectedOption DapAn?     @relation(fields: [selectedOptionId], references: [id])
+
+  @@unique([attemptId, examQuestionId])
+  @@map("CauTraLoi")
+}

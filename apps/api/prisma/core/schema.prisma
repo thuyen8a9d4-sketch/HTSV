@@ -1,0 +1,236 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/core-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OtpPurpose {
+  REGISTER
+  PASSWORD_RESET
+}
+
+enum ConfessionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum LikeType {
+  LIKE
+}
+
+enum BaoCaoStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum KiemDuyetAction {
+  APPROVE
+  REJECT
+}
+
+model NguoiDung {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique @db.VarChar(50)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @db.VarChar(255)
+  fullName     String   @db.VarChar(150)
+  isActive     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  userRoles        NguoiDungVaiTro[]
+  giangVien        GiangVien?
+  sinhVien         SinhVien?
+  otpCodes         MaXacThuc[]
+  authoredPosts    BaiConfession[]   @relation("AuthorPosts")
+  approvedPosts    BaiConfession[]   @relation("ApprovedPosts")
+  binhLuans        BinhLuan[]
+  luotThiches      LuotThich[]
+  baoCaos          BaoCao[]
+  nhatKyKiemDuyets NhatKyKiemDuyet[]
+
+  @@map("NguoiDung")
+}
+
+model VaiTro {
+  id   Int    @id @default(autoincrement())
+  code String @unique @db.VarChar(30)
+  name String @db.VarChar(100)
+
+  userRoles       NguoiDungVaiTro[]
+  rolePermissions VaiTroQuyen[]
+
+  @@map("VaiTro")
+}
+
+model Quyen {
+  id          Int     @id @default(autoincrement())
+  code        String  @unique @db.VarChar(60)
+  name        String  @db.VarChar(150)
+  description String? @db.VarChar(300)
+
+  rolePermissions VaiTroQuyen[]
+
+  @@map("Quyen")
+}
+
+model NguoiDungVaiTro {
+  userId Int
+  roleId Int
+
+  user NguoiDung @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role VaiTro    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("NguoiDung_VaiTro")
+}
+
+model VaiTroQuyen {
+  roleId       Int
+  permissionId Int
+
+  role       VaiTro @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Quyen  @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("VaiTro_Quyen")
+}
+
+model GiangVien {
+  userId       Int     @id
+  lecturerCode String  @unique @db.VarChar(20)
+  department   String? @db.VarChar(100)
+  title        String? @db.VarChar(50)
+
+  user NguoiDung @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("GiangVien")
+}
+
+model SinhVien {
+  userId         Int     @id
+  studentCode    String  @unique @db.VarChar(20)
+  className      String? @db.VarChar(50)
+  major          String? @db.VarChar(100)
+  enrollmentYear Int?
+
+  user NguoiDung @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("SinhVien")
+}
+
+model MaXacThuc {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  code      String     @db.VarChar(6)
+  purpose   OtpPurpose @default(REGISTER)
+  expiresAt DateTime
+  isUsed    Boolean    @default(false)
+  createdAt DateTime   @default(now())
+
+  user NguoiDung @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose, isUsed])
+  @@map("MaXacThuc")
+}
+
+model BaiConfession {
+  id               Int              @id @default(autoincrement())
+  authorUserId     Int
+  categoryId       Int?
+  content          String
+  isAnonymous      Boolean          @default(false)
+  status           ConfessionStatus @default(PENDING)
+  rejectReason     String?          @db.VarChar(300)
+  createdAt        DateTime         @default(now())
+  approvedAt       DateTime?
+  approvedByUserId Int?
+
+  authorUser       NguoiDung          @relation("AuthorPosts", fields: [authorUserId], references: [id])
+  approvedBy       NguoiDung?         @relation("ApprovedPosts", fields: [approvedByUserId], references: [id])
+  category         DanhMucConfession? @relation(fields: [categoryId], references: [id])
+  binhLuans        BinhLuan[]
+  luotThiches      LuotThich[]
+  baoCaos          BaoCao[]
+  nhatKyKiemDuyets NhatKyKiemDuyet[]
+
+  @@index([status, createdAt])
+  @@map("BaiConfession")
+}
+
+model DanhMucConfession {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(100)
+  slug String @unique @db.VarChar(100)
+
+  baiConfessions BaiConfession[]
+
+  @@map("DanhMucConfession")
+}
+
+model BinhLuan {
+  id           Int      @id @default(autoincrement())
+  confessionId Int
+  authorUserId Int
+  content      String
+  isAnonymous  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  confession BaiConfession @relation(fields: [confessionId], references: [id], onDelete: Cascade)
+  authorUser NguoiDung     @relation(fields: [authorUserId], references: [id])
+  baoCaos    BaoCao[]
+
+  @@index([confessionId])
+  @@map("BinhLuan")
+}
+
+model LuotThich {
+  id           Int      @id @default(autoincrement())
+  confessionId Int
+  userId       Int
+  type         LikeType @default(LIKE)
+  createdAt    DateTime @default(now())
+
+  confession BaiConfession @relation(fields: [confessionId], references: [id], onDelete: Cascade)
+  user       NguoiDung     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([confessionId, userId, type])
+  @@map("LuotThich")
+}
+
+model BaoCao {
+  id             Int          @id @default(autoincrement())
+  confessionId   Int?
+  commentId      Int?
+  reporterUserId Int
+  reason         String       @db.VarChar(300)
+  status         BaoCaoStatus @default(OPEN)
+  createdAt      DateTime     @default(now())
+
+  confession   BaiConfession? @relation(fields: [confessionId], references: [id])
+  comment      BinhLuan?      @relation(fields: [commentId], references: [id])
+  reporterUser NguoiDung      @relation(fields: [reporterUserId], references: [id])
+
+  @@map("BaoCao")
+}
+
+model NhatKyKiemDuyet {
+  id              Int             @id @default(autoincrement())
+  confessionId    Int
+  moderatorUserId Int
+  action          KiemDuyetAction
+  oldStatus       String?         @db.VarChar(20)
+  newStatus       String?         @db.VarChar(20)
+  note            String?         @db.VarChar(300)
+  createdAt       DateTime        @default(now())
+
+  confession    BaiConfession @relation(fields: [confessionId], references: [id])
+  moderatorUser NguoiDung     @relation(fields: [moderatorUserId], references: [id])
+
+  @@map("NhatKyKiemDuyet")
+}
