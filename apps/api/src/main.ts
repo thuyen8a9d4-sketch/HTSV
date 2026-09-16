@@ -25,7 +25,7 @@ async function bootstrap() {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('HTSV API')
-    .setDescription('API cho hệ thống HTSV (forum + thư viện tài liệu + thi cử)')
+    .setDescription('API cho hệ thống HTSV (diễn đàn confession)')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

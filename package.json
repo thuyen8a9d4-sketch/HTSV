@@ -5,9 +5,7 @@
     "dev:api": "pnpm --filter api start:dev",
     "dev:web": "pnpm --filter web dev",
     "prisma:generate:core": "pnpm --filter api prisma:generate:core",
-    "prisma:generate:academic": "pnpm --filter api prisma:generate:academic",
     "prisma:migrate:core": "pnpm --filter api prisma:migrate:core",
-    "prisma:migrate:academic": "pnpm --filter api prisma:migrate:academic",
     "prisma:seed:core": "pnpm --filter api prisma:seed:core"
   }
 }

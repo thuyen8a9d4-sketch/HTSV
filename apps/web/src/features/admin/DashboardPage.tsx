@@ -7,8 +7,6 @@ interface Summary {
   commentCount: number;
   openReportCount: number;
   accountCount: number;
-  bookCount: number;
-  totalRevenue: number;
 }
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
@@ -35,11 +33,6 @@ export function DashboardPage() {
         <StatCard label="Bình luận" value={data?.commentCount ?? '-'} />
         <StatCard label="Báo cáo mở" value={data?.openReportCount ?? '-'} />
         <StatCard label="Tài khoản" value={data?.accountCount ?? '-'} />
-        <StatCard label="Tài liệu" value={data?.bookCount ?? '-'} />
-        <StatCard
-          label="Doanh thu"
-          value={data ? `${Number(data.totalRevenue).toLocaleString('vi-VN')}đ` : '-'}
-        />
       </div>
     </div>
   );

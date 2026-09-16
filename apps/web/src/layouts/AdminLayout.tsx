@@ -4,13 +4,9 @@ const NAV_ITEMS = [
   { to: '/admin', label: 'Tổng quan' },
   { to: '/admin/forum', label: 'Bài đăng' },
   { to: '/admin/reports', label: 'Báo cáo' },
-  { to: '/admin/library', label: 'Tài liệu' },
-  { to: '/admin/subjects', label: 'Môn học' },
-  { to: '/admin/revenue', label: 'Doanh thu' },
   { to: '/admin/users', label: 'Người dùng' },
   { to: '/admin/roles', label: 'Vai trò' },
   { to: '/admin/permissions', label: 'Quyền' },
-  { to: '/admin/settings', label: 'Cài đặt hệ thống' },
 ];
 
 export function AdminLayout() {

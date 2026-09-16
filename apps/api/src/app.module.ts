@@ -7,13 +7,10 @@ import { RolesGuard } from './common/guards/roles.guard';
 import { envValidationSchema } from './config/env.validation';
 import { AuthModule } from './modules/auth/auth.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-import { ExamModule } from './modules/exam/exam.module';
 import { ForumModule } from './modules/forum/forum.module';
-import { LibraryModule } from './modules/library/library.module';
 import { ModerationModule } from './modules/moderation/moderation.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { RolesModule } from './modules/roles/roles.module';
-import { SettingsModule } from './modules/settings/settings.module';
 import { UsersAdminModule } from './modules/users-admin/users-admin.module';
 import { UsersModule } from './modules/users/users.module';
 
@@ -34,9 +31,6 @@ import { UsersModule } from './modules/users/users.module';
     ModerationModule,
     ForumModule,
     DashboardModule,
-    LibraryModule,
-    ExamModule,
-    SettingsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

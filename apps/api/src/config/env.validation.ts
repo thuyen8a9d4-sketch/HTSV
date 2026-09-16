@@ -6,7 +6,6 @@ export const envValidationSchema = Joi.object({
   FRONTEND_ORIGIN: Joi.string().uri().required(),
 
   CORE_DATABASE_URL: Joi.string().uri({ scheme: ['postgresql', 'postgres'] }).required(),
-  ACADEMIC_DATABASE_URL: Joi.string().uri({ scheme: ['postgresql', 'postgres'] }).required(),
 
   JWT_ACCESS_SECRET: Joi.string().min(16).required(),
   JWT_ACCESS_EXPIRES_IN: Joi.string().default('15m'),

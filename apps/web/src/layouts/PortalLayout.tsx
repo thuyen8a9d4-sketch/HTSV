@@ -24,15 +24,6 @@ export function PortalLayout() {
             <Link to="/forum" className="hover:text-slate-900">
               Diễn đàn
             </Link>
-            <Link to="/library" className="hover:text-slate-900">
-              Thư viện
-            </Link>
-            <Link to="/flashcards" className="hover:text-slate-900">
-              Flashcard
-            </Link>
-            <Link to="/exam" className="hover:text-slate-900">
-              Thi cử
-            </Link>
             {user?.roles.includes('ADMIN') && (
               <Link to="/admin" className="hover:text-slate-900">
                 Quản trị

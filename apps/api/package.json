@@ -19,10 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate:core": "prisma generate --config=prisma.core.config.ts",
-    "prisma:generate:academic": "prisma generate --config=prisma.academic.config.ts",
-    "prisma:generate": "pnpm prisma:generate:core && pnpm prisma:generate:academic",
+    "prisma:generate": "pnpm prisma:generate:core",
     "prisma:migrate:core": "prisma migrate dev --config=prisma.core.config.ts",
-    "prisma:migrate:academic": "prisma migrate dev --config=prisma.academic.config.ts",
     "prisma:seed:core": "ts-node -r tsconfig-paths/register prisma/core/seed.ts"
   },
   "dependencies": {
