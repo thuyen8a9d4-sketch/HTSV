@@ -7,6 +7,7 @@ import { OptionalJwtAuthGuard } from '../../common/guards/optional-jwt-auth.guar
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { CreateReportDto } from './dto/create-report.dto';
+import { ReactPostDto } from './dto/react-post.dto';
 import { ForumService } from './forum.service';
 
 @Controller('forum')
@@ -49,9 +50,19 @@ export class ForumController {
   }
 
   @Roles('STUDENT', 'LECTURER', 'ADMIN')
-  @Post('posts/:id/like')
-  toggleLike(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: AuthenticatedUser) {
-    return this.forumService.toggleLike(id, user.userId);
+  @Post('posts/:id/react')
+  react(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ReactPostDto,
+  ) {
+    return this.forumService.react(id, user.userId, dto.type);
+  }
+
+  @Public()
+  @Post('posts/:id/share')
+  share(@Param('id', ParseIntPipe) id: number) {
+    return this.forumService.share(id);
   }
 
   @Roles('STUDENT', 'LECTURER', 'ADMIN')

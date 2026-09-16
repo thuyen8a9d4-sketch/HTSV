@@ -20,6 +20,10 @@ enum ConfessionStatus {
 
 enum LikeType {
   LIKE
+  LOVE
+  HAHA
+  SAD
+  ANGRY
 }
 
 enum BaoCaoStatus {
@@ -147,6 +151,7 @@ model BaiConfession {
   isAnonymous      Boolean          @default(false)
   status           ConfessionStatus @default(PENDING)
   rejectReason     String?          @db.VarChar(300)
+  shareCount       Int              @default(0)
   createdAt        DateTime         @default(now())
   approvedAt       DateTime?
   approvedByUserId Int?
@@ -199,7 +204,7 @@ model LuotThich {
   confession BaiConfession @relation(fields: [confessionId], references: [id], onDelete: Cascade)
   user       NguoiDung     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([confessionId, userId, type])
+  @@unique([confessionId, userId])
   @@map("LuotThich")
 }
 

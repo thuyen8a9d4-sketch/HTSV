@@ -10,6 +10,7 @@ interface Post {
   createdAt: string;
   authorUser: { fullName: string } | null;
   category: { name: string } | null;
+  shareCount: number;
   _count: { binhLuans: number; luotThiches: number };
 }
 
@@ -46,7 +47,7 @@ export function ForumFeedPage() {
             </div>
             <p className="line-clamp-3 text-slate-800">{post.content}</p>
             <div className="mt-2 text-xs text-slate-500">
-              {post._count.luotThiches} thích · {post._count.binhLuans} bình luận
+              👍 {post._count.luotThiches} · 💬 {post._count.binhLuans} · 🔗 {post.shareCount}
             </div>
           </Link>
         ))}

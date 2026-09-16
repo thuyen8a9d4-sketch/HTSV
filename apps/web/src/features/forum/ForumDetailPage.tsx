@@ -4,6 +4,14 @@ import { useParams } from 'react-router-dom';
 import { apiClient } from '../../lib/api-client';
 import { useAuthStore } from '../../lib/auth-store';
 
+const REACTIONS = [
+  { type: 'LIKE', emoji: '👍', label: 'Thích' },
+  { type: 'LOVE', emoji: '❤️', label: 'Yêu thích' },
+  { type: 'HAHA', emoji: '😆', label: 'Haha' },
+  { type: 'SAD', emoji: '😢', label: 'Buồn' },
+  { type: 'ANGRY', emoji: '😡', label: 'Phẫn nộ' },
+] as const;
+
 interface Comment {
   id: number;
   content: string;
@@ -18,7 +26,9 @@ interface PostDetail {
   isAnonymous: boolean;
   authorUser: { fullName: string } | null;
   binhLuans: Comment[];
-  _count: { luotThiches: number };
+  reactions: Record<string, number>;
+  myReaction: string | null;
+  shareCount: number;
 }
 
 export function ForumDetailPage() {
@@ -26,14 +36,20 @@ export function ForumDetailPage() {
   const user = useAuthStore((s) => s.user);
   const queryClient = useQueryClient();
   const [comment, setComment] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const { data: post } = useQuery<PostDetail>({
     queryKey: ['forum-post', id],
     queryFn: async () => (await apiClient.get(`/forum/posts/${id}`)).data,
   });
 
-  const like = useMutation({
-    mutationFn: () => apiClient.post(`/forum/posts/${id}/like`),
+  const react = useMutation({
+    mutationFn: (type: string) => apiClient.post(`/forum/posts/${id}/react`, { type }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['forum-post', id] }),
+  });
+
+  const share = useMutation({
+    mutationFn: () => apiClient.post(`/forum/posts/${id}/share`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['forum-post', id] }),
   });
 
@@ -45,7 +61,20 @@ export function ForumDetailPage() {
     },
   });
 
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard unavailable, still record the share
+    }
+    share.mutate();
+  };
+
   if (!post) return null;
+
+  const totalReactions = Object.values(post.reactions).reduce((a, b) => a + b, 0);
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -54,11 +83,36 @@ export function ForumDetailPage() {
           {post.isAnonymous ? 'Ẩn danh' : post.authorUser?.fullName}
         </div>
         <p className="mb-3 whitespace-pre-wrap text-slate-800">{post.content}</p>
-        {user && (
-          <button onClick={() => like.mutate()} className="text-sm text-slate-600 hover:underline">
-            👍 Thích ({post._count.luotThiches})
-          </button>
+
+        {totalReactions > 0 && (
+          <div className="mb-2 text-xs text-slate-500">
+            {REACTIONS.filter((r) => post.reactions[r.type]).map(
+              (r) => `${r.emoji} ${post.reactions[r.type]}`,
+            ).join('  ')}
+          </div>
         )}
+
+        <div className="flex flex-wrap items-center gap-1 border-t border-slate-100 pt-3">
+          {user &&
+            REACTIONS.map((r) => (
+              <button
+                key={r.type}
+                onClick={() => react.mutate(r.type)}
+                title={r.label}
+                className={`rounded-lg px-2 py-1 text-sm hover:bg-slate-100 ${
+                  post.myReaction === r.type ? 'bg-slate-200' : ''
+                }`}
+              >
+                {r.emoji} {r.label}
+              </button>
+            ))}
+          <button
+            onClick={handleShare}
+            className="ml-auto rounded-lg px-2 py-1 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            🔗 {copied ? 'Đã copy link!' : 'Chia sẻ'} ({post.shareCount})
+          </button>
+        </div>
       </div>
 
       <div className="mt-4">

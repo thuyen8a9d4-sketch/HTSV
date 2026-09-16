@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
-import { ConfessionStatus, KiemDuyetAction } from '../../generated/core-client';
+import { ConfessionStatus, KiemDuyetAction, LikeType, Prisma } from '../../generated/core-client';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -13,6 +13,19 @@ function sanitizeAuthor(post: any) {
   }
   return post;
 }
+
+function summarizeReactions(post: any, viewerId?: number) {
+  const reactions: Record<string, number> = {};
+  let myReaction: string | null = null;
+  for (const r of post.luotThiches as { type: string; userId: number }[]) {
+    reactions[r.type] = (reactions[r.type] ?? 0) + 1;
+    if (viewerId != null && r.userId === viewerId) myReaction = r.type;
+  }
+  const { luotThiches, ...rest } = post;
+  return { ...rest, reactions, myReaction };
+}
+
+const REACTION_SELECT = { select: { type: true, userId: true } } as const;
 
 @Injectable()
 export class ForumService {
@@ -41,7 +54,7 @@ export class ForumService {
           include: { authorUser: { select: { id: true, username: true, fullName: true } } },
           orderBy: { createdAt: 'asc' },
         },
-        _count: { select: { luotThiches: true } },
+        luotThiches: REACTION_SELECT,
       },
     });
     if (!post) throw new NotFoundException('Không tìm thấy bài đăng');
@@ -50,7 +63,7 @@ export class ForumService {
     if (post.status !== ConfessionStatus.APPROVED && !isOwner && !isAdmin) {
       throw new NotFoundException('Không tìm thấy bài đăng');
     }
-    return sanitizeAuthor(post);
+    return summarizeReactions(sanitizeAuthor(post), viewer?.userId);
   }
 
   createPost(authorUserId: number, dto: CreatePostDto) {
@@ -80,16 +93,77 @@ export class ForumService {
     });
   }
 
-  async toggleLike(confessionId: number, userId: number) {
-    const existing = await this.prisma.luotThich.findFirst({
-      where: { confessionId, userId, type: 'LIKE' },
-    });
-    if (existing) {
-      await this.prisma.luotThich.delete({ where: { id: existing.id } });
-      return { liked: false };
+  async react(confessionId: number, userId: number, type: LikeType) {
+    const post = await this.prisma.baiConfession.findUnique({ where: { id: confessionId } });
+    if (!post || post.status !== ConfessionStatus.APPROVED) {
+      throw new NotFoundException('Không tìm thấy bài đăng');
     }
-    await this.prisma.luotThich.create({ data: { confessionId, userId, type: 'LIKE' } });
-    return { liked: true };
+
+    await this.applyReaction(confessionId, userId, type);
+
+    const reactions = await this.prisma.luotThich.groupBy({
+      by: ['type'],
+      where: { confessionId },
+      _count: true,
+    });
+    const myReaction = await this.prisma.luotThich.findUnique({
+      where: { confessionId_userId: { confessionId, userId } },
+    });
+    return {
+      reactions: Object.fromEntries(reactions.map((r) => [r.type, r._count])),
+      myReaction: myReaction?.type ?? null,
+    };
+  }
+
+  /**
+   * Read-then-write toggle (create/switch/remove) done as one serializable
+   * transaction and retried on conflict, so concurrent clicks from the same
+   * user can never surface as an unhandled unique-constraint or
+   * record-not-found error regardless of which branch races.
+   */
+  private async applyReaction(
+    confessionId: number,
+    userId: number,
+    type: LikeType,
+    attempt = 0,
+  ): Promise<void> {
+    try {
+      await this.prisma.$transaction(
+        async (tx) => {
+          const existing = await tx.luotThich.findUnique({
+            where: { confessionId_userId: { confessionId, userId } },
+          });
+          if (!existing) {
+            await tx.luotThich.create({ data: { confessionId, userId, type } });
+          } else if (existing.type === type) {
+            await tx.luotThich.delete({ where: { id: existing.id } });
+          } else {
+            await tx.luotThich.update({ where: { id: existing.id }, data: { type } });
+          }
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      );
+    } catch (e) {
+      const isConflict =
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        ['P2002', 'P2025', 'P2034'].includes(e.code);
+      if (isConflict && attempt < 3) {
+        return this.applyReaction(confessionId, userId, type, attempt + 1);
+      }
+      throw e;
+    }
+  }
+
+  async share(confessionId: number) {
+    const post = await this.prisma.baiConfession.findUnique({ where: { id: confessionId } });
+    if (!post || post.status !== ConfessionStatus.APPROVED) {
+      throw new NotFoundException('Không tìm thấy bài đăng');
+    }
+    const updated = await this.prisma.baiConfession.update({
+      where: { id: confessionId },
+      data: { shareCount: { increment: 1 } },
+    });
+    return { shareCount: updated.shareCount };
   }
 
   createReport(reporterUserId: number, dto: CreateReportDto) {
