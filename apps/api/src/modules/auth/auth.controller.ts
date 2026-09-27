@@ -1,7 +1,8 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
 import { Throttle } from '@nestjs/throttler';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -13,6 +14,7 @@ import { ResendOtpDto } from './dto/resend-otp.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { OAuthProfile } from './oauth-profile.interface';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
 const REFRESH_COOKIE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
@@ -76,6 +78,34 @@ export class AuthController {
   }
 
   @Public()
+  @UseGuards(AuthGuard('google'))
+  @Get('google')
+  googleLogin() {
+    // Guard redirects to Google's consent screen; body never runs.
+  }
+
+  @Public()
+  @UseGuards(AuthGuard('google'))
+  @Get('google/callback')
+  async googleCallback(@Req() req: Request, @Res() res: Response) {
+    await this.completeOAuthLogin(req.user as OAuthProfile, res);
+  }
+
+  @Public()
+  @UseGuards(AuthGuard('facebook'))
+  @Get('facebook')
+  facebookLogin() {
+    // Guard redirects to Facebook's consent screen; body never runs.
+  }
+
+  @Public()
+  @UseGuards(AuthGuard('facebook'))
+  @Get('facebook/callback')
+  async facebookCallback(@Req() req: Request, @Res() res: Response) {
+    await this.completeOAuthLogin(req.user as OAuthProfile, res);
+  }
+
+  @Public()
   @Post('forgot-password')
   @Throttle({ default: { limit: 3, ttl: 60_000 } })
   forgotPassword(@Body() dto: ForgotPasswordDto) {
@@ -87,6 +117,15 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
+  }
+
+  private async completeOAuthLogin(profile: OAuthProfile, res: Response) {
+    const result = await this.authService.loginWithOAuth(profile);
+    this.setRefreshCookie(res, result.refreshToken);
+    // The refresh cookie is now set, so the frontend's existing bootstrap
+    // (POST /auth/refresh on load) picks up the session — no need to pass
+    // the access token through the URL.
+    res.redirect(this.config.getOrThrow<string>('FRONTEND_ORIGIN'));
   }
 
   private setRefreshCookie(res: Response, refreshToken: string) {

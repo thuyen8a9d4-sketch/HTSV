@@ -21,4 +21,13 @@ export const envValidationSchema = Joi.object({
   ADMIN_SEED_USERNAME: Joi.string().default('admin'),
   ADMIN_SEED_EMAIL: Joi.string().default('admin@htsv.local'),
   ADMIN_SEED_PASSWORD: Joi.string().default('Admin@123'),
+
+  // Optional: OAuth login buttons stay inert (redirect fails at Google/Facebook,
+  // not at our server) until these are filled in with real app credentials.
+  GOOGLE_CLIENT_ID: Joi.string().allow('').default(''),
+  GOOGLE_CLIENT_SECRET: Joi.string().allow('').default(''),
+  GOOGLE_CALLBACK_URL: Joi.string().default('http://localhost:3000/api/auth/google/callback'),
+  FACEBOOK_APP_ID: Joi.string().allow('').default(''),
+  FACEBOOK_APP_SECRET: Joi.string().allow('').default(''),
+  FACEBOOK_CALLBACK_URL: Joi.string().default('http://localhost:3000/api/auth/facebook/callback'),
 });

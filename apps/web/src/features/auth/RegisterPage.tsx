@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { FormField } from '../../components/FormField';
 import { apiClient } from '../../lib/api-client';
+import { OAuthButtons } from './OAuthButtons';
 import { registerSchema } from './schemas';
 import type { RegisterForm } from './schemas';
 
@@ -57,6 +58,7 @@ export function RegisterPage() {
       >
         Đăng ký
       </button>
+      <OAuthButtons />
       <div className="mt-4 text-center text-sm text-slate-600">
         Đã có tài khoản?{' '}
         <Link to="/login" className="hover:underline">

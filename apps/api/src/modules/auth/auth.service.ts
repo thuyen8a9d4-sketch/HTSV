@@ -20,6 +20,7 @@ import { ResendOtpDto } from './dto/resend-otp.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { JwtPayload } from './jwt-payload.interface';
+import { OAuthProfile } from './oauth-profile.interface';
 
 const OTP_TTL_MS = 10 * 60 * 1000;
 
@@ -86,7 +87,7 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     const user = await this.usersService.findByUsername(dto.username);
-    if (!user) {
+    if (!user || !user.passwordHash) {
       throw new UnauthorizedException('Sai tài khoản hoặc mật khẩu');
     }
     const passwordValid = await argon2.verify(user.passwordHash, dto.password);
@@ -98,6 +99,55 @@ export class AuthService {
     }
     const roles = user.userRoles.map((ur) => ur.role.code);
     return this.issueTokens(user.id, user.username, user.email, user.fullName, roles);
+  }
+
+  /**
+   * Find-or-create for a verified Google/Facebook login. The provider
+   * already confirmed the email, so unlike password registration this
+   * skips OTP and activates the account immediately. An existing
+   * password-based account with the same email gets the provider id
+   * linked onto it rather than creating a duplicate user.
+   */
+  async loginWithOAuth(profile: OAuthProfile) {
+    const idField = profile.provider === 'google' ? 'googleId' : 'facebookId';
+    let user = await this.prisma.nguoiDung.findFirst({ where: { [idField]: profile.providerId } });
+
+    if (!user) {
+      const byEmail = await this.usersService.findByEmail(profile.email);
+      user = byEmail
+        ? await this.prisma.nguoiDung.update({
+            where: { id: byEmail.id },
+            data: { [idField]: profile.providerId, isActive: true },
+          })
+        : await this.createOAuthUser(profile, idField);
+    }
+
+    const roles = await this.usersService.getRoleCodes(user.id);
+    return this.issueTokens(user.id, user.username, user.email, user.fullName, roles);
+  }
+
+  private async createOAuthUser(profile: OAuthProfile, idField: 'googleId' | 'facebookId') {
+    const role = await this.prisma.vaiTro.findUniqueOrThrow({ where: { code: 'STUDENT' } });
+    const username = await this.generateUsernameFromEmail(profile.email);
+    return this.prisma.nguoiDung.create({
+      data: {
+        username,
+        email: profile.email,
+        fullName: profile.fullName,
+        isActive: true,
+        [idField]: profile.providerId,
+        userRoles: { create: { roleId: role.id } },
+      },
+    });
+  }
+
+  private async generateUsernameFromEmail(email: string): Promise<string> {
+    const base = email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '').slice(0, 40) || 'user';
+    let candidate = base;
+    for (let suffix = 1; await this.usersService.findByUsername(candidate); suffix++) {
+      candidate = `${base}${suffix}`;
+    }
+    return candidate;
   }
 
   async refresh(userId: number) {

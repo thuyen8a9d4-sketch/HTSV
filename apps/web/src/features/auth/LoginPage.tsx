@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FormField } from '../../components/FormField';
 import { apiClient } from '../../lib/api-client';
 import { useAuthStore } from '../../lib/auth-store';
+import { OAuthButtons } from './OAuthButtons';
 import { loginSchema } from './schemas';
 import type { LoginForm } from './schemas';
 
@@ -47,6 +48,7 @@ export function LoginPage() {
       >
         Đăng nhập
       </button>
+      <OAuthButtons />
       <div className="mt-4 flex justify-between text-sm text-slate-600">
         <Link to="/register" className="hover:underline">
           Đăng ký

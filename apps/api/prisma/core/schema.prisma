@@ -41,9 +41,11 @@ model NguoiDung {
   id           Int      @id @default(autoincrement())
   username     String   @unique @db.VarChar(50)
   email        String   @unique @db.VarChar(255)
-  passwordHash String   @db.VarChar(255)
+  passwordHash String?  @db.VarChar(255)
   fullName     String   @db.VarChar(150)
   isActive     Boolean  @default(false)
+  googleId     String?  @unique @db.VarChar(255)
+  facebookId   String?  @unique @db.VarChar(255)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
