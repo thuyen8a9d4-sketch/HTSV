@@ -43,14 +43,22 @@ export function ForumDetailPage() {
     queryFn: async () => (await apiClient.get(`/forum/posts/${id}`)).data,
   });
 
+  // react/share responses already carry the exact fields that changed, so
+  // merge them into the cached post directly instead of re-fetching the
+  // whole post (and its comment list) over the network.
+  const mergeIntoPost = (patch: Partial<PostDetail>) =>
+    queryClient.setQueryData<PostDetail>(['forum-post', id], (old) =>
+      old ? { ...old, ...patch } : old,
+    );
+
   const react = useMutation({
     mutationFn: (type: string) => apiClient.post(`/forum/posts/${id}/react`, { type }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['forum-post', id] }),
+    onSuccess: (res) => mergeIntoPost(res.data),
   });
 
   const share = useMutation({
     mutationFn: () => apiClient.post(`/forum/posts/${id}/share`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['forum-post', id] }),
+    onSuccess: (res) => mergeIntoPost(res.data),
   });
 
   const addComment = useMutation({

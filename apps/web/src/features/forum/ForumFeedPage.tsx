@@ -47,7 +47,7 @@ export function ForumFeedPage() {
             </div>
             <p className="line-clamp-3 text-slate-800">{post.content}</p>
             <div className="mt-2 text-xs text-slate-500">
-              👍 {post._count.luotThiches} · 💬 {post._count.binhLuans} · 🔗 {post.shareCount}
+              ✨ {post._count.luotThiches} · 💬 {post._count.binhLuans} · 🔗 {post.shareCount}
             </div>
           </Link>
         ))}

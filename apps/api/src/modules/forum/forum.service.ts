@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
-import { ConfessionStatus, KiemDuyetAction, LikeType, Prisma } from '../../generated/core-client';
+import { ConfessionStatus, KiemDuyetAction, LikeType } from '../../generated/core-client';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -13,19 +13,6 @@ function sanitizeAuthor(post: any) {
   }
   return post;
 }
-
-function summarizeReactions(post: any, viewerId?: number) {
-  const reactions: Record<string, number> = {};
-  let myReaction: string | null = null;
-  for (const r of post.luotThiches as { type: string; userId: number }[]) {
-    reactions[r.type] = (reactions[r.type] ?? 0) + 1;
-    if (viewerId != null && r.userId === viewerId) myReaction = r.type;
-  }
-  const { luotThiches, ...rest } = post;
-  return { ...rest, reactions, myReaction };
-}
-
-const REACTION_SELECT = { select: { type: true, userId: true } } as const;
 
 @Injectable()
 export class ForumService {
@@ -54,7 +41,6 @@ export class ForumService {
           include: { authorUser: { select: { id: true, username: true, fullName: true } } },
           orderBy: { createdAt: 'asc' },
         },
-        luotThiches: REACTION_SELECT,
       },
     });
     if (!post) throw new NotFoundException('Không tìm thấy bài đăng');
@@ -63,7 +49,11 @@ export class ForumService {
     if (post.status !== ConfessionStatus.APPROVED && !isOwner && !isAdmin) {
       throw new NotFoundException('Không tìm thấy bài đăng');
     }
-    return summarizeReactions(sanitizeAuthor(post), viewer?.userId);
+    const [reactions, myReaction] = await Promise.all([
+      this.getReactionCounts(id),
+      viewer ? this.getMyReaction(id, viewer.userId) : Promise.resolve(null),
+    ]);
+    return { ...sanitizeAuthor(post), reactions, myReaction };
   }
 
   createPost(authorUserId: number, dto: CreatePostDto) {
@@ -79,10 +69,7 @@ export class ForumService {
   }
 
   async createComment(confessionId: number, authorUserId: number, dto: CreateCommentDto) {
-    const post = await this.prisma.baiConfession.findUnique({ where: { id: confessionId } });
-    if (!post || post.status !== ConfessionStatus.APPROVED) {
-      throw new NotFoundException('Không tìm thấy bài đăng');
-    }
+    await this.getApprovedPostOrThrow(confessionId);
     return this.prisma.binhLuan.create({
       data: {
         confessionId,
@@ -94,76 +81,69 @@ export class ForumService {
   }
 
   async react(confessionId: number, userId: number, type: LikeType) {
-    const post = await this.prisma.baiConfession.findUnique({ where: { id: confessionId } });
-    if (!post || post.status !== ConfessionStatus.APPROVED) {
-      throw new NotFoundException('Không tìm thấy bài đăng');
+    await this.getApprovedPostOrThrow(confessionId);
+
+    const existing = await this.getMyReaction(confessionId, userId);
+    let myReaction: LikeType | null;
+    if (existing === type) {
+      // Same reaction clicked again: toggle off. deleteMany (rather than
+      // delete-by-id) is a no-op instead of throwing if a concurrent click
+      // already removed or changed it.
+      await this.prisma.luotThich.deleteMany({ where: { confessionId, userId, type } });
+      myReaction = null;
+    } else {
+      // Create-or-switch. upsert lets Postgres's own unique index
+      // (confessionId, userId) resolve a concurrent duplicate click
+      // atomically, instead of a hand-rolled read-then-write race.
+      await this.prisma.luotThich.upsert({
+        where: { confessionId_userId: { confessionId, userId } },
+        create: { confessionId, userId, type },
+        update: { type },
+      });
+      myReaction = type;
     }
 
-    await this.applyReaction(confessionId, userId, type);
+    const reactions = await this.getReactionCounts(confessionId);
+    return { reactions, myReaction };
+  }
 
-    const reactions = await this.prisma.luotThich.groupBy({
+  async share(confessionId: number) {
+    // Atomically guard on status and bump the counter in one round trip,
+    // so a post can't be un-approved between the check and the increment.
+    const { count } = await this.prisma.baiConfession.updateMany({
+      where: { id: confessionId, status: ConfessionStatus.APPROVED },
+      data: { shareCount: { increment: 1 } },
+    });
+    if (count === 0) throw new NotFoundException('Không tìm thấy bài đăng');
+    const post = await this.prisma.baiConfession.findUniqueOrThrow({
+      where: { id: confessionId },
+      select: { shareCount: true },
+    });
+    return { shareCount: post.shareCount };
+  }
+
+  private async getReactionCounts(confessionId: number): Promise<Record<string, number>> {
+    const groups = await this.prisma.luotThich.groupBy({
       by: ['type'],
       where: { confessionId },
       _count: true,
     });
-    const myReaction = await this.prisma.luotThich.findUnique({
+    return Object.fromEntries(groups.map((g) => [g.type, g._count]));
+  }
+
+  private async getMyReaction(confessionId: number, userId: number): Promise<LikeType | null> {
+    const reaction = await this.prisma.luotThich.findUnique({
       where: { confessionId_userId: { confessionId, userId } },
     });
-    return {
-      reactions: Object.fromEntries(reactions.map((r) => [r.type, r._count])),
-      myReaction: myReaction?.type ?? null,
-    };
+    return reaction?.type ?? null;
   }
 
-  /**
-   * Read-then-write toggle (create/switch/remove) done as one serializable
-   * transaction and retried on conflict, so concurrent clicks from the same
-   * user can never surface as an unhandled unique-constraint or
-   * record-not-found error regardless of which branch races.
-   */
-  private async applyReaction(
-    confessionId: number,
-    userId: number,
-    type: LikeType,
-    attempt = 0,
-  ): Promise<void> {
-    try {
-      await this.prisma.$transaction(
-        async (tx) => {
-          const existing = await tx.luotThich.findUnique({
-            where: { confessionId_userId: { confessionId, userId } },
-          });
-          if (!existing) {
-            await tx.luotThich.create({ data: { confessionId, userId, type } });
-          } else if (existing.type === type) {
-            await tx.luotThich.delete({ where: { id: existing.id } });
-          } else {
-            await tx.luotThich.update({ where: { id: existing.id }, data: { type } });
-          }
-        },
-        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
-      );
-    } catch (e) {
-      const isConflict =
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        ['P2002', 'P2025', 'P2034'].includes(e.code);
-      if (isConflict && attempt < 3) {
-        return this.applyReaction(confessionId, userId, type, attempt + 1);
-      }
-      throw e;
-    }
-  }
-
-  async share(confessionId: number) {
-    const post = await this.prisma.baiConfession.findUnique({ where: { id: confessionId } });
+  private async getApprovedPostOrThrow(id: number) {
+    const post = await this.prisma.baiConfession.findUnique({ where: { id } });
     if (!post || post.status !== ConfessionStatus.APPROVED) {
       throw new NotFoundException('Không tìm thấy bài đăng');
     }
-    const updated = await this.prisma.baiConfession.update({
-      where: { id: confessionId },
-      data: { shareCount: { increment: 1 } },
-    });
-    return { shareCount: updated.shareCount };
+    return post;
   }
 
   createReport(reporterUserId: number, dto: CreateReportDto) {
