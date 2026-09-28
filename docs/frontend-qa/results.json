@@ -1,0 +1,388 @@
+{
+  "fixtureOnly": true,
+  "backendContacted": false,
+  "browserErrors": [],
+  "checks": [
+    {
+      "width": 360,
+      "route": "/forum",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/forum/1",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/forum/new",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/login",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/register",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/verify-otp?email=zuzong@example.test",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/forgot-password",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/reset-password?email=zuzong@example.test",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/admin",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/admin/forum",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/admin/reports",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/admin/users",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/admin/roles",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "route": "/admin/permissions",
+      "viewport": 360,
+      "document": 360,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/forum",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/forum/1",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/forum/new",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/login",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/register",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/verify-otp?email=zuzong@example.test",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/forgot-password",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/reset-password?email=zuzong@example.test",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/admin",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/admin/forum",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/admin/reports",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/admin/users",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/admin/roles",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "route": "/admin/permissions",
+      "viewport": 768,
+      "document": 768,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/forum",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/forum/1",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/forum/new",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/login",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/register",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/verify-otp?email=zuzong@example.test",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/forgot-password",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/reset-password?email=zuzong@example.test",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/admin",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/admin/forum",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/admin/reports",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/admin/users",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/admin/roles",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "route": "/admin/permissions",
+      "viewport": 1280,
+      "document": 1280,
+      "missingNames": [],
+      "pass": true
+    },
+    {
+      "check": "Admin drawer, focus trap, Escape, focus restoration, navigation",
+      "pass": true
+    },
+    {
+      "check": "Portal mobile menu",
+      "pass": true
+    },
+    {
+      "check": "Password toggle, labeled form and existing login payload",
+      "pass": true
+    },
+    {
+      "check": "Anonymous post, reaction selection, clipboard and comment payloads",
+      "pass": true
+    },
+    {
+      "check": "Empty, error/retry and loading skeleton states",
+      "pass": true
+    },
+    {
+      "check": "Forgot-password error feedback",
+      "pass": true
+    },
+    {
+      "check": "Register, OTP, resend, forgot/reset-password existing payloads and redirects",
+      "pass": true
+    },
+    {
+      "check": "Role/permission creation, user role/active toggles, moderation and report endpoints",
+      "pass": true
+    },
+    {
+      "check": "Logout and preserved protected-route redirect",
+      "pass": true
+    },
+    {
+      "check": "Reduced-motion CSS",
+      "duration": "1e-05s",
+      "pass": true
+    },
+    {
+      "check": "640px reflow (1280px at 200% equivalent)",
+      "pass": true
+    }
+  ]
+}

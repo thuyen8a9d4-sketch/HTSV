@@ -1,0 +1,87 @@
+{
+  "date": "2026-09-27T13:04:06.662Z",
+  "checks": [
+    {
+      "width": 360,
+      "document": 360,
+      "visible": false,
+      "gap": -323,
+      "transform": "none",
+      "blur": "blur(10px) saturate(1.5)"
+    },
+    {
+      "width": 768,
+      "document": 768,
+      "visible": false,
+      "gap": -703,
+      "transform": "none",
+      "blur": "blur(10px) saturate(1.5)"
+    },
+    {
+      "width": 1024,
+      "document": 1024,
+      "visible": true,
+      "gap": 58,
+      "transform": "matrix(0.85, 0, 0, 0.85, 0, 0)",
+      "blur": "blur(10px) saturate(1.5)"
+    },
+    {
+      "width": 1280,
+      "document": 1280,
+      "visible": true,
+      "gap": 58,
+      "transform": "matrix(0.85, 0, 0, 0.85, 0, 0)",
+      "blur": "blur(10px) saturate(1.5)"
+    },
+    {
+      "width": 1366,
+      "document": 1366,
+      "visible": true,
+      "gap": 58,
+      "transform": "matrix(0.85, 0, 0, 0.85, 0, 0)",
+      "blur": "blur(10px) saturate(1.5)"
+    },
+    {
+      "width": 1439,
+      "document": 1439,
+      "visible": true,
+      "gap": 58,
+      "transform": "matrix(0.85, 0, 0, 0.85, 0, 0)",
+      "blur": "blur(10px) saturate(1.5)"
+    },
+    {
+      "width": 1440,
+      "document": 1440,
+      "visible": true,
+      "gap": 144,
+      "transform": "none",
+      "blur": "blur(10px) saturate(1.5)"
+    },
+    {
+      "snap": 138
+    },
+    {
+      "focus": {
+        "focused": true,
+        "outline": "oklch(0.554 0.046 257.417) solid 2px",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "width": 46,
+        "height": 44
+      },
+      "trapAndRestore": true
+    },
+    {
+      "sharedDrawers": true
+    },
+    {
+      "reduced": {
+        "blur": "none",
+        "background": "rgb(255, 255, 255)"
+      }
+    }
+  ],
+  "errors": [],
+  "api": "Browser fixtures only"
+}

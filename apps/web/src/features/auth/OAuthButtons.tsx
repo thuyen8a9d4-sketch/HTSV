@@ -1,14 +1,13 @@
 export function OAuthButtons() {
   return (
-    <div className="mb-4 space-y-2">
-      <div className="relative py-2 text-center text-xs text-slate-400">
-        <span className="relative bg-white px-2">hoặc</span>
-        <div className="absolute inset-x-0 top-1/2 -z-10 border-t border-slate-200" />
+    <div className="mt-6 mb-4 space-y-3">
+      <div className="flex items-center gap-3 py-1 text-center text-xs text-slate-600">
+        <span className="h-px flex-1 bg-slate-200" /><span>hoặc tiếp tục với</span><span className="h-px flex-1 bg-slate-200" />
       </div>
 
       <a
         href="/api/auth/google"
-        className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        className="btn-liquid-glass focus-ring w-full"
       >
         <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
           <path
@@ -33,7 +32,7 @@ export function OAuthButtons() {
 
       <a
         href="/api/auth/facebook"
-        className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        className="btn-liquid-glass focus-ring w-full"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
           <path

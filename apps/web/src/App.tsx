@@ -1,5 +1,7 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { LoadingSkeleton } from './components/LoadingSkeleton';
 import { AdminLayout } from './layouts/AdminLayout';
 import { AuthLayout } from './layouts/AuthLayout';
 import { PortalLayout } from './layouts/PortalLayout';
@@ -19,11 +21,14 @@ import { ForumDetailPage } from './features/forum/ForumDetailPage';
 import { ForumFeedPage } from './features/forum/ForumFeedPage';
 import { useAuthBootstrap } from './lib/use-current-user';
 
+const StudentHomePage = lazy(() => import('./features/student/StudentHomePage').then((module) => ({ default: module.StudentHomePage })));
+
 function App() {
   const ready = useAuthBootstrap();
-  if (!ready) return null;
+  if (!ready) return <main className="ambient-canvas min-h-screen px-4 py-12"><div className="mx-auto max-w-2xl"><LoadingSkeleton count={2} /></div></main>;
 
   return (
+    <Suspense fallback={<main className="ambient-canvas min-h-screen px-4 py-12"><div className="mx-auto max-w-2xl"><LoadingSkeleton count={2} /></div></main>}>
     <Routes>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
@@ -34,7 +39,15 @@ function App() {
       </Route>
 
       <Route element={<PortalLayout />}>
-        <Route path="/" element={<Navigate to="/forum" replace />} />
+        <Route path="/" element={<StudentHomePage />} />
+        <Route path="/schedule" element={<StudentHomePage view="schedule" />} />
+        <Route path="/services" element={<StudentHomePage view="services" />} />
+        <Route path="/requests" element={<StudentHomePage view="requests" />} />
+        <Route path="/faq" element={<StudentHomePage view="faq" />} />
+        <Route path="/support" element={<StudentHomePage view="support" />} />
+        <Route path="/tuition" element={<StudentHomePage view="tuition" />} />
+        <Route path="/dorm" element={<StudentHomePage view="dorm" />} />
+        <Route path="/announcements" element={<StudentHomePage view="announcements" />} />
         <Route path="/forum" element={<ForumFeedPage />} />
         <Route path="/forum/:id" element={<ForumDetailPage />} />
 
@@ -54,6 +67,7 @@ function App() {
         </Route>
       </Route>
     </Routes>
+    </Suspense>
   );
 }
 

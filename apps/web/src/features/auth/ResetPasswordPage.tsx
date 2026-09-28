@@ -2,6 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { GlassButton } from '../../components/GlassButton';
+import { httpErrorMessage } from '../../lib/http-error';
 import { FormField } from '../../components/FormField';
 import { apiClient } from '../../lib/api-client';
 import { resetPasswordSchema } from './schemas';
@@ -27,32 +29,33 @@ export function ResetPasswordPage() {
     try {
       await apiClient.post('/auth/reset-password', data);
       navigate('/login');
-    } catch (err: any) {
-      setServerError(err.response?.data?.message ?? 'Đặt lại mật khẩu thất bại');
+    } catch (err: unknown) {
+      setServerError(httpErrorMessage(err, 'Đặt lại mật khẩu thất bại'));
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="min-w-0">
       <input type="hidden" {...register('email')} />
       <p className="mb-4 text-sm text-slate-600">
         Đặt lại mật khẩu cho <strong>{email}</strong>
       </p>
-      <FormField label="Mã OTP" maxLength={6} {...register('code')} error={errors.code?.message} />
+      <FormField label="Mã OTP" maxLength={6} inputMode="numeric" autoComplete="one-time-code" className="text-center text-xl tracking-[0.35em]" {...register('code')} error={errors.code?.message} />
       <FormField
         label="Mật khẩu mới"
-        type="password"
+        type="password" autoComplete="new-password"
         {...register('newPassword')}
         error={errors.newPassword?.message}
       />
-      {serverError && <p className="mb-4 text-sm text-red-600">{serverError}</p>}
-      <button
+      {serverError && <p role="alert" className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{serverError}</p>}
+      <GlassButton
         type="submit"
-        disabled={isSubmitting}
-        className="w-full rounded-lg bg-slate-900 py-2 text-sm font-medium text-white disabled:opacity-50"
+        loading={isSubmitting}
+        variant="primary"
+        className="w-full"
       >
         Đặt lại mật khẩu
-      </button>
+      </GlassButton>
     </form>
   );
 }

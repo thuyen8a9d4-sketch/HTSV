@@ -1,0 +1,96 @@
+@layer components {
+  .student-portal { background: radial-gradient(ellipse at 90% 0, #e9f2fd 0, transparent 32%), #f6f8fc; }
+  .student-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px; }
+  .student-header-icon { display: flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; border-radius: 9999px; color: #475569; transition: all .18s ease; }
+  .student-header-icon:hover { color: #1d4ed8; background: rgba(255, 255, 255, 0.85); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05); }
+  .student-sidebar { position: fixed; top: 80px; bottom: 0; left: 0; width: 256px; padding: 22px 16px; overflow-y: auto; flex-direction: column; background: #ffffffa6; border-right: 1px solid #e3eaf3; }
+  .student-nav-group { margin-bottom: 22px; }
+  .student-nav-group > p { margin: 0 12px 8px; color: #64748b; font-size: 10px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+  .student-nav-group .nav-item { font-size: 12px; gap: 11px; margin-bottom: 3px; }
+  .student-sidebar-note { margin: 10px 4px 0; padding: 18px; border: 1px solid #dce8f7; border-radius: 16px; background: linear-gradient(150deg, #f2f7ff, #fff); font-size: 12px; }
+  .student-main { width: 100%; max-width: 1280px; margin: 0 auto; padding: 16px 20px 48px; }
+  .student-workspace { min-width: 0; display: flex; flex-direction: column; gap: 36px; }
+  .student-eyebrow { color: #566c85; font-size: 10px; font-weight: 650; letter-spacing: .09em; text-transform: uppercase; }
+  .student-section-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .student-section-heading h2 { margin-top: 5px; font-size: 21px; font-weight: 650; }
+  .student-text-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; color: #1d4ed8; font-size: 12px; font-weight: 600; }
+  .student-text-link:hover { text-decoration: underline; }
+  .student-text-link svg { width: 15px; height: 15px; }
+  .student-hero { position: relative; border: 1px solid #e0eaf8; border-radius: 24px; padding: 32px; background: radial-gradient(ellipse at 90% 50%, #dbeafe, transparent 60%), linear-gradient(110deg, #fff, #f2f7ff); box-shadow: inset 0 1px 0 #fff; }
+  .student-hero-content { max-width: 42rem; }
+  .student-hero h1 { margin-top: 16px; font-size: clamp(25px, 2.5vw, 38px); font-weight: 650; line-height: 1.4; letter-spacing: -.04em; }
+  .student-hero h1 > span { color: #1e3a5f; }
+  .student-hero-art { display: none; pointer-events: none; position: absolute; right: 30px; top: 30px; width: 240px; height: 250px; color: #1e4ca1; }
+  .hero-orbit { position: absolute; inset: 10px -10px 0; border: 1px solid #ffffffc9; border-radius: 50%; box-shadow: 0 0 0 18px #ffffff36, 0 0 0 45px #ffffff26; }
+  .hero-notebook { position: absolute; inset: 18px 24px 8px 35px; transform: rotate(9deg); border-radius: 10px 23px 23px 10px; padding: 24px 24px 20px 32px; border: 1px solid #ffffffde; background: linear-gradient(135deg, #f7fbff, #c5dbff); box-shadow: 8px 12px 20px #254e8717, inset 5px 0 0 #adcaf4, inset -4px 0 0 #eff6ff; }
+  .hero-notebook > span { display: block; margin-top: 20px; font-size: 15px; font-weight: 650; line-height: 1.6; }
+  .notebook-lines { position: absolute; left: -7px; top: 18px; bottom: 18px; width: 18px; background: repeating-linear-gradient(to bottom, transparent 0 15px, #7595bb 16px 18px, #eff6ff 19px 21px, transparent 22px 30px); }
+  .hero-mini-card { position: absolute; bottom: -8px; left: -10px; display: flex; align-items: center; gap: 12px; padding: 13px 18px; border: 1px solid white; border-radius: 14px; background: #ffffffed; box-shadow: 0 8px 24px #254e8717; transform: rotate(-6deg); font-size: 11px; }
+  .student-search { position: relative; z-index: 12; width: 100%; border-radius: 28px; border: 1px solid #d1ddee; background: #ffffffed; box-shadow: 0 4px 16px #1e3a5f08, inset 0 1px 0 white; }
+  .student-search:focus-within { z-index: 20; border-color: #2563eb; box-shadow: 0 0 0 3px #2563eb18; }
+  .student-search input { min-height: 50px; }
+  .student-search-compact { background: #f8fafcbf; box-shadow: inset 0 1px 0 white; }
+  .student-search-compact input { min-height: 44px; font-size: 12px; }
+  .student-search-results { position: absolute; top: calc(100% + 8px); left: 0; right: 0; padding: 8px; border-radius: 16px; border: 1px solid #dbe3ee; background: #fff; box-shadow: 0 15px 40px #0f172a21; max-height: min(400px, 55dvh); overflow: auto; }
+  .search-result { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; min-height: 44px; padding: 10px 12px; border-radius: 9px; font-size: 12px; color: #334155; }
+  .search-result svg { flex-shrink: 0; color: #2563eb; }
+  .search-result:hover, .search-result:focus-visible { background: #eff6ff; }
+  .schedule-scroll { max-width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 2px; padding: 12px 2px 12px; scrollbar-width: thin; scrollbar-color: #becde1 transparent; border-radius: 8px; }
+  .schedule-strip { display: grid; grid-template-columns: repeat(7, minmax(128px, 1fr)); gap: 10px; }
+  .schedule-day { position: relative; scroll-snap-align: start; border: 1px solid #dce5f0; border-radius: 12px; background: linear-gradient(145deg, #fff, #fdfefe); box-shadow: 0 3px 7px #0f172a05, inset 0 1px 0 white; }
+  .schedule-today { border-color: #3b82f6; box-shadow: 0 0 0 1px #60a5fa40, 0 4px 12px #2563eb0d; }
+  .binder-rings { position: absolute; z-index: 1; top: -10px; left: 14px; right: 14px; display: flex; justify-content: space-between; }
+  .binder-rings i { display: block; height: 20px; width: 7px; border-radius: 5px; background: linear-gradient(90deg, #91a2b6, #f8fafc 45%, #a4b4c6); border: 1px solid #8da1b6; box-shadow: 0 2px 1px #0f172a16; }
+  .schedule-date { padding: 20px 12px 12px; border-radius: 11px 11px 0 0; border-bottom: 1px dashed #d5deeb; background: #f3f6fb; }
+  .schedule-today .schedule-date { color: #1d4ed8; background: linear-gradient(135deg, #e4efff, #f4f8ff); }
+  .today-label { padding: 2px 5px; font-size: 9px; font-weight: 600; background: #2563eb; color: white; border-radius: 5px; }
+  .schedule-session + .schedule-session { border-top: 1px solid #e2e8f0; padding-top: 12px; }
+  .student-service-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .student-service { border-radius: 16px; padding: 19px 14px; text-align: left; min-height: 148px; backdrop-filter: blur(10px) saturate(150%); -webkit-backdrop-filter: blur(10px) saturate(150%); background: linear-gradient(135deg, #fffffff5, #ffffffce); border-color: #e3eaf3; box-shadow: 0 10px 30px -5px #0f172a0a, 0 2px 6px -1px #0f172a05, inset 0 1px 0 0 rgba(255, 255, 255, 0.95); }
+  .student-service:hover { transform: translateY(-3px); border-color: #b6cdee; box-shadow: 0 10px 22px -6px #2563eb17, inset 0 1px 0 0 rgba(255, 255, 255, 0.95); }
+  .student-service-icon { display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; border-radius: 13px; border: 1px solid #ffffffbd; box-shadow: inset 0 1px 0 #ffffffd1, 0 2px 3px #0f172a04; }
+  .tone-blue { color: #1d4ed8; background: linear-gradient(145deg, #eff6ff, #dbeafe); }
+  .tone-green { color: #047857; background: linear-gradient(145deg, #ecfdf5, #d1fae5); }
+  .tone-amber { color: #b45309; background: linear-gradient(145deg, #fffbeb, #fef3c7); }
+  .tone-rose { color: #be3456; background: linear-gradient(145deg, #fff1f2, #ffe4e6); }
+  .student-faq-list { border-top: 1px solid #dce5f0; background: white; }
+  .student-faq { scroll-margin-top: 100px; border-bottom: 1px solid #dce5f0; }
+  .student-faq summary { display: flex; align-items: center; gap: 20px; min-height: 68px; padding: 16px 20px; list-style: none; font-size: 13px; font-weight: 550; }
+  .student-faq summary::-webkit-details-marker { display: none; }
+  .student-faq[open] summary { color: #1d4ed8; }
+  .student-faq .faq-plus { transition: transform .18s ease; }
+  .student-faq[open] .faq-plus { transform: rotate(45deg); }
+  .student-faq > p { max-width: 900px; padding: 0 54px 22px; font-size: 13px; line-height: 1.9; color: #475569; }
+  .student-post { display: block; min-width: 0; padding: 22px; background: white; border: 1px solid #e2e8f0; border-radius: 18px; transition: border-color .18s; }
+  .student-post:hover { border-color: #93b5e4; }
+  .student-footer { max-width: 1600px; margin: 0 auto; padding: 24px 32px; border-top: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 10px; color: #64748b; }
+  .student-portal .glass-modal { overflow-y: auto; }
+  .student-portal .form-input { background: #fff; }
+  .student-portal .glass-drawer[open] { animation: student-drawer-enter .22s var(--ease-out); }
+  @keyframes student-drawer-enter { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+  @media (min-width: 1024px) {
+    .student-hero-art { display: block; transform: scale(.85); transform-origin: right center; }
+    .student-hero-content { max-width: calc(100% - 260px); }
+  }
+  @media (min-width: 1440px) {
+    .student-hero-art { transform: none; }
+    .student-hero-content { max-width: min(42rem, 70%, calc(100% - 300px)); }
+    .student-service-grid { grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); }
+  }
+  @media (max-width: 767px) {
+    .student-header { height: 72px; padding: 0 16px; gap: 8px; }
+    .student-main { padding: 22px 16px 32px; }
+    .student-hero { padding: 24px 20px; border-radius: 20px; }
+    .student-hero h1 { font-size: 27px; }
+    .student-workspace { gap: 30px; }
+    .student-section-heading h2 { font-size: 20px; }
+    .student-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .student-service { padding: 16px 12px; }
+    .student-faq summary { padding: 16px 12px; gap: 12px; }
+    .student-faq > p { padding: 0 16px 20px; }
+    .student-footer { padding: 24px 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .student-service:hover { transform: none; } }
+  @media (prefers-reduced-transparency: reduce) { .student-header, .student-sidebar, .student-search, .student-service { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; } }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .student-header, .student-sidebar, .student-search, .student-service { background: #fff; } }
+}

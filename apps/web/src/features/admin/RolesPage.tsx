@@ -1,3 +1,11 @@
+import { EmptyState } from '../../components/EmptyState';
+import { LoadingSkeleton } from '../../components/LoadingSkeleton';
+import { PageHeading } from '../../components/PageHeading';
+import { QueryError } from '../../components/QueryError';
+import { TableFrame } from '../../components/TableFrame';
+import { FormField } from '../../components/FormField';
+import { GlassButton } from '../../components/GlassButton';
+import { Plus, Trash } from '../../components/Icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { apiClient } from '../../lib/api-client';
@@ -13,7 +21,7 @@ export function RolesPage() {
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
 
-  const { data } = useQuery<Role[]>({
+  const { data, isLoading, isError, refetch } = useQuery<Role[]>({
     queryKey: ['admin-roles'],
     queryFn: async () => (await apiClient.get('/admin/roles')).data,
   });
@@ -34,33 +42,23 @@ export function RolesPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-bold text-slate-900">Vai trò</h1>
-      <div className="mb-4 flex gap-2">
-        <input
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="Mã (VD: EDITOR)"
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-        />
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Tên vai trò"
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-        />
-        <button
-          onClick={() => create.mutate()}
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm text-white"
-        >
-          Thêm
-        </button>
-      </div>
-      <table className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white text-sm">
-        <thead className="bg-slate-100 text-left text-slate-600">
+      <PageHeading eyebrow="Quản trị truy cập" title="Vai trò" description="Quản lý các nhóm vai trò trong hệ thống HTSV." />
+      <form onSubmit={(e) => { e.preventDefault(); if (code.trim() && name.trim() && !create.isPending) create.mutate(); }} className="mb-6 grid items-start gap-x-4 rounded-2xl border border-slate-200 bg-white/90 p-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+        <FormField label="Mã vai trò" value={code} onChange={(e) => setCode(e.target.value)} placeholder="VD: EDITOR" required />
+        <FormField label="Tên vai trò" value={name} onChange={(e) => setName(e.target.value)} required />
+        <GlassButton type="submit" variant="primary" className="sm:mt-7" loading={create.isPending} disabled={!code.trim() || !name.trim()}><Plus className="h-4 w-4" />Thêm</GlassButton>
+      </form>
+      {(create.isError || remove.isError) && <p role="alert" className="mb-4 rounded-xl bg-red-50 p-3 text-red-700">Chưa thể cập nhật. Vui lòng thử lại.</p>}
+      {isLoading && <LoadingSkeleton variant="table" />}
+      {isError && <QueryError retry={() => { void refetch(); }} />}
+      {!isError && data?.length === 0 && <EmptyState title="Chưa có vai trò" description="Dùng biểu mẫu phía trên để thêm mục đầu tiên." />}
+      {data && data.length > 0 && <TableFrame label="Danh sách vai trò">
+      <table className="data-table">
+        <thead >
           <tr>
-            <th className="p-3">Mã</th>
-            <th className="p-3">Tên</th>
-            <th className="p-3"></th>
+            <th scope="col" className="p-3">Mã</th>
+            <th scope="col" className="p-3">Tên</th>
+            <th scope="col" className="p-3 text-right">Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -69,14 +67,13 @@ export function RolesPage() {
               <td className="p-3">{r.code}</td>
               <td className="p-3">{r.name}</td>
               <td className="p-3 text-right">
-                <button onClick={() => remove.mutate(r.id)} className="text-xs text-red-600">
-                  Xóa
-                </button>
+                <GlassButton variant="danger" onClick={() => { if (window.confirm(`Xóa vai trò ${r.name}?`)) remove.mutate(r.id); }} loading={remove.isPending && remove.variables === r.id} disabled={remove.isPending} aria-label={`Xóa vai trò ${r.name}`}><Trash className="h-4 w-4" />Xóa</GlassButton>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      </TableFrame>}
     </div>
   );
 }

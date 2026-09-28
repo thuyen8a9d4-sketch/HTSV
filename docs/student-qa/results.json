@@ -1,0 +1,521 @@
+{
+  "date": "2026-09-27T12:23:36.721Z",
+  "results": [
+    {
+      "name": "Responsive 360px: 10 routes, 18 services, 7 days, 3 newest posts",
+      "pass": true
+    },
+    {
+      "name": "Drawer 360px: navigation, Escape, focus return",
+      "pass": true
+    },
+    {
+      "name": "Responsive 768px: 10 routes, 18 services, 7 days, 3 newest posts",
+      "pass": true
+    },
+    {
+      "name": "Drawer 768px: navigation, Escape, focus return",
+      "pass": true
+    },
+    {
+      "name": "Responsive 1280px: 10 routes, 18 services, 7 days, 3 newest posts",
+      "pass": true
+    },
+    {
+      "name": "Accent-insensitive search and FAQ deep link",
+      "pass": true
+    },
+    {
+      "name": "Search empty state and Escape",
+      "pass": true
+    },
+    {
+      "name": "All 18 service actions open a working destination or dialog",
+      "pass": true
+    },
+    {
+      "name": "Submit validation, defaults, success ID and reload persistence",
+      "pass": true
+    },
+    {
+      "name": "Request search/filter and simulated progress with notification badge",
+      "pass": true
+    },
+    {
+      "name": "Mobile form, focus trap, cancel confirmation and retained cancelled record",
+      "pass": true
+    },
+    {
+      "name": "Account and guest isolation; no admin navigation for student/guest",
+      "pass": true
+    },
+    {
+      "name": "Admin navigation and account profile modal",
+      "pass": true
+    },
+    {
+      "name": "Forum detail/create routes and existing guest/student route guards preserved",
+      "pass": true
+    },
+    {
+      "name": "Confession loading, empty, error and retry states",
+      "pass": true
+    },
+    {
+      "name": "Reduced motion and 200% equivalent reflow (1280 to 640 CSS px)",
+      "pass": true
+    },
+    {
+      "name": "Storage failure is actionable and preserves the entered form",
+      "pass": true
+    },
+    {
+      "name": "Corrupt local storage is reported and preserved",
+      "pass": true
+    },
+    {
+      "name": "No page errors; no support API or backend mutations",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "traffic": [
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts/4"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/forum/posts"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/auth/refresh"
+    }
+  ],
+  "api": "Playwright fixtures only; live backend not verified"
+}

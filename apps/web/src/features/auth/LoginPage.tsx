@@ -2,6 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { GlassButton } from '../../components/GlassButton';
+import { httpErrorMessage } from '../../lib/http-error';
 import { FormField } from '../../components/FormField';
 import { apiClient } from '../../lib/api-client';
 import { useAuthStore } from '../../lib/auth-store';
@@ -26,34 +28,35 @@ export function LoginPage() {
       const res = await apiClient.post('/auth/login', data);
       setSession(res.data.accessToken, res.data.user);
       navigate(res.data.user.roles.includes('ADMIN') ? '/admin' : '/');
-    } catch (err: any) {
-      setServerError(err.response?.data?.message ?? 'Đăng nhập thất bại');
+    } catch (err: unknown) {
+      setServerError(httpErrorMessage(err, 'Đăng nhập thất bại'));
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormField label="Tên đăng nhập" {...register('username')} error={errors.username?.message} />
+    <form onSubmit={handleSubmit(onSubmit)} className="min-w-0">
+      <FormField label="Tên đăng nhập" autoComplete="username" {...register('username')} error={errors.username?.message} />
       <FormField
         label="Mật khẩu"
-        type="password"
+        type="password" autoComplete="current-password"
         {...register('password')}
         error={errors.password?.message}
       />
-      {serverError && <p className="mb-4 text-sm text-red-600">{serverError}</p>}
-      <button
+      {serverError && <p role="alert" className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{serverError}</p>}
+      <GlassButton
         type="submit"
-        disabled={isSubmitting}
-        className="w-full rounded-lg bg-slate-900 py-2 text-sm font-medium text-white disabled:opacity-50"
+        loading={isSubmitting}
+        variant="primary"
+        className="w-full"
       >
         Đăng nhập
-      </button>
+      </GlassButton>
       <OAuthButtons />
-      <div className="mt-4 flex justify-between text-sm text-slate-600">
-        <Link to="/register" className="hover:underline">
+      <div className="mt-4 flex flex-wrap justify-between gap-2 text-sm text-slate-600">
+        <Link to="/register" className="inline-flex min-h-11 items-center rounded-lg font-medium text-blue-700 hover:underline">
           Đăng ký
         </Link>
-        <Link to="/forgot-password" className="hover:underline">
+        <Link to="/forgot-password" className="inline-flex min-h-11 items-center rounded-lg font-medium text-blue-700 hover:underline">
           Quên mật khẩu?
         </Link>
       </div>

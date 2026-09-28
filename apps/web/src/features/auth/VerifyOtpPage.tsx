@@ -2,6 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { GlassButton } from '../../components/GlassButton';
+import { httpErrorMessage } from '../../lib/http-error';
 import { FormField } from '../../components/FormField';
 import { apiClient } from '../../lib/api-client';
 import { verifyOtpSchema } from './schemas';
@@ -12,6 +14,7 @@ export function VerifyOtpPage() {
   const [searchParams] = useSearchParams();
   const email = searchParams.get('email') ?? '';
   const [serverError, setServerError] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
   const [resendMessage, setResendMessage] = useState<string | null>(null);
 
   const {
@@ -28,48 +31,54 @@ export function VerifyOtpPage() {
     try {
       await apiClient.post('/auth/verify-otp', data);
       navigate('/login');
-    } catch (err: any) {
-      setServerError(err.response?.data?.message ?? 'Xác thực thất bại');
+    } catch (err: unknown) {
+      setServerError(httpErrorMessage(err, 'Xác thực thất bại'));
     }
   };
 
   const resend = async () => {
     setResendMessage(null);
+    setResending(true);
     try {
       const res = await apiClient.post('/auth/resend-otp', { email });
       setResendMessage(res.data.message);
     } catch {
       setResendMessage('Không thể gửi lại mã, vui lòng thử lại sau.');
+    } finally {
+      setResending(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="min-w-0">
       <p className="mb-4 text-sm text-slate-600">
         Mã OTP đã được gửi tới <strong>{email}</strong>
       </p>
       <input type="hidden" {...register('email')} />
       <FormField
         label="Mã OTP"
-        maxLength={6}
+        maxLength={6} inputMode="numeric" autoComplete="one-time-code" className="text-center text-xl tracking-[0.35em]"
         {...register('code')}
         error={errors.code?.message}
       />
-      {serverError && <p className="mb-4 text-sm text-red-600">{serverError}</p>}
-      {resendMessage && <p className="mb-4 text-sm text-slate-600">{resendMessage}</p>}
-      <button
+      {serverError && <p role="alert" className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{serverError}</p>}
+      {resendMessage && <p role="status" className="mb-4 rounded-xl bg-blue-50 p-3 text-sm text-blue-800">{resendMessage}</p>}
+      <GlassButton
         type="submit"
-        disabled={isSubmitting}
-        className="w-full rounded-lg bg-slate-900 py-2 text-sm font-medium text-white disabled:opacity-50"
+        loading={isSubmitting}
+        variant="primary"
+        className="w-full"
       >
         Xác thực
-      </button>
+      </GlassButton>
       <button
         type="button"
         onClick={resend}
-        className="mt-3 w-full text-sm text-slate-600 hover:underline"
+        disabled={resending || isSubmitting}
+        aria-busy={resending}
+        className="focus-ring mt-3 min-h-11 w-full rounded-lg text-sm font-medium text-blue-700 hover:underline"
       >
-        Gửi lại mã OTP
+        {resending ? 'Đang gửi lại mã…' : 'Gửi lại mã OTP'}
       </button>
     </form>
   );
