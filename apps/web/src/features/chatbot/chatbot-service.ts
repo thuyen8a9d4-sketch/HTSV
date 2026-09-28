@@ -53,17 +53,24 @@ async function callGeminiApi(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(7000), // 7-second timeout for snappy response
     });
   };
 
-  let response = await makeRequest(cleanModel);
-
-  // If model not found (e.g. older 1.5 model), auto-retry with gemini-2.5-flash or gemini-flash-latest
-  if (!response.ok && cleanModel !== 'gemini-2.5-flash') {
-    response = await makeRequest('gemini-2.5-flash');
+  let response: Response;
+  try {
+    response = await makeRequest(cleanModel);
+  } catch {
+    response = await makeRequest('gemini-2.5-flash-lite');
   }
-  if (!response.ok && cleanModel !== 'gemini-flash-latest') {
-    response = await makeRequest('gemini-flash-latest');
+
+  // If primary model is busy (503/429/timeout), fast try gemini-2.5-flash-lite
+  if (!response.ok && cleanModel !== 'gemini-2.5-flash-lite') {
+    try {
+      response = await makeRequest('gemini-2.5-flash-lite');
+    } catch {
+      // ignore
+    }
   }
 
   if (!response.ok) {
@@ -106,7 +113,18 @@ export async function sendChatMessage(
     };
   }
 
-  // Use Gemini with gemini-2.5-flash
-  const text = await callGeminiApi(apiKey, 'gemini-2.5-flash', history, 0.7);
-  return { text, isMock: false };
+  // Attempt to call Gemini API; if network or server 503 error occurs, fallback gracefully to DNC Knowledge Base
+  try {
+    const text = await callGeminiApi(apiKey, 'gemini-2.5-flash', history, 0.7);
+    return { text, isMock: false };
+  } catch (err) {
+    console.warn('Gemini API call failed, falling back to local DNC knowledge base:', err);
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const lastUserMessage = history.filter((m) => m.role === 'user').pop();
+    const prompt = lastUserMessage?.content || '';
+    return {
+      text: getMockResponse(prompt),
+      isMock: true,
+    };
+  }
 }

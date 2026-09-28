@@ -11,7 +11,7 @@ const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v1';
 const INITIAL_BOT_MESSAGE: ChatMessage = {
   id: 'msg-welcome',
   role: 'assistant',
-  content: `Xin chào! Tôi là **Trợ lý AI HTSV** ✨\n\nTôi có thể hỗ trợ bạn như một AI đa năng (tương tự **ChatGPT** & **Gemini**):\n* 💻 **Lập trình & CNTT:** Giải thích khái niệm, viết code, sửa lỗi, lộ trình học Web, Python...\n* 📚 **Học tập & Nghiên cứu:** Viết luận, tóm tắt tài liệu, giải bài tập, ôn thi...\n* 🏛️ **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, Học phí, Confession...\n\nBạn có thể gõ câu hỏi bất kỳ hoặc chọn gợi ý bên dưới nhé!`,
+  content: `Xin chào! Tôi là **Trợ lý AI HTSV - DNC** ✨\n\nTôi sẵn sàng hỗ trợ bạn như một AI đa năng thông minh (tương tự **ChatGPT** & **Gemini**):\n* 🎓 **Đại học Nam Cần Thơ (DNC):** 86 ngành đào tạo, 4 phương thức xét tuyển, học phí ổn định, Ký túc xá & Bệnh viện DNC...\n* 🏛️ **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, tra cứu lịch học & học phí, Confession...\n* 💻 **Lập trình & CNTT:** Giải thích công nghệ, viết code, sửa lỗi, lộ trình Web, Python, AI...\n* 📚 **Học tập & Nghiên cứu:** Viết luận, giải bài tập, phương pháp học đại học...\n\nBạn có thể gõ câu hỏi bất kỳ hoặc chọn gợi ý nhanh bên dưới nhé!`,
   timestamp: 0,
   isMock: true,
 };
