@@ -1,52 +1,14 @@
-import type { ChatMessage, ChatbotSettings } from './chatbot-types';
+import type { ChatMessage } from './chatbot-types';
 import { HTSV_SYSTEM_PROMPT, getMockResponse } from './chatbot-knowledge';
 
-const SETTINGS_KEY = 'htsv_chatbot_settings';
-
-export const DEFAULT_SETTINGS: ChatbotSettings = {
-  apiKey: '',
-  provider: 'gemini',
-  model: 'gemini-2.5-flash',
-  temperature: 0.7,
-};
-
-export function loadChatbotSettings(): ChatbotSettings {
-  try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      const loaded = { ...DEFAULT_SETTINGS, ...parsed };
-      if (loaded.model === 'gemini-1.5-flash' || !loaded.model) {
-        loaded.model = 'gemini-2.5-flash';
-      }
-      return loaded;
-    }
-  } catch {
-    // ignore parse error
-  }
-
-  // Check Vite env fallback
-  const envKey = (import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_AI_API_KEY || '') as string;
-  if (envKey) {
-    return {
-      ...DEFAULT_SETTINGS,
-      apiKey: envKey,
-    };
-  }
-
-  return DEFAULT_SETTINGS;
+// Clean up any previously stored key in browser localStorage to prevent leakage
+try {
+  localStorage.removeItem('htsv_chatbot_settings');
+} catch {
+  // ignore
 }
 
-export function saveChatbotSettings(settings: ChatbotSettings): void {
-  try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-  } catch {
-    // ignore storage error
-  }
-}
-
-export function getEffectiveApiKey(settings: ChatbotSettings): string {
-  if (settings.apiKey?.trim()) return settings.apiKey.trim();
+export function getEffectiveApiKey(): string {
   const envKey = (import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_AI_API_KEY || '') as string;
   return envKey.trim();
 }
@@ -126,64 +88,14 @@ async function callGeminiApi(
 }
 
 /**
- * Call OpenAI-compatible REST API
- */
-async function callOpenAiApi(
-  apiKey: string,
-  model: string,
-  customEndpoint: string | undefined,
-  messages: ChatMessage[],
-  temperature: number
-): Promise<string> {
-  const endpoint = customEndpoint?.trim() || 'https://api.openai.com/v1/chat/completions';
-  const cleanModel = model.trim() || 'gpt-4o-mini';
-
-  const payloadMessages = [
-    { role: 'system', content: HTSV_SYSTEM_PROMPT },
-    ...messages.slice(-10).map((m) => ({
-      role: m.role,
-      content: m.content,
-    })),
-  ];
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: cleanModel,
-      messages: payloadMessages,
-      temperature: temperature || 0.7,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorJson = await response.json().catch(() => null);
-    const errorMsg = errorJson?.error?.message || `Lỗi máy chủ (${response.status})`;
-    throw new Error(errorMsg);
-  }
-
-  const data = await response.json();
-  const text = data?.choices?.[0]?.message?.content;
-  if (!text) {
-    throw new Error('Không nhận được nội dung phản hồi từ mô hình AI.');
-  }
-
-  return text;
-}
-
-/**
- * Main function to generate response for the user
+ * Main function to generate response for the user using server/env configured API key
  */
 export async function sendChatMessage(
-  history: ChatMessage[],
-  settings: ChatbotSettings
+  history: ChatMessage[]
 ): Promise<{ text: string; isMock: boolean }> {
-  const apiKey = getEffectiveApiKey(settings);
+  const apiKey = getEffectiveApiKey();
 
-  // If no API key is set yet, gracefully use local mock assistant
+  // If no API key is set in .env.local, use local mock assistant
   if (!apiKey) {
     await new Promise((resolve) => setTimeout(resolve, 600)); // Natural typing delay
     const lastUserMessage = history.filter((m) => m.role === 'user').pop();
@@ -194,13 +106,7 @@ export async function sendChatMessage(
     };
   }
 
-  // If API key is present, route to the configured provider
-  if (settings.provider === 'openai') {
-    const text = await callOpenAiApi(apiKey, settings.model, settings.customEndpoint, history, settings.temperature);
-    return { text, isMock: false };
-  }
-
-  // Default to Gemini
-  const text = await callGeminiApi(apiKey, settings.model, history, settings.temperature);
+  // Use Gemini with gemini-2.5-flash
+  const text = await callGeminiApi(apiKey, 'gemini-2.5-flash', history, 0.7);
   return { text, isMock: false };
 }

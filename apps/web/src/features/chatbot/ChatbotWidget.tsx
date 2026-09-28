@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Bot, ChatBubble, Close, Copy, RotateCcw, Send, Settings, Sparkles } from '../../components/Icons';
-import type { ChatMessage, ChatbotSettings } from './chatbot-types';
-import {
-  getEffectiveApiKey,
-  loadChatbotSettings,
-  sendChatMessage,
-} from './chatbot-service';
-import { ChatbotSettingsModal } from './ChatbotSettingsModal';
+import { Bot, ChatBubble, Close, Copy, RotateCcw, Send, Sparkles } from '../../components/Icons';
+import type { ChatMessage } from './chatbot-types';
+import { getEffectiveApiKey, sendChatMessage } from './chatbot-service';
 import { QUICK_SUGGESTIONS } from './chatbot-knowledge';
 import { ChatMarkdown } from './ChatMarkdown';
 import './chatbot.css';
@@ -60,8 +55,6 @@ function getInitialMessages(): ChatMessage[] {
 
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [settings, setSettings] = useState<ChatbotSettings>(() => loadChatbotSettings());
   const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialMessages());
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -97,15 +90,15 @@ export function ChatbotWidget() {
   // Handle escape to close
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen && !settingsOpen) {
+      if (e.key === 'Escape' && isOpen) {
         setIsOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, settingsOpen]);
+  }, [isOpen]);
 
-  const effectiveApiKey = getEffectiveApiKey(settings);
+  const hasApiKey = Boolean(getEffectiveApiKey());
 
   const handleSendMessage = async (userText: string) => {
     const text = userText.trim();
@@ -118,7 +111,7 @@ export function ChatbotWidget() {
     setIsLoading(true);
 
     try {
-      const response = await sendChatMessage(updatedMessages, settings);
+      const response = await sendChatMessage(updatedMessages);
       const botMessage = createMessage('assistant', response.text, {
         status: 'success',
         isMock: response.isMock,
@@ -128,7 +121,7 @@ export function ChatbotWidget() {
       const errorMsg = err instanceof Error ? err.message : 'Đã có lỗi xảy ra khi kết nối tới trợ lý AI.';
       const errorMessage = createMessage(
         'assistant',
-        `⚠️ **Lỗi:** ${errorMsg}\n\n*Gợi ý:* Hãy kiểm tra lại API Key hoặc mạng Internet của bạn tại biểu tượng Cài đặt ⚙️ ở góc trên.`,
+        `⚠️ **Lỗi:** ${errorMsg}\n\nVui lòng thử lại sau giây lát hoặc liên hệ ban quản trị.`,
         { status: 'error' }
       );
       setMessages((prev) => [...prev, errorMessage]);
@@ -211,7 +204,7 @@ export function ChatbotWidget() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="htsv-chat-subtitle text-[11px] font-medium">
-                    {effectiveApiKey ? 'AI Trực tuyến' : 'Cơ sở dữ liệu mẫu'}
+                    {hasApiKey ? 'AI Trực tuyến' : 'Cơ sở dữ liệu mẫu'}
                   </span>
                 </div>
               </div>
@@ -230,22 +223,6 @@ export function ChatbotWidget() {
               </button>
               <button
                 type="button"
-                onClick={() => setSettingsOpen(true)}
-                title="Cấu hình API Key"
-                className={`relative rounded-xl p-2 transition-colors focus:outline-hidden ${
-                  effectiveApiKey
-                    ? 'htsv-chat-action-btn'
-                    : 'bg-amber-100 text-amber-800 hover:bg-amber-200'
-                }`}
-                aria-label="Cài đặt API Key"
-              >
-                <Settings className="h-4 w-4" />
-                {!effectiveApiKey && (
-                  <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-amber-500" />
-                )}
-              </button>
-              <button
-                type="button"
                 onClick={() => setIsOpen(false)}
                 title="Thu nhỏ"
                 className="htsv-chat-action-btn rounded-xl p-2 focus:outline-hidden"
@@ -255,22 +232,6 @@ export function ChatbotWidget() {
               </button>
             </div>
           </div>
-
-          {/* Banner if no API key is set yet */}
-          {!effectiveApiKey && (
-            <div className="flex items-center justify-between border-b border-amber-200/80 bg-amber-50/90 px-3.5 py-2 text-xs text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
-              <span className="truncate">
-                🔑 Chưa nhập API Key. Đang dùng mẫu câu hỏi HTSV.
-              </span>
-              <button
-                type="button"
-                onClick={() => setSettingsOpen(true)}
-                className="shrink-0 font-bold underline hover:text-amber-950 dark:hover:text-white"
-              >
-                Cài đặt ngay
-              </button>
-            </div>
-          )}
 
           {/* Message List */}
           <div className="htsv-chat-body flex-1 space-y-4 overflow-y-auto p-4">
@@ -390,14 +351,6 @@ export function ChatbotWidget() {
               </button>
             </div>
           </form>
-
-          {/* Settings Modal Layer */}
-          <ChatbotSettingsModal
-            open={settingsOpen}
-            onClose={() => setSettingsOpen(false)}
-            settings={settings}
-            onSave={(newSettings) => setSettings(newSettings)}
-          />
         </div>
       )}
     </div>
