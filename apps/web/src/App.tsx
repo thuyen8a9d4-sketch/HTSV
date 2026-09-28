@@ -19,6 +19,7 @@ import { VerifyOtpPage } from './features/auth/VerifyOtpPage';
 import { ForumCreatePage } from './features/forum/ForumCreatePage';
 import { ForumDetailPage } from './features/forum/ForumDetailPage';
 import { ForumFeedPage } from './features/forum/ForumFeedPage';
+import { ChatbotWidget } from './features/chatbot/ChatbotWidget';
 import { useAuthBootstrap } from './lib/use-current-user';
 
 const StudentHomePage = lazy(() => import('./features/student/StudentHomePage').then((module) => ({ default: module.StudentHomePage })));
@@ -67,6 +68,7 @@ function App() {
         </Route>
       </Route>
     </Routes>
+    <ChatbotWidget />
     </Suspense>
   );
 }

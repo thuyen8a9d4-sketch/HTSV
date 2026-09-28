@@ -207,7 +207,7 @@ body {
 .scroll-to-top {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  bottom: 92px;
   z-index: 30;
   display: flex;
   align-items: center;
@@ -230,7 +230,7 @@ body {
 .scroll-to-top[data-visible="true"] { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 .scroll-to-top[data-visible="true"]:hover { color: #2563eb; transform: translateY(-4px); box-shadow: 0 14px 28px -4px #0f172a14, inset 0 1px 1px #fff; }
 .scroll-to-top:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
-@media (min-width: 640px) { .scroll-to-top { right: 32px; bottom: 32px; } }
+@media (min-width: 640px) { .scroll-to-top { right: 32px; bottom: 104px; } }
 @media (prefers-reduced-motion: reduce) {
   .scroll-to-top, .scroll-to-top[data-visible="true"], .scroll-to-top[data-visible="true"]:hover { transform: none; transition: none; }
 }

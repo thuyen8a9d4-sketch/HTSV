@@ -33,3 +33,9 @@ export function Smile(props: IconProps) { return <Svg {...props}><circle cx="12"
 export function Sad(props: IconProps) { return <Svg {...props}><circle cx="12" cy="12" r="9" /><path d="M8 17c2-4 6-4 8 0M8 8v1m8-1v1" /></Svg>; }
 export function Angry(props: IconProps) { return <Svg {...props}><circle cx="12" cy="12" r="9" /><path d="m7 7 3 2m7-2-3 2M8 17c2-3 6-3 8 0" /></Svg>; }
 export function ThumbsUp(props: IconProps) { return <Svg {...props}><path d="M7 10v11H3V10h4Zm0 0 5-8c3 0 2 5 2 7h5a2 2 0 0 1 2 2l-2 8a2 2 0 0 1-2 2H7" /></Svg>; }
+export function Send(props: IconProps) { return <Svg {...props}><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></Svg>; }
+export function Bot(props: IconProps) { return <Svg {...props}><rect x="3" y="11" width="18" height="10" rx="2" /><circle cx="12" cy="5" r="2" /><path d="M12 7v4M8 16v.01M16 16v.01" /></Svg>; }
+export function Minimize(props: IconProps) { return <Svg {...props}><path d="M4 14h6v6m10-10h-6V4" /></Svg>; }
+export function RotateCcw(props: IconProps) { return <Svg {...props}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></Svg>; }
+export function Copy(props: IconProps) { return <Svg {...props}><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></Svg>; }
+
