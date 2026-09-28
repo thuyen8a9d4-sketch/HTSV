@@ -81,7 +81,7 @@ async function callGeminiApi(
       },
       generationConfig: {
         temperature: Math.max(0, Math.min(2, temperature || 0.7)),
-        maxOutputTokens: 1024,
+        maxOutputTokens: 2048,
       },
     };
 

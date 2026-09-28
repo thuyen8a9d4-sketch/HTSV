@@ -8,6 +8,7 @@ import {
 } from './chatbot-service';
 import { ChatbotSettingsModal } from './ChatbotSettingsModal';
 import { QUICK_SUGGESTIONS } from './chatbot-knowledge';
+import { ChatMarkdown } from './ChatMarkdown';
 import './chatbot.css';
 
 const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v1';
@@ -15,7 +16,7 @@ const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v1';
 const INITIAL_BOT_MESSAGE: ChatMessage = {
   id: 'msg-welcome',
   role: 'assistant',
-  content: `Xin chào! Em là **Trợ lý Ảo HTSV** 👋\n\nEm có thể hỗ trợ bạn giải đáp các thông tin về:\n- 📝 Quy chế & cách đăng bài **Diễn đàn Confession** (ẩn danh & công khai).\n- 🏫 Hướng dẫn đăng ký lưu trú **Ký túc xá**.\n- 💰 Thời hạn, công nợ & phương thức nộp **Học phí**.\n- 📋 Thủ tục xin cấp **Giấy xác nhận sinh viên**, bảng điểm.\n- 📅 Lịch học, lịch thi và dịch vụ một cửa.\n\nBạn có thể chọn câu hỏi gợi ý bên dưới hoặc gõ câu hỏi nhé!`,
+  content: `Xin chào! Tôi là **Trợ lý AI HTSV** ✨\n\nTôi có thể hỗ trợ bạn như một AI đa năng (tương tự **ChatGPT** & **Gemini**):\n* 💻 **Lập trình & CNTT:** Giải thích khái niệm, viết code, sửa lỗi, lộ trình học Web, Python...\n* 📚 **Học tập & Nghiên cứu:** Viết luận, tóm tắt tài liệu, giải bài tập, ôn thi...\n* 🏛️ **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, Học phí, Confession...\n\nBạn có thể gõ câu hỏi bất kỳ hoặc chọn gợi ý bên dưới nhé!`,
   timestamp: 0,
   isMock: true,
 };
@@ -159,38 +160,9 @@ export function ChatbotWidget() {
     }
   };
 
-  // Render markdown-like text safely
-  const renderMessageContent = (content: string) => {
-    const paragraphs = content.split('\n\n');
-    return (
-      <div className="space-y-2 text-xs sm:text-sm leading-relaxed">
-        {paragraphs.map((para, i) => {
-          const lines = para.split('\n');
-          return (
-            <p key={i}>
-              {lines.map((line, lineIndex) => {
-                // Parse bold **text**
-                const parts = line.split(/(\*\*.*?\*\*)/g);
-                return (
-                  <span key={lineIndex} className="block">
-                    {parts.map((part, partIndex) => {
-                      if (part.startsWith('**') && part.endsWith('**')) {
-                        return (
-                          <strong key={partIndex} className="font-bold">
-                            {part.slice(2, -2)}
-                          </strong>
-                        );
-                      }
-                      return part;
-                    })}
-                  </span>
-                );
-              })}
-            </p>
-          );
-        })}
-      </div>
-    );
+  // Render markdown with rich styling like ChatGPT/Gemini
+  const renderMessageContent = (content: string, isUser: boolean) => {
+    return <ChatMarkdown content={content} isUser={isUser} />;
   };
 
   return (
@@ -318,7 +290,7 @@ export function ChatbotWidget() {
                         : 'htsv-chat-bubble-ai rounded-bl-xs'
                     }`}
                   >
-                    {renderMessageContent(msg.content)}
+                    {renderMessageContent(msg.content, isUser)}
 
                     <div
                       className={`mt-1.5 flex items-center gap-1.5 text-[10px] ${
@@ -405,7 +377,7 @@ export function ChatbotWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDownInput}
-                placeholder="Nhập câu hỏi học vụ hoặc thắc mắc..."
+                placeholder="Hỏi bất kỳ điều gì (lập trình, học tập, thủ tục HTSV)..."
                 className="htsv-chat-textarea max-h-28 min-h-[44px] flex-1 resize-none rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed"
               />
               <button
