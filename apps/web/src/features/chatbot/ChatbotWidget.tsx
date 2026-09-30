@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Bot, ChatBubble, Close, Copy, RotateCcw, Send, Sparkles } from '../../components/Icons';
 import type { ChatMessage } from './chatbot-types';
 import { getEffectiveApiKey, sendChatMessage } from './chatbot-service';
-import { QUICK_SUGGESTIONS } from './chatbot-knowledge';
+import { QUICK_SUGGESTIONS, generateFollowUpSuggestions } from './chatbot-knowledge';
 import { ChatMarkdown } from './ChatMarkdown';
 import './chatbot.css';
 
@@ -11,9 +11,14 @@ const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v1';
 const INITIAL_BOT_MESSAGE: ChatMessage = {
   id: 'msg-welcome',
   role: 'assistant',
-  content: `Xin chào! Tôi là **Trợ lý AI HTSV - DNC** ✨\n\nTôi sẵn sàng hỗ trợ bạn như một AI đa năng thông minh (tương tự **ChatGPT** & **Gemini**):\n* 🎓 **Đại học Nam Cần Thơ (DNC):** 86 ngành đào tạo, 4 phương thức xét tuyển, học phí ổn định, Ký túc xá & Bệnh viện DNC...\n* 🏛️ **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, tra cứu lịch học & học phí, Confession...\n* 💻 **Lập trình & CNTT:** Giải thích công nghệ, viết code, sửa lỗi, lộ trình Web, Python, AI...\n* 📚 **Học tập & Nghiên cứu:** Viết luận, giải bài tập, phương pháp học đại học...\n\nBạn có thể gõ câu hỏi bất kỳ hoặc chọn gợi ý nhanh bên dưới nhé!`,
+  content: `Xin chào! Tôi là **Trợ lý AI HTSV - DNC** ✨\n\nTôi sẵn sàng hỗ trợ bạn như một AI đa năng thông minh (tương tự **ChatGPT** & **Gemini**):\n* 🎓 **Đại học Nam Cần Thơ (DNC):** 86 ngành đào tạo, 4 phương thức xét tuyển, học phí ổn định, Ký túc xá & Bệnh viện DNC...\n* 🏛️ **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, tra cứu lịch học & học phí, Confession...\n* 💻 **Lập trình & CNTT:** Giải thích công nghệ, viết code, sửa lỗi, lộ trình Web, Python, AI...\n* 📚 **Học tập & Nghiên cứu:** Viết luận, giải bài tập, phương pháp học đại học...\n\nBạn có thể gõ câu hỏi bất kỳ hoặc chọn gợi ý bên dưới nhé!`,
   timestamp: 0,
   isMock: true,
+  followUps: [
+    'Học phí các ngành năm 2026 là bao nhiêu?',
+    'Phương thức xét học bạ vào DNC như thế nào?',
+    'Thông tin ngành Công nghệ thông tin & AI',
+  ],
 };
 
 function formatTime(timestamp: number) {
@@ -28,7 +33,7 @@ let messageCounter = 0;
 function createMessage(
   role: 'user' | 'assistant' | 'system',
   content: string,
-  extra?: { status?: 'sending' | 'success' | 'error'; isMock?: boolean }
+  extra?: { status?: 'sending' | 'success' | 'error'; isMock?: boolean; followUps?: string[]; isStreaming?: boolean }
 ): ChatMessage {
   messageCounter += 1;
   return {
@@ -58,20 +63,32 @@ export function ChatbotWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialMessages());
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const messageListRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const streamIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Save history on changes
+  // Clean up streaming timer on unmount
   useEffect(() => {
+    return () => {
+      if (streamIntervalRef.current) {
+        clearInterval(streamIntervalRef.current);
+      }
+    };
+  }, []);
+
+  // Save history on changes (don't save while streaming to avoid partial content writes)
+  useEffect(() => {
+    if (isStreaming) return;
     try {
       localStorage.setItem(STORAGE_CHAT_HISTORY, JSON.stringify(messages));
     } catch {
       // ignore
     }
-  }, [messages]);
+  }, [messages, isStreaming]);
 
   useEffect(() => {
     if (isOpen) {
@@ -81,11 +98,11 @@ export function ChatbotWidget() {
         behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
       });
       // focus input when opening on non-touch devices
-      if (window.innerWidth >= 640) {
+      if (window.innerWidth >= 640 && !isStreaming) {
         inputRef.current?.focus();
       }
     }
-  }, [isOpen, messages, isLoading]);
+  }, [isOpen, messages, isLoading, isStreaming]);
 
   // Handle escape to close
   useEffect(() => {
@@ -103,7 +120,14 @@ export function ChatbotWidget() {
 
   const handleSendMessage = async (userText: string) => {
     const text = userText.trim();
-    if (!text || isLoading) return;
+    if (!text || isLoading || isStreaming) return;
+
+    // Clear previous streaming if any
+    if (streamIntervalRef.current) {
+      clearInterval(streamIntervalRef.current);
+      streamIntervalRef.current = null;
+      setIsStreaming(false);
+    }
 
     const userMessage = createMessage('user', text, { status: 'success' });
     const updatedMessages = [...messages, userMessage];
@@ -113,12 +137,56 @@ export function ChatbotWidget() {
 
     try {
       const response = await sendChatMessage(updatedMessages);
-      const botMessage = createMessage('assistant', response.text, {
+      const fullText = response.text;
+      const followUps = generateFollowUpSuggestions(text, fullText);
+      setIsLoading(false);
+
+      // Start streaming typewriter animation
+      const newBotMessage = createMessage('assistant', '', {
         status: 'success',
         isMock: response.isMock,
+        isStreaming: true,
+        followUps,
       });
-      setMessages((prev) => [...prev, botMessage]);
+      const botMessageId = newBotMessage.id;
+
+      setMessages((prev) => [...prev, newBotMessage]);
+      setIsStreaming(true);
+
+      const totalLen = fullText.length;
+      // Dynamic chunk step: keeps typewriter snappy (~1.2s - 2.0s)
+      const stepChars = totalLen > 1200 ? 14 : totalLen > 500 ? 7 : 3;
+      let currentIdx = 0;
+
+      streamIntervalRef.current = setInterval(() => {
+        currentIdx += stepChars;
+        if (currentIdx >= totalLen) {
+          if (streamIntervalRef.current) {
+            clearInterval(streamIntervalRef.current);
+            streamIntervalRef.current = null;
+          }
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === botMessageId
+                ? { ...m, content: fullText, isStreaming: false }
+                : m
+            )
+          );
+          setIsStreaming(false);
+        } else {
+          const partial = fullText.slice(0, currentIdx);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === botMessageId
+                ? { ...m, content: partial }
+                : m
+            )
+          );
+        }
+      }, 16);
     } catch (err) {
+      setIsLoading(false);
+      setIsStreaming(false);
       const errorMsg = err instanceof Error ? err.message : 'Đã có lỗi xảy ra khi kết nối tới trợ lý AI.';
       const errorMessage = createMessage(
         'assistant',
@@ -126,12 +194,16 @@ export function ChatbotWidget() {
         { status: 'error' }
       );
       setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleClearHistory = () => {
+    if (streamIntervalRef.current) {
+      clearInterval(streamIntervalRef.current);
+      streamIntervalRef.current = null;
+    }
+    setIsStreaming(false);
+    setIsLoading(false);
     setMessages([INITIAL_BOT_MESSAGE]);
     try {
       localStorage.removeItem(STORAGE_CHAT_HISTORY);
@@ -230,9 +302,11 @@ export function ChatbotWidget() {
           </div>
 
           {/* Message List */}
-          <div ref={messageListRef} className="htsv-chat-body space-y-4 p-4">
-            {messages.map((msg) => {
+          <div ref={messageListRef} className="htsv-chat-body flex-1 space-y-4 overflow-y-auto p-4">
+            {messages.map((msg, index) => {
               const isUser = msg.role === 'user';
+              const isLastMessage = index === messages.length - 1;
+
               return (
                 <div
                   key={msg.id}
@@ -248,6 +322,7 @@ export function ChatbotWidget() {
                     }`}
                   >
                     {renderMessageContent(msg.content, isUser)}
+                    {msg.isStreaming && <span className="htsv-chat-cursor" aria-hidden="true" />}
 
                     <div
                       className={`mt-1.5 flex items-center gap-1.5 text-[10px] ${
@@ -263,20 +338,46 @@ export function ChatbotWidget() {
                               Mẫu HTSV
                             </span>
                           )}
-                          <button
-                            type="button"
-                            onClick={() => handleCopyText(msg.content, msg.id)}
-                            className="htsv-chat-action-btn flex items-center gap-0.5 rounded px-1.5 py-0.5"
-                            title="Sao chép nội dung"
-                          >
-                            <Copy className="h-3 w-3" />
-                            <span>{copiedId === msg.id ? 'Đã chép' : 'Chép'}</span>
-                          </button>
+                          {!msg.isStreaming && (
+                            <button
+                              type="button"
+                              onClick={() => handleCopyText(msg.content, msg.id)}
+                              className="htsv-chat-action-btn flex items-center gap-0.5 rounded px-1.5 py-0.5"
+                              title="Sao chép nội dung"
+                            >
+                              <Copy className="h-3 w-3" />
+                              <span>{copiedId === msg.id ? 'Đã chép' : 'Chép'}</span>
+                            </button>
+                          )}
                         </div>
                       )}
                       <span>{formatTime(msg.timestamp)}</span>
                     </div>
                   </div>
+
+                  {/* Follow-up Prompt Chips (chỉ hiển thị ở câu trả lời mới nhất khi đã gõ xong) */}
+                  {!isUser && !msg.isStreaming && !isLoading && isLastMessage && msg.followUps && msg.followUps.length > 0 && (
+                    <div className="htsv-followup-wrapper mt-2.5 flex flex-col gap-1.5 w-full max-w-[85%]">
+                      <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                        <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                        <span>Gợi ý câu hỏi tiếp theo:</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {msg.followUps.map((chip, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            disabled={isLoading || isStreaming}
+                            onClick={() => handleSendMessage(chip)}
+                            className="htsv-followup-chip"
+                          >
+                            <span>💬</span>
+                            <span>{chip}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -289,7 +390,7 @@ export function ChatbotWidget() {
                   <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.15s]" />
                   <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500" />
                   <span className="htsv-chat-subtitle ml-2 text-xs">
-                    Trợ lý đang soạn câu trả lời...
+                    Trợ lý đang suy nghĩ...
                   </span>
                 </div>
               </div>
@@ -297,8 +398,8 @@ export function ChatbotWidget() {
 
           </div>
 
-          {/* Quick Suggestions Chips */}
-          {messages.length <= 2 && !isLoading && (
+          {/* Quick Suggestions Chips (Khi mới bắt đầu đoạn chat) */}
+          {messages.length <= 1 && !isLoading && !isStreaming && (
             <div className="htsv-chat-suggestions p-3">
               <p className="htsv-chat-subtitle mb-2 text-[11px] font-semibold">
                 Gợi ý câu hỏi phổ biến:
@@ -339,7 +440,7 @@ export function ChatbotWidget() {
               />
               <button
                 type="submit"
-                disabled={!input.trim() || isLoading}
+                disabled={!input.trim() || isLoading || isStreaming}
                 className="htsv-chat-send-btn flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl focus:outline-hidden"
                 aria-label="Gửi tin nhắn"
               >

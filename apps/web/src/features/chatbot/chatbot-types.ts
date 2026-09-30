@@ -7,6 +7,8 @@ export interface ChatMessage {
   timestamp: number;
   status?: 'sending' | 'success' | 'error';
   isMock?: boolean;
+  followUps?: string[];
+  isStreaming?: boolean;
 }
 
 export type ChatProvider = 'gemini' | 'openai';
