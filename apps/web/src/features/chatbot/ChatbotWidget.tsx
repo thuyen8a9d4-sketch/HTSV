@@ -60,7 +60,8 @@ export function ChatbotWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageListRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Save history on changes
@@ -72,14 +73,13 @@ export function ChatbotWidget() {
     }
   }, [messages]);
 
-  // Auto scroll to bottom
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
     if (isOpen) {
-      scrollToBottom();
+      const list = messageListRef.current;
+      list?.scrollTo({
+        top: messages.length === 1 ? 0 : list.scrollHeight,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      });
       // focus input when opening on non-touch devices
       if (window.innerWidth >= 640) {
         inputRef.current?.focus();
@@ -92,6 +92,7 @@ export function ChatbotWidget() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
         setIsOpen(false);
+        requestAnimationFrame(() => triggerRef.current?.focus());
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -164,43 +165,38 @@ export function ChatbotWidget() {
       {!isOpen && (
         <button
           type="button"
+          ref={triggerRef}
           onClick={() => setIsOpen(true)}
-          className="group fixed right-6 bottom-6 z-40 flex h-14 w-14 items-center justify-center rounded-full border border-white/80 bg-linear-to-br from-blue-600 via-sky-600 to-indigo-600 text-white shadow-xl shadow-blue-500/25 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/35 focus:ring-4 focus:ring-blue-400/40 focus:outline-hidden sm:right-8 sm:bottom-8"
+          aria-expanded={false}
+          aria-controls="htsv-chat-panel"
+          className="htsv-chat-trigger"
           aria-label="Mở Trợ lý Ảo HTSV"
         >
-          <div className="relative">
-            <ChatBubble className="h-7 w-7 transition-transform group-hover:scale-110" />
-            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500 dark:border-slate-900" />
-            </span>
-          </div>
-          <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-medium text-white shadow-md backdrop-blur-xs transition-opacity group-hover:block dark:bg-white/90 dark:text-slate-900">
-            Trợ lý Sinh viên HTSV ✨
-          </span>
+          <ChatBubble className="h-6 w-6" />
+          <span className="htsv-chat-trigger-tooltip">Trợ lý Sinh viên HTSV</span>
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
         <div
+          id="htsv-chat-panel"
           role="region"
           aria-label="Cửa sổ trò chuyện HTSV"
-          className="htsv-chat-window fixed right-0 bottom-0 z-40 flex h-[88vh] max-h-[640px] w-full flex-col overflow-hidden sm:right-6 sm:bottom-6 sm:w-[410px] sm:rounded-3xl"
+          className="htsv-chat-window"
         >
           {/* Header */}
-          <div className="htsv-chat-header flex items-center justify-between px-4 py-3.5">
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20">
+          <div className="htsv-chat-header flex items-center justify-between gap-2 px-4 py-3">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <div className="htsv-chat-avatar">
                 <Bot className="h-5 w-5" />
-                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="htsv-chat-title text-sm font-bold">
                     Trợ lý Sinh viên HTSV
                   </h3>
-                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                  <Sparkles className="htsv-chat-tag h-3.5 w-3.5 shrink-0" />
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="htsv-chat-subtitle text-[11px] font-medium">
@@ -223,7 +219,7 @@ export function ChatbotWidget() {
               </button>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={() => { setIsOpen(false); requestAnimationFrame(() => triggerRef.current?.focus()); }}
                 title="Thu nhỏ"
                 className="htsv-chat-action-btn rounded-xl p-2 focus:outline-hidden"
                 aria-label="Đóng cửa sổ"
@@ -234,7 +230,7 @@ export function ChatbotWidget() {
           </div>
 
           {/* Message List */}
-          <div className="htsv-chat-body flex-1 space-y-4 overflow-y-auto p-4">
+          <div ref={messageListRef} className="htsv-chat-body space-y-4 p-4">
             {messages.map((msg) => {
               const isUser = msg.role === 'user';
               return (
@@ -243,11 +239,11 @@ export function ChatbotWidget() {
                   className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-xs ${
+                    className={`htsv-chat-message max-w-[92%] rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-xs ${
                       isUser
-                        ? 'rounded-br-xs bg-linear-to-r from-blue-600 to-indigo-600 text-white'
+                        ? 'htsv-chat-bubble-user rounded-br-xs'
                         : msg.status === 'error'
-                        ? 'rounded-bl-xs border border-red-200 bg-red-50 text-red-900 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200'
+                        ? 'htsv-chat-bubble-error rounded-bl-xs'
                         : 'htsv-chat-bubble-ai rounded-bl-xs'
                     }`}
                   >
@@ -256,7 +252,7 @@ export function ChatbotWidget() {
                     <div
                       className={`mt-1.5 flex items-center gap-1.5 text-[10px] ${
                         isUser
-                          ? 'justify-end text-blue-100/90'
+                          ? 'htsv-chat-user-time justify-end'
                           : 'justify-between htsv-chat-subtitle'
                       }`}
                     >
@@ -287,7 +283,7 @@ export function ChatbotWidget() {
 
             {/* Typing Loader */}
             {isLoading && (
-              <div className="flex items-start">
+              <div className="flex items-start" role="status">
                 <div className="htsv-chat-bubble-ai flex items-center gap-1 rounded-2xl rounded-bl-xs px-4 py-3 shadow-xs">
                   <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.3s]" />
                   <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.15s]" />
@@ -299,7 +295,6 @@ export function ChatbotWidget() {
               </div>
             )}
 
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Quick Suggestions Chips */}
@@ -334,12 +329,13 @@ export function ChatbotWidget() {
             <div className="flex items-end gap-2">
               <textarea
                 ref={inputRef}
+                aria-label="Tin nhắn cho trợ lý HTSV"
                 rows={1}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDownInput}
-                placeholder="Hỏi bất kỳ điều gì (lập trình, học tập, thủ tục HTSV)..."
-                className="htsv-chat-textarea max-h-28 min-h-[44px] flex-1 resize-none rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed"
+                placeholder="Nhập câu hỏi của bạn…"
+                className="htsv-chat-textarea max-h-28 min-h-[44px] min-w-0 flex-1 resize-none rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed"
               />
               <button
                 type="submit"

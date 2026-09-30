@@ -19,7 +19,7 @@ function renderInline(text: string, isUser = false) {
       return (
         <strong
           key={index}
-          className={isUser ? 'font-bold text-white' : 'font-bold text-blue-700 dark:text-blue-300'}
+          className={isUser ? 'font-bold text-white' : 'font-bold htsv-chat-tag'}
         >
           {part.slice(2, -2)}
         </strong>
@@ -32,7 +32,7 @@ function renderInline(text: string, isUser = false) {
           className={`mx-0.5 rounded px-1.5 py-0.5 font-mono text-[11px] ${
             isUser
               ? 'bg-white/20 text-white'
-              : 'bg-slate-200/80 text-pink-600 dark:bg-slate-800 dark:text-pink-400'
+              : 'htsv-chat-inline-code'
           }`}
         >
           {part.slice(1, -1)}
@@ -57,21 +57,21 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
   };
 
   return (
-    <div className="my-2.5 overflow-hidden rounded-xl border border-slate-700/60 bg-slate-900 text-slate-100 shadow-md">
-      <div className="flex items-center justify-between border-b border-slate-700/60 bg-slate-800/90 px-3 py-1.5 text-[10px] text-slate-400">
-        <span className="font-mono uppercase font-semibold text-slate-300">
+    <div className="htsv-chat-code my-2.5 overflow-hidden rounded-xl">
+      <div className="htsv-chat-code-header flex items-center justify-between gap-2 px-3 py-1.5 text-[10px]">
+        <span className="font-mono uppercase font-semibold">
           {language || 'code'}
         </span>
         <button
           type="button"
           onClick={handleCopy}
-          className="flex items-center gap-1 rounded px-2 py-0.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+          className="htsv-chat-code-copy flex items-center gap-1 rounded px-2 py-0.5"
         >
           <Copy className="h-3 w-3" />
           <span>{copied ? 'Đã sao chép!' : 'Sao chép'}</span>
         </button>
       </div>
-      <pre className="overflow-x-auto p-3 font-mono text-[11px] leading-relaxed text-slate-200">
+      <pre className="overflow-x-auto p-3 font-mono text-[11px] leading-relaxed">
         <code>{code}</code>
       </pre>
     </div>
@@ -134,21 +134,21 @@ export function ChatMarkdown({ content, isUser = false }: ChatMarkdownProps) {
               // Check if paragraph is a heading
               if (lines.length === 1 && lines[0].startsWith('### ')) {
                 return (
-                  <h4 key={paraIdx} className="mt-2 text-xs font-bold text-slate-900 dark:text-slate-100 sm:text-sm">
+                  <h4 key={paraIdx} className="mt-2 text-xs font-bold htsv-chat-title sm:text-sm">
                     {renderInline(lines[0].slice(4))}
                   </h4>
                 );
               }
               if (lines.length === 1 && lines[0].startsWith('## ')) {
                 return (
-                  <h3 key={paraIdx} className="mt-2.5 text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <h3 key={paraIdx} className="mt-2.5 text-sm font-bold htsv-chat-title">
                     {renderInline(lines[0].slice(3))}
                   </h3>
                 );
               }
               if (lines.length === 1 && lines[0].startsWith('# ')) {
                 return (
-                  <h2 key={paraIdx} className="mt-3 text-sm font-extrabold text-slate-900 dark:text-slate-100 sm:text-base">
+                  <h2 key={paraIdx} className="mt-3 text-sm font-extrabold htsv-chat-title sm:text-base">
                     {renderInline(lines[0].slice(2))}
                   </h2>
                 );
@@ -177,7 +177,7 @@ export function ChatMarkdown({ content, isUser = false }: ChatMarkdownProps) {
                       if (numberMatch) {
                         return (
                           <li key={lineIdx} className="flex items-start gap-1.5">
-                            <span className="font-semibold text-blue-600 dark:text-blue-400 shrink-0">
+                            <span className="font-semibold htsv-chat-tag shrink-0">
                               {numberMatch[0]}
                             </span>
                             <span className="flex-1">{renderInline(trimmed.slice(numberMatch[0].length))}</span>
