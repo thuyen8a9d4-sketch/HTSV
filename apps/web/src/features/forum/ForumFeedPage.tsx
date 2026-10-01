@@ -146,12 +146,12 @@ export function ForumFeedPage() {
                   <div className="mt-5 flex flex-wrap gap-2 border-t border-slate-100 pt-4 text-xs text-slate-600">
                     <span className="liquid-pill">
                       <Heart className="h-4 w-4" />
-                      {post._count.luotThiches}
+                      {post._count?.luotThiches ?? 0}
                       <span className="sr-only">lượt cảm xúc</span>
                     </span>
                     <span className="liquid-pill">
                       <ChatBubble className="h-4 w-4" />
-                      {post._count.binhLuans}
+                      {post._count?.binhLuans ?? 0}
                       <span className="sr-only">bình luận</span>
                     </span>
                     <span className="liquid-pill">
