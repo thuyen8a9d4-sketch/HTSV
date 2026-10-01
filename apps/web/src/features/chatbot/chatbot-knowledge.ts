@@ -35,7 +35,7 @@ NGUYÊN TẮC GIAO TIẾP VÀ TRẢ LỜI (BẮT BUỘC):
    - Showroom Ô tô Nam Cần Thơ DNC & xưởng bảo dưỡng, sửa chữa thực tế.
    - Viện Nghiên cứu & Phát triển Dược liệu.
    - Trung tâm Phát triển Phần mềm & AI DNC.
-   - DNC Travel & Khu Resort sinh thái DNC.
+   - Công ty Du lịch DNC (DNC Travel) phục vụ thực hành cho sinh viên ngành Du lịch, Khách sạn.
    - Ký túc xá máy lạnh 2.000 chỗ, hồ bơi chuẩn quốc gia, sân bóng đá cỏ nhân tạo, thư viện số.
  - PHƯƠNG THỨC XÉT TUYỂN:
  * 1. Điểm thi THPT; 2. Học bạ THPT (3 cách tính điểm linh hoạt); 3. Điểm ĐGNL ĐHQG TP.HCM; 4. Tuyển thẳng.
@@ -61,8 +61,7 @@ NGUYÊN TẮC CỐT LÕI (HỎI GÌ TRẢ LỜI CÁI ĐÓ - KHÔNG BIẾT THÌ N
      * Trường Đại học Nam Cần Thơ: Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ.
      * Khu phức hợp Ký túc xá DNC: Trong khuôn viên trường (168 Nguyễn Văn Cừ nối dài, hơn 2.000 chỗ, phòng quạt và máy lạnh).
      * Viện Dược liệu / Trung tâm phần mềm / Khu thể thao: Trong khuôn viên trường.
-     * DNC Resort: TP. Phú Quốc, Tỉnh Kiên Giang.
-     * TUYỆT ĐỐI KHÔNG lan man giới thiệu chương trình đào tạo hay học phí khi người dùng chỉ hỏi địa chỉ.
+          * TUYỆT ĐỐI KHÔNG lan man giới thiệu chương trình đào tạo hay học phí khi người dùng chỉ hỏi địa chỉ.
    - HỌC PHÍ / BAO NHIÊU TIỀN: Chỉ trả lời số tiền học phí cụ thể của ngành hoặc dịch vụ đó, cam kết ổn định toàn khóa.
    - THỜI GIAN ĐÀO TẠO / MẤY NĂM: Chỉ trả lời số năm học và loại văn bằng (Y khoa 6 năm, Dược 5 năm, Kỹ sư 4 - 4.5 năm, Cử nhân 3.5 - 4 năm).
    - MÃ NGÀNH: Chỉ trả lời mã ngành chính xác.
@@ -966,8 +965,7 @@ Tất cả bài viết đều được đội ngũ kiểm duyệt xem xét cẩn
       'giai đoạn 2 bệnh viện dnc',
       'cơ sở vật chất dnc có gì',
       'trường dnc có gì nổi bật',
-      'resort dnc',
-      'dnc travel',
+            'dnc travel',
       'hồ bơi dnc',
       'viện dược liệu dnc'
     ],
@@ -977,7 +975,7 @@ Tất cả bài viết đều được đội ngũ kiểm duyệt xem xét cẩn
 * **Showroom Ô tô Nam Cần Thơ DNC:** Xưởng bảo dưỡng, sửa chữa và kinh doanh xe hiện đại phục vụ thực hành cho sinh viên ngành Ô tô.
 * **Viện Nghiên cứu & Phát triển Dược liệu:** Nghiên cứu và ứng dụng các sản phẩm dược liệu, đông trùng hạ thảo, thực phẩm bảo vệ sức khỏe.
 * **Trung tâm Phát triển Phần mềm & AI DNC:** Nơi sinh viên CNTT thực chiến các dự án phần mềm thực tế.
-* **Hệ sinh thái Du lịch:** Công ty Du lịch DNC Travel và Khu Resort sinh thái DNC phục vụ đào tạo ngành Du lịch, Khách sạn, Nhà hàng.
+* **Hệ sinh thái Du lịch:** Công ty Du lịch DNC Travel phục vụ đào tạo ngành Du lịch, Khách sạn, Nhà hàng.
 * **Thể thao & Đời sống:** Hồ bơi đạt chuẩn quốc gia, sân bóng đá cỏ nhân tạo, nhà thi đấu đa năng và khu Ký túc xá máy lạnh 2.000 chỗ.
 
 Bạn thấy cơ sở vật chất ở DNC xịn sò không nè!`,
@@ -1435,8 +1433,7 @@ export function getMockResponse(question: string): string {
   if (
     noTone.includes('he sinh thai') ||
     noTone.includes('doanh nghiep trong truong') ||
-    noTone.includes('resort') ||
-    noTone.includes('dnc travel') ||
+        noTone.includes('dnc travel') ||
     noTone.includes('ho boi') ||
     noTone.includes('vien duoc lieu') ||
     (noTone.includes('co so vat chat') && noTone.includes('dnc'))

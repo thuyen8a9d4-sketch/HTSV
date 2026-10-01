@@ -1716,9 +1716,9 @@ export function resolveDncAddress(noTone: string): string {
     return `Cơ sở này nằm ngay bên trong khuôn viên Trường Đại học Nam Cần Thơ, địa chỉ: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.`;
   }
 
-  // 5. DNC Resort
+  // 5. Kiểm tra câu hỏi về Resort
   if (noTone.includes('resort')) {
-    return `**Khu nghỉ dưỡng sinh thái DNC Resort** (thuộc hệ sinh thái doanh nghiệp của Trường Đại học Nam Cần Thơ) tọa lạc tại: **TP. Phú Quốc, Tỉnh Kiên Giang**.`;
+    return `Dạ Trường Đại học Nam Cần Thơ (DNC) không có khu nghỉ dưỡng nào tên là DNC Resort nha bạn! Trường chỉ có Công ty Du lịch DNC (DNC Travel) và liên kết với các doanh nghiệp, khách sạn để sinh viên thực tập thôi nè.`;
   }
 
   // 6. Phòng Đào tạo / CTSV / Văn phòng một cửa
