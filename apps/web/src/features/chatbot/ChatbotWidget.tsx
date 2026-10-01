@@ -256,6 +256,8 @@ export function ChatbotWidget() {
           role="region"
           aria-label="Cửa sổ trò chuyện HTSV"
           className="htsv-chat-window"
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="htsv-chat-header flex items-center justify-between gap-2 px-4 py-3">

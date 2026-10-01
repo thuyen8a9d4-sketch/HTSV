@@ -29,12 +29,13 @@ export class Scroll {
 
   private touchY = 0;
   private isBound = false;
+  private boundTarget: EventTarget | null = null;
 
   private isScrollableOrInteractive(target: EventTarget | null): boolean {
     if (!(target instanceof Element)) return false;
     return Boolean(
       target.closest(
-        'dialog, .glass-modal, .glass-drawer, .bottom-nav, .liquid-glass-nav-container, .student-utilities-shortcut, button, input, textarea, select, a, [role="dialog"], #home-content-section'
+        'dialog, .glass-modal, .glass-drawer, .bottom-nav, .liquid-glass-nav-container, .student-utilities-shortcut, button, input, textarea, select, a, [role="dialog"], [role="region"], #home-content-section, .chatbot-widget-container, .htsv-chat-window, #htsv-chat-panel, .htsv-chat-body, .htsv-chat-suggestions'
       )
     );
   }
@@ -110,6 +111,7 @@ export class Scroll {
   bindEvents(container?: HTMLElement) {
     if (this.isBound) return;
     const target = container || window;
+    this.boundTarget = target;
     target.addEventListener('wheel', this.onWheel as EventListener, { passive: false });
     target.addEventListener('touchstart', this.onTouchStart as EventListener, { passive: true });
     target.addEventListener('touchmove', this.onTouchMove as EventListener, { passive: false });
@@ -197,9 +199,12 @@ export class Scroll {
   }
 
   dispose() {
-    window.removeEventListener('wheel', this.onWheel as EventListener);
-    window.removeEventListener('touchstart', this.onTouchStart as EventListener);
-    window.removeEventListener('touchmove', this.onTouchMove as EventListener);
+    if (this.boundTarget) {
+      this.boundTarget.removeEventListener('wheel', this.onWheel as EventListener);
+      this.boundTarget.removeEventListener('touchstart', this.onTouchStart as EventListener);
+      this.boundTarget.removeEventListener('touchmove', this.onTouchMove as EventListener);
+      this.boundTarget = null;
+    }
     this.isBound = false;
   }
 }

@@ -53,7 +53,7 @@
 .htsv-chat-action-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; min-height: 36px; color: var(--chat-muted); border: 1px solid transparent; transition: background-color .16s, color .16s; }
 .htsv-chat-action-btn:hover { background: var(--chat-surface); border-color: var(--chat-border); color: var(--chat-ink); }
 .htsv-chat-header .htsv-chat-action-btn { width: 40px; height: 44px; padding: 8px; }
-.htsv-chat-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--chat-border) transparent; background: radial-gradient(ellipse at 0 0, #0284c70a, transparent 65%); }
+.htsv-chat-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-width: thin; scrollbar-color: var(--chat-border) transparent; background: radial-gradient(ellipse at 0 0, #0284c70a, transparent 65%); }
 .htsv-chat-message { min-width: 0; overflow-wrap: anywhere; box-shadow: 0 2px 6px #0f172a08; }
 .htsv-chat-message :is(li > span, li > div) { min-width: 0; }
 .htsv-chat-bubble-ai { color: var(--chat-ink); background: var(--chat-surface); border: 1px solid var(--chat-border); }
@@ -62,7 +62,7 @@
 .htsv-chat-bubble-error { color: #991b1b; background: #fef2f2; border: 1px solid #fecaca; }
 :root[data-theme="dark"] .htsv-chat-bubble-error { color: #f3c4c9; background: #3b292e; border-color: #71454e; }
 .htsv-chat-mock-badge { color: var(--chat-muted); background: var(--chat-solid); border: 1px solid var(--chat-border); }
-.htsv-chat-suggestions { max-height: 150px; overflow-y: auto; overscroll-behavior: contain; }
+.htsv-chat-suggestions { max-height: 150px; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
 .htsv-chat-chip { min-height: 36px; color: var(--chat-ink); border: 1px solid var(--chat-border); background: var(--chat-surface); box-shadow: inset 0 1px 0 var(--chat-specular); transition: border-color .16s, background-color .16s; }
 .htsv-chat-chip:hover { color: var(--accent-text); background: var(--accent-soft); border-color: var(--accent-border); }
 .htsv-chat-textarea { color: var(--chat-ink); background: var(--chat-surface); border: 1px solid var(--chat-border); }

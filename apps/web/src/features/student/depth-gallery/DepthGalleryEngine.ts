@@ -86,7 +86,7 @@ export class DepthGalleryEngine {
     this.gallery.setTextures(textures);
     this.gallery.init(this.scene);
     this.trailController.init(this.scene, this.camera);
-    this.scroll.init();
+    this.scroll.init((this.canvas.parentElement as HTMLElement) || this.canvas);
 
     this.resize();
 
