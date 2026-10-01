@@ -15,6 +15,10 @@ const SOURCES = {
   dorm: 'https://www.nctu.edu.vn/ky-tuc-xa',
   hospitalContact: 'https://www.benhviendhnct.com.vn/lien-he',
   hospitalAbout: 'https://benhviendhnct.com.vn/eng/about-us',
+  itMajor: 'https://tuyensinh.nctu.edu.vn/news/2026/nganh-cong-nghe-thong-tin-tai-dai-hoc-nam-can-tho-hoc-gi-co-hoi-nghe-nghiep-co-rong-mo',
+  aiMajor: 'https://tuyensinh.nctu.edu.vn/news/2026/nganh-tri-tue-nhan-tao-tai-dai-hoc-nam-can-tho-co-gi-noi-bat',
+  showroom: 'https://nctu.edu.vn/mo-hinh-doanh-nghiep/showroom-o-to',
+  library: 'https://thuvien.nctu.edu.vn/',
 } as const;
 
 export const DNC_UNKNOWN = 'Mình chưa tìm được thông tin này trên website chính thức của Trường Đại học Nam Cần Thơ.';
@@ -37,23 +41,54 @@ interface Major {
 
 const MAJORS: Major[] = [
   { name: 'Y khoa', code: '7720101', aliases: ['y khoa', 'bac si da khoa'] },
-  { name: 'Răng - Hàm - Mặt', code: '7720501', aliases: ['rang ham mat', 'nha khoa'] },
+  { name: 'Răng - Hàm - Mặt', code: '7720501', aliases: ['rang - ham - mat', 'rang ham mat', 'nha khoa'] },
   { name: 'Y học dự phòng', code: '7720110', aliases: ['y hoc du phong'] },
   { name: 'Dược học', code: '7720201', aliases: ['duoc hoc'] },
   { name: 'Điều dưỡng', code: '7720301', aliases: ['dieu duong'] },
+  { name: 'Kỹ thuật xét nghiệm y học', code: '7720601', aliases: ['ky thuat xet nghiem y hoc', 'xet nghiem y hoc'] },
+  { name: 'Kỹ thuật hình ảnh y học', code: '7720602', aliases: ['ky thuat hinh anh y hoc', 'hinh anh y hoc'] },
+  { name: 'Quản lý bệnh viện', code: '7720802', aliases: ['quan ly benh vien'] },
+  { name: 'Kỹ thuật y sinh', code: '7520212', aliases: ['ky thuat y sinh'] },
   { name: 'Công nghệ thông tin', code: '7480201', aliases: ['cong nghe thong tin', 'cntt'] },
+  { name: 'Kỹ thuật phần mềm', code: '7480103', aliases: ['ky thuat phan mem'] },
+  { name: 'Khoa học máy tính', code: '7480101', aliases: ['khoa hoc may tinh'] },
+  { name: 'Mạng máy tính và truyền thông dữ liệu', code: '7480102', aliases: ['mang may tinh', 'truyen thong du lieu'] },
   { name: 'Trí tuệ nhân tạo', code: '7480107', aliases: ['tri tue nhan tao', 'nganh ai'] },
+  { name: 'Thiết kế đồ họa', code: '7210403', aliases: ['thiet ke do hoa'] },
+  { name: 'An toàn thông tin', code: '7480202', aliases: ['an toan thong tin'] },
+  { name: 'Công nghệ kỹ thuật điện, điện tử', code: '7510301', aliases: ['cong nghe ky thuat dien, dien tu', 'cong nghe ky thuat dien dien tu', 'dien dien tu'] },
+  { name: 'Công nghệ kỹ thuật cơ điện tử', code: '7510203', aliases: ['cong nghe ky thuat co dien tu', 'co dien tu'] },
   { name: 'Công nghệ kỹ thuật ô tô', code: '7510205', aliases: ['cong nghe ky thuat o to', 'cong nghe o to', 'o to dien'] },
-  { name: 'Quản trị kinh doanh', code: '7340101', aliases: ['quan tri kinh doanh', 'qtkd'] },
-  { name: 'Marketing', code: '7340115', aliases: ['marketing'] },
-  { name: 'Logistics và quản lý chuỗi cung ứng', code: '7510605', aliases: ['logistics', 'chuoi cung ung'] },
-  { name: 'Luật kinh tế', code: '7380107', aliases: ['luat kinh te'] },
+  { name: 'Kỹ thuật cơ khí động lực', code: '7520116', aliases: ['ky thuat co khi dong luc', 'co khi dong luc'] },
+  { name: 'Công nghệ kỹ thuật cơ khí', code: '7510201', aliases: ['cong nghe ky thuat co khi'] },
+  { name: 'Công nghệ thực phẩm', code: '7540101', aliases: ['cong nghe thuc pham'] },
+  { name: 'Công nghệ kỹ thuật hóa học', code: '7510401', aliases: ['cong nghe ky thuat hoa hoc'] },
+  { name: 'Kiến trúc', code: '7580101', aliases: ['kien truc'] },
+  { name: 'Kỹ thuật xây dựng', code: '7580201', aliases: ['ky thuat xay dung'] },
+  { name: 'Quản lý xây dựng', code: '7580302', aliases: ['quan ly xay dung'] },
+  { name: 'Kỹ thuật xây dựng công trình giao thông', code: '7580205', aliases: ['ky thuat xay dung cong trinh giao thong'] },
+  { name: 'Quản lý tài nguyên và môi trường', code: '7850101', aliases: ['quan ly tai nguyen', 'tai nguyen moi truong'] },
+  { name: 'Quản lý đất đai', code: '7850103', aliases: ['quan ly dat dai'] },
   { name: 'Luật', code: '7380101', aliases: ['nganh luat', 'luat hoc'] },
-  { name: 'Ngôn ngữ Anh', code: '7220201', aliases: ['ngon ngu anh'] },
+  { name: 'Luật kinh tế', code: '7380107', aliases: ['luat kinh te'] },
+  { name: 'Luật quốc tế', code: '7380108', aliases: ['luat quoc te'] },
+  { name: 'Quan hệ công chúng', code: '7320108', aliases: ['quan he cong chung', 'nganh pr'] },
+  { name: 'Truyền thông đa phương tiện', code: '7320104', aliases: ['truyen thong da phuong tien'] },
+  { name: 'Quản trị kinh doanh', code: '7340101', aliases: ['quan tri kinh doanh', 'qtkd'] },
+  { name: 'Tài chính - Ngân hàng', code: '7340201', aliases: ['tai chinh - ngan hang', 'tai chinh ngan hang'] },
   { name: 'Kế toán', code: '7340301', aliases: ['ke toan'] },
-  { name: 'Tài chính - Ngân hàng', code: '7340201', aliases: ['tai chinh ngan hang'] },
+  { name: 'Marketing', code: '7340115', aliases: ['marketing'] },
+  { name: 'Kinh doanh quốc tế', code: '7340120', aliases: ['kinh doanh quoc te'] },
+  { name: 'Kinh tế số', code: '7310109', aliases: ['kinh te so'] },
+  { name: 'Thương mại điện tử', code: '7340122', aliases: ['thuong mai dien tu'] },
+  { name: 'Bất động sản', code: '7340116', aliases: ['bat dong san'] },
+  { name: 'Logistics và quản lý chuỗi cung ứng', code: '7510605', aliases: ['logistics', 'chuoi cung ung'] },
+  { name: 'Quản lý công nghiệp', code: '7510601', aliases: ['quan ly cong nghiep'] },
+  { name: 'Ngôn ngữ Anh', code: '7220201', aliases: ['ngon ngu anh'] },
   { name: 'Quản trị khách sạn', code: '7810201', aliases: ['quan tri khach san'] },
+  { name: 'Quản trị nhà hàng và dịch vụ ăn uống', code: '7810202', aliases: ['quan tri nha hang', 'dich vu an uong'] },
   { name: 'Quản trị dịch vụ du lịch và lữ hành', code: '7810103', aliases: ['quan tri dich vu du lich', 'du lich lu hanh'] },
+  { name: 'Công nghệ sinh học', code: '7420201', aliases: ['cong nghe sinh hoc'] },
 ];
 
 const TUITION_GROUPS = [
@@ -87,10 +122,33 @@ function findMajor(query: string): Major | undefined {
   return MAJORS.find((major) => major.aliases.some((alias) => query.includes(alias)) || query.includes(major.code));
 }
 
+function findMajors(query: string): Major[] {
+  const candidates = MAJORS.flatMap((major) => [major.code, ...major.aliases].filter(Boolean).map((alias) => ({ major, alias })))
+    .sort((a, b) => b.alias.length - a.alias.length);
+  const occupied: Array<[number, number]> = [];
+  const matches: Array<{ major: Major; start: number }> = [];
+  for (const { major, alias } of candidates) {
+    const start = query.indexOf(alias);
+    if (start < 0 || occupied.some(([from, to]) => start < to && start + alias.length > from)) continue;
+    if (matches.some((item) => item.major.code === major.code)) continue;
+    occupied.push([start, start + alias.length]);
+    matches.push({ major, start });
+  }
+  return matches.sort((a, b) => a.start - b.start).map((item) => item.major);
+}
+
+function tuitionFor(major: Major): string | null {
+  const group = TUITION_GROUPS.find((item) => item.majors.some((alias) => major.aliases.some((name) => name.includes(alias) || alias.includes(name))));
+  return group?.fee ?? null;
+}
+
 /** Chỉ trả về chứng cứ liên quan đến câu hỏi; không đưa dữ kiện chưa xác minh vào prompt. */
 export function findDncEvidence(question: string, previousUserQuestion = ''): DncLookup | null {
   const query = normalize(question.trim());
   const previous = normalize(previousUserQuestion);
+  const asksMajorInfo = contains(query, ['thong tin', 'gioi thieu', 'nganh ', 'hoc gi', 'dao tao', 'co nganh', 'tim hieu']);
+  const asksAi = contains(query, ['tri tue nhan tao']) || /\bai\b/.test(query);
+  if (query.includes('dai hoc can tho') && !query.includes('nam can tho')) return null;
   const hospital = contains(query, ['benh vien']) && !contains(query, ['quan ly benh vien']) ||
     !contains(query, ['truong', 'ky tuc xa', 'ktx', 'showroom', 'hoc phi', 'nganh']) &&
     contains(previous, ['benh vien']) && contains(query, ['no', 'do', 'o dau', 'dia chi', 'lien he', 'so dien thoai', 'them', 'con']);
@@ -103,7 +161,46 @@ export function findDncEvidence(question: string, previousUserQuestion = ''): Dn
       { answer: 'Bệnh viện Đại học Nam Cần Thơ khám chữa bệnh và là nơi thực hành cho sinh viên khối ngành Sức khỏe. Bệnh viện có quy mô 300 giường và khai trương ngày 08/06/2022.', source: SOURCES.hospitalAbout },
     ]);
   }
-  const campusTopic = contains(query, ['hoc phi', 'hoc bong', 'xet tuyen', 'tuyen sinh', 'hoc ba', 'ky tuc xa', 'ktx', 'ma nganh', 'ma truong', 'diem san', 'diem chuan', 'nganh hoc', 'cong thong tin sinh vien']) || (contains(query, ['truong']) && contains(query, ['o dau', 'dia chi', 'gioi thieu']));
+  if (contains(query, ['showroom', 'trung bay o to'])) {
+    if (contains(query, ['dia chi', 'o dau', 'vi tri'])) return result([{ answer: 'Showroom Ô tô Nam Cần Thơ DNC ở số 166 đường song hành Quốc lộ 1A, khu dân cư Hồng Loan, phường Hưng Thạnh, TP. Cần Thơ.', source: SOURCES.showroom }]);
+    if (contains(query, ['hotline', 'lien he', 'so dien thoai', 'gia xe', 'gio mo cua'])) return result([]);
+    return result([{ answer: 'Showroom Ô tô Nam Cần Thơ DNC phục vụ trưng bày, kinh doanh ô tô và là nơi thực hành cho sinh viên ngành ô tô, cơ khí động lực.', source: SOURCES.showroom }]);
+  }
+  if (contains(query, ['thu vien'])) {
+    if (contains(query, ['gio mo cua', 'may gio', 'phi', 'muon sach'])) return result([]);
+    return result([{ answer: 'Trường có Thư viện điện tử phục vụ học tập, giảng dạy và nghiên cứu; bạn có thể tra cứu tại website thư viện.', source: SOURCES.library }]);
+  }
+  // Một quy tắc chung cho mọi ngành được trường công bố, kể cả câu hỏi nhiều ngành.
+  const explicitMajors = findMajors(query);
+  if (asksAi && !explicitMajors.some((major) => major.code === '7480107') &&
+    (asksMajorInfo || contains(query, ['hoc phi', 'ma nganh', 'to hop', 'diem san', 'diem chuan']))) {
+    explicitMajors.push(MAJORS.find((major) => major.code === '7480107')!);
+  }
+  const followUp = /^(con|the|vay|nganh|ma|bao nhieu)\b/.test(query);
+  const majors = explicitMajors.length ? explicitMajors : followUp ? findMajors(previous) : [];
+  const previousTuition = followUp && contains(previous, ['hoc phi', 'chi phi hoc']);
+  if (majors.length && (asksMajorInfo || contains(query, ['hoc phi', 'chi phi hoc', 'ma nganh', 'ma xet tuyen', 'to hop', 'xet khoi', 'khoi nao', 'diem san', 'diem chuan']) || previousTuition)) {
+    if (contains(query, ['hoc phi', 'chi phi hoc']) || previousTuition) {
+      const evidence = majors.map((major) => ({ major, fee: tuitionFor(major) })).filter((item) => item.fee);
+      if (evidence.length !== majors.length) return result([]);
+      return result([{ answer: `Học phí học kỳ I năm 2026: ${evidence.map(({ major, fee }) => `${major.name} khoảng ${fee}`).join('; ')}. Mức thực tế tính theo số tín chỉ.`, source: SOURCES.tuition }]);
+    }
+    if (contains(query, ['ma nganh', 'ma xet tuyen'])) return result([{ answer: `Mã ngành tuyển sinh 2026: ${majors.map((major) => `${major.name} ${major.code}`).join('; ')}.`, source: SOURCES.admissions }]);
+    if (contains(query, ['to hop', 'xet khoi', 'khoi nao'])) {
+      if (majors.length === 1 && majors[0].code === '7720101') return result([{ answer: 'Tổ hợp xét tuyển Y khoa năm 2026: A00, A02, B00, B03, D07, D08.', source: SOURCES.admissions }]);
+      if (majors.length === 1 && majors[0].code === '7480201') return result([{ answer: 'Tổ hợp xét tuyển Công nghệ thông tin năm 2026: A00, A01, A02, C01, D01, X06, X08, X25, X26.', source: SOURCES.admissions }]);
+      return result([]);
+    }
+    if (contains(query, ['diem san', 'diem chuan'])) return result([]);
+    if (contains(query, ['luong', 'viec lam', 'ra truong', 'hoc may nam', 'thoi gian dao tao', 'mon hoc'])) return result([]);
+    if (contains(query, ['hoc gi']) && majors.some((major) => !['7480201', '7480107'].includes(major.code))) return result([]);
+    return result(majors.map((major) => {
+      if (major.code === '7480201') return { answer: 'Ngành Công nghệ thông tin tại DNC học nền tảng về cấu trúc dữ liệu, giải thuật, hệ điều hành, cơ sở dữ liệu và mạng máy tính; chương trình hướng tới xây dựng, phát triển và vận hành hệ thống công nghệ.', source: SOURCES.itMajor };
+      if (major.code === '7480107') return { answer: 'Ngành Trí tuệ nhân tạo tại DNC đào tạo theo hướng ứng dụng, tập trung vào dữ liệu và tự động hóa. Đây là ngành riêng trong danh mục tuyển sinh 2026.', source: SOURCES.aiMajor };
+      return { answer: `DNC tuyển sinh ngành ${major.name} (mã ${major.code}) năm 2026.`, source: SOURCES.admissions };
+    }));
+  }
+  const campusTopic = contains(query, ['hoc phi', 'hoc bong', 'xet tuyen', 'tuyen sinh', 'hoc ba', 'ky tuc xa', 'ktx', 'ma nganh', 'ma truong', 'diem san', 'diem chuan', 'nganh hoc', 'thong tin nganh', 'cong thong tin sinh vien']) || (contains(query, ['truong']) && contains(query, ['o dau', 'dia chi', 'gioi thieu']));
   const hasDnc = contains(query, ['nam can tho', 'dnc', 'nctu', 'mydnc']) ||
     (contains(previous, ['nam can tho', 'dnc', 'nctu', 'mydnc']) &&
       (campusTopic || Boolean(findMajor(query)) || /^(con|the|vay|no|o dau|bao nhieu|ma)\b/.test(query)));
@@ -218,6 +315,8 @@ export function findDncEvidence(question: string, previousUserQuestion = ''): Dn
     else add('Trường có ký túc xá trong khuôn viên. Dự án Ký túc xá Quốc tế 15 tầng, dự kiến 2.500 chỗ, được khởi công tháng 01/2026; đây là dự án, không phải số chỗ đang vận hành.', SOURCES.history);
   }
   if (contains(query, ['thu vien']) && hasDnc) add('Trường có Trung tâm Thư viện điện tử phục vụ học tập và nghiên cứu.', SOURCES.history);
+
+  if (!evidence.length && asksMajorInfo && major) add(`Theo thông tin tuyển sinh 2026, DNC có ngành ${major.name} (mã ${major.code}). Nếu bạn muốn biết học phí, tổ hợp xét tuyển hoặc nội dung học, hãy hỏi cụ thể mục đó.`, SOURCES.admissions);
 
   return result(evidence.slice(0, 3));
 }
