@@ -1,6 +1,11 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
+import { USER_WITH_ROLES_INCLUDE } from '../users/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -10,7 +15,7 @@ export class UsersAdminService {
 
   findAll() {
     return this.prisma.nguoiDung.findMany({
-      include: { userRoles: { include: { role: true } } },
+      include: USER_WITH_ROLES_INCLUDE,
       orderBy: { id: 'asc' },
     });
   }
@@ -18,7 +23,7 @@ export class UsersAdminService {
   async findOne(id: number) {
     const user = await this.prisma.nguoiDung.findUnique({
       where: { id },
-      include: { userRoles: { include: { role: true } } },
+      include: USER_WITH_ROLES_INCLUDE,
     });
     if (!user) throw new NotFoundException('Không tìm thấy người dùng');
     return user;
@@ -28,7 +33,8 @@ export class UsersAdminService {
     const existing = await this.prisma.nguoiDung.findFirst({
       where: { OR: [{ username: dto.username }, { email: dto.email }] },
     });
-    if (existing) throw new ConflictException('Tên đăng nhập hoặc email đã tồn tại');
+    if (existing)
+      throw new ConflictException('Tên đăng nhập hoặc email đã tồn tại');
 
     const passwordHash = await argon2.hash(dto.password);
     return this.prisma.nguoiDung.create({
@@ -42,7 +48,7 @@ export class UsersAdminService {
           ? { create: dto.roleIds.map((roleId) => ({ roleId })) }
           : undefined,
       },
-      include: { userRoles: { include: { role: true } } },
+      include: USER_WITH_ROLES_INCLUDE,
     });
   }
 
@@ -61,7 +67,7 @@ export class UsersAdminService {
         fullName: dto.fullName,
         isActive: dto.isActive,
       },
-      include: { userRoles: { include: { role: true } } },
+      include: USER_WITH_ROLES_INCLUDE,
     });
   }
 

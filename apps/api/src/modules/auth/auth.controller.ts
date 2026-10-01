@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Throttle } from '@nestjs/throttler';
@@ -50,10 +60,11 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
-  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
-    const result = await this.authService.login(dto);
-    this.setRefreshCookie(res, result.refreshToken);
-    return { accessToken: result.accessToken, user: result.user };
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.respondWithTokens(await this.authService.login(dto), res);
   }
 
   @Public()
@@ -64,9 +75,10 @@ export class AuthController {
     @CurrentUser() user: AuthenticatedUser,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.refresh(user.userId);
-    this.setRefreshCookie(res, result.refreshToken);
-    return { accessToken: result.accessToken, user: result.user };
+    return this.respondWithTokens(
+      await this.authService.refresh(user.userId),
+      res,
+    );
   }
 
   @Public()
@@ -126,6 +138,14 @@ export class AuthController {
     // (POST /auth/refresh on load) picks up the session — no need to pass
     // the access token through the URL.
     res.redirect(this.config.getOrThrow<string>('FRONTEND_ORIGIN'));
+  }
+
+  private respondWithTokens(
+    result: { accessToken: string; refreshToken: string; user: unknown },
+    res: Response,
+  ) {
+    this.setRefreshCookie(res, result.refreshToken);
+    return { accessToken: result.accessToken, user: result.user };
   }
 
   private setRefreshCookie(res: Response, refreshToken: string) {

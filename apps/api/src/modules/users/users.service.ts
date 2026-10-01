@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
 
 export interface UserSummary {
@@ -8,6 +12,10 @@ export interface UserSummary {
   fullName: string;
 }
 
+export const USER_WITH_ROLES_INCLUDE = {
+  userRoles: { include: { role: true } },
+} as const;
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: CorePrismaService) {}
@@ -15,7 +23,7 @@ export class UsersService {
   async findByUsername(username: string) {
     return this.prisma.nguoiDung.findUnique({
       where: { username },
-      include: { userRoles: { include: { role: true } } },
+      include: USER_WITH_ROLES_INCLUDE,
     });
   }
 
@@ -32,7 +40,10 @@ export class UsersService {
   }
 
   async assertExists(id: number): Promise<void> {
-    const user = await this.prisma.nguoiDung.findUnique({ where: { id }, select: { id: true } });
+    const user = await this.prisma.nguoiDung.findUnique({
+      where: { id },
+      select: { id: true },
+    });
     if (!user) {
       throw new BadRequestException(`Người dùng #${id} không tồn tại`);
     }
@@ -51,35 +62,51 @@ export class UsersService {
   ): Promise<(T & { owner: UserSummary | null })[]> {
     const owners = await this.findManyByIds(rows.map((r) => r.ownerUserId));
     const byId = new Map(owners.map((o) => [o.id, o]));
-    return rows.map((row) => ({ ...row, owner: byId.get(row.ownerUserId) ?? null }));
+    return rows.map((row) => ({
+      ...row,
+      owner: byId.get(row.ownerUserId) ?? null,
+    }));
   }
 
-  async createInactiveUser(data: {
+  async createUser(data: {
     username: string;
     email: string;
     fullName: string;
-    passwordHash: string;
     roleCode: string;
+    passwordHash?: string;
+    isActive?: boolean;
+    googleId?: string;
+    facebookId?: string;
   }) {
-    const role = await this.prisma.vaiTro.findUniqueOrThrow({ where: { code: data.roleCode } });
+    const role = await this.prisma.vaiTro.findUniqueOrThrow({
+      where: { code: data.roleCode },
+    });
     return this.prisma.nguoiDung.create({
       data: {
         username: data.username,
         email: data.email,
         fullName: data.fullName,
         passwordHash: data.passwordHash,
-        isActive: false,
+        isActive: data.isActive ?? false,
+        googleId: data.googleId,
+        facebookId: data.facebookId,
         userRoles: { create: { roleId: role.id } },
       },
     });
   }
 
   async activate(userId: number) {
-    return this.prisma.nguoiDung.update({ where: { id: userId }, data: { isActive: true } });
+    return this.prisma.nguoiDung.update({
+      where: { id: userId },
+      data: { isActive: true },
+    });
   }
 
   async updatePassword(userId: number, passwordHash: string) {
-    return this.prisma.nguoiDung.update({ where: { id: userId }, data: { passwordHash } });
+    return this.prisma.nguoiDung.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
   }
 
   async getRoleCodes(userId: number): Promise<string[]> {
