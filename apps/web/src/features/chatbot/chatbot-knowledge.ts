@@ -230,7 +230,6 @@ Bạn đang cần mình giải đáp nội dung nào nè?`,
       'trường này là trường nào', 'truong nay la truong nao',
       'trường của ai', 'thuộc trường nào',
       'trường đại học nào', 'truong dai hoc nao',
-      'đại học nam cần thơ', 'dh nam can tho',
       'dnc là gì', 'dnc là trường gì',
       'mã trường', 'địa chỉ trường'
     ],
@@ -1278,11 +1277,22 @@ export function getMockResponse(question: string): string {
 
   // Ý định: Hỏi về trường / địa chỉ
   if (
-    noTone.includes('truong nao') ||
-    noTone.includes('truong gi') ||
-    noTone.includes('dai hoc nam can tho') ||
-    noTone.includes('dh nam can tho') ||
-    noTone === 'dnc'
+    (noTone.includes('truong nao') ||
+      noTone.includes('truong gi') ||
+      noTone.includes('gioi thieu truong') ||
+      noTone.includes('thong tin truong') ||
+      noTone === 'dnc' ||
+      noTone === 'dai hoc nam can tho' ||
+      noTone === 'dh nam can tho') &&
+    !noTone.includes('ktx') &&
+    !noTone.includes('ky tuc xa') &&
+    !noTone.includes('hoc phi') &&
+    !noTone.includes('nganh') &&
+    !noTone.includes('benh vien') &&
+    !noTone.includes('resort') &&
+    !noTone.includes('showroom') &&
+    !noTone.includes('tien nghi') &&
+    !noTone.includes('dang ky')
   ) {
     const schoolRule = MOCK_RULES.find((r) => r.id === 'school_info');
     if (schoolRule) return schoolRule.response;

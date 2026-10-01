@@ -1951,6 +1951,37 @@ export function searchDncKnowledge(query: string): string | null {
     if (clubItem) return clubItem.answer;
   }
 
+  // 8.5. Ý định Ký túc xá DNC (KTX) - Tiện nghi, đăng ký phòng, cơ sở vật chất
+  if (noTone.includes('ky tuc xa') || noTone.includes('ktx') || noTone.includes('noi tru')) {
+    if (
+      (noTone.includes('gia') || noTone.includes('chi phi') || noTone.includes('bao nhieu tien') || noTone.includes('tien phong') || noTone.includes('dong tien') || noTone.includes('phi')) &&
+      !noTone.includes('tien nghi') &&
+      !noTone.includes('dang ky')
+    ) {
+      return resolveDncTuition('ktx');
+    }
+    return `### 🏢 **Ký túc xá Đại học Nam Cần Thơ (DNC)**
+
+Khu phức hợp Ký túc xá DNC tọa lạc ngay bên trong khuôn viên trường (Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ) với sức chứa hơn **2.000 sinh viên**:
+
+* **Tiện nghi phòng ở & Cơ sở vật chất:**
+  * Có 2 loại phòng: **Phòng quạt tiêu chuẩn** và **Phòng máy lạnh hiện đại**.
+  * Trang bị sẵn: Giường tầng chắc chắn, nệm, bàn ghế học tập cá nhân, tủ đồ cá nhân có khóa riêng, quạt trần, máy lạnh và bình tắm nước nóng lạnh.
+  * Mạng Wifi tốc độ cao bao phủ toàn bộ các tòa nhà KTX.
+  * An ninh đảm bảo tuyệt đối: Camera giám sát 24/7, đội ngũ bảo vệ túc trực và hệ thống kiểm soát ra vào bằng thẻ từ sinh viên.
+  * Tiện ích sinh hoạt liền kề: Nhà ăn căng-tin sinh viên giá bình dân, siêu thị mini tiện lợi, khu dịch vụ giặt sấy, phòng tập Gym, hồ bơi và khu liên hợp thể thao (sân bóng đá, tennis, pickleball).
+
+* **Chi phí lưu trú tham khảo:**
+  * **Phòng quạt:** Khoảng **450.000đ - 600.000đ / tháng / sinh viên**.
+  * **Phòng máy lạnh:** Khoảng **800.000đ - 1.200.000đ / tháng / sinh viên**.
+  * Tiền điện, nước tính theo chỉ số đồng hồ riêng của từng phòng theo khung giá ưu đãi sinh viên của nhà nước.
+
+* **Cách thức đăng ký phòng Ký túc xá:**
+  * **Cách 1 (Đăng ký Online):** Bạn có thể nộp đơn trực tuyến ngay trên **Cổng HTSV** tại mục **"Hỗ trợ"** hoặc **"Đời sống sinh viên"** → Chọn thủ tục **"Đăng ký phòng Ký túc xá DNC"**.
+  * **Cách 2 (Đăng ký trực tiếp):** Đến trực tiếp **Văn phòng Ban Quản lý Ký túc xá DNC** (tại sảnh tầng trệt Khu KTX của trường) để được cán bộ hướng dẫn chọn phòng và làm thủ tục nhận phòng.
+  * **Hotline hỗ trợ KTX DNC:** Tổng đài trường \`02923 798 222\` - \`02923 798 333\`.`;
+  }
+
   // 9. Câu hỏi về Cơ sở thực hành tại Bệnh viện Đại học Nam Cần Thơ
   if (
     noTone.includes('benh vien') &&
