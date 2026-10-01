@@ -121,14 +121,42 @@ export const MOCK_RULES: MockRule[] = [
     response: 'Thanh Tho (Triệu Thanh Tho) chính là chủ sở hữu và lập trình viên phát triển hệ thống Cổng Hỗ Trợ Sinh Viên (HTSV) này đó nha! Người có công lớn nhất của dự án đó! 😎✨',
   },
 
-  // --- 1. GIAO TIẾP TỰ NHIÊN (Trò chuyện thông thường) ---
+  // --- 1. GIAO TIẾP TỰ NHIÊN NHƯ CON NGƯỜI (Trò chuyện đời thường) ---
   {
     id: 'greeting',
     keywords: [
       'xin chào', 'chào bạn', 'chào cậu', 'chào em', 'chào bot', 'chào ad',
       'hello', 'hi bạn', 'hi bot', 'alo', 'hế lô', 'hey', 'good morning', 'good afternoon'
     ],
-    response: `Dạ chào bạn! Rất vui được hỗ trợ bạn. Mình là bộ phận Tư vấn & Hỗ trợ Sinh viên DNC, luôn sẵn sàng giải đáp và đồng hành cùng bạn trong mọi vấn đề: từ học tập, lập trình, kiến thức đời sống đến thông tin Trường Đại học Nam Cần Thơ (DNC) và Cổng HTSV. Bạn cần mình giải đáp nội dung nào hôm nay?`,
+    response: `Chào bạn nha! Rất vui được gặp bạn hôm nay. Bạn đang cần mình giải đáp thông tin gì về học tập, trường lớp hay các tiện ích trên Cổng Sinh viên nè? Cứ thoải mái hỏi mình nhé!`,
+  },
+  {
+    id: 'eating',
+    keywords: [
+      'ăn cơm chưa', 'an com chua', 'ăn gì chưa', 'an gi chua', 'ăn trưa chưa', 'ăn tối chưa', 'đói bụng', 'doi bung'
+    ],
+    response: `Hihi mình là trợ lý ảo nên không ăn cơm được đâu nè, năng lượng của mình là điện và những câu hỏi hay từ các bạn sinh viên đó! Còn bạn đã ăn uống gì chưa, học bài có mệt hay đói bụng không nè? Nhớ ăn uống đầy đủ giữ sức khỏe nha!`,
+  },
+  {
+    id: 'mood',
+    keywords: [
+      'buồn quá', 'buon qua', 'tôi buồn', 'mình buồn', 'mệt mỏi', 'met moi', 'stress', 'áp lực', 'chán quá', 'chan qua', 'nản quá'
+    ],
+    response: `Nghe bạn nói vậy mình cũng thấy thương bạn ghê! Có chuyện gì làm bạn thấy áp lực hay mệt mỏi thế, về chuyện học hành thi cử hay chuyện bạn bè nè? Nếu cần người lắng nghe, bạn cứ tâm sự với mình nhé. Hoặc bạn có thể ghé mục Diễn đàn Confession của trường để đăng bài ẩn danh trút bầu tâm sự với mọi người cho nhẹ lòng nha!`,
+  },
+  {
+    id: 'compliment',
+    keywords: [
+      'thông minh quá', 'thong minh qua', 'giỏi quá', 'gioi qua', 'dễ thương', 'de thuong', 'đáng yêu', 'xịn quá', 'hay thế', 'bot giỏi quá'
+    ],
+    response: `Hihi cảm ơn bạn nhiều nha! Nhận được lời khen của bạn làm mình vui cả ngày luôn á. Mình sẽ cố gắng đồng hành và hỗ trợ bạn thật tốt trong suốt quá trình học tập nhé!`,
+  },
+  {
+    id: 'sleep',
+    keywords: [
+      'ngủ ngon', 'ngu ngon', 'chúc ngủ ngon', 'chuc ngu ngon', 'đi ngủ đây', 'di ngu day', 'g9', 'good night', 'buồn ngủ quá'
+    ],
+    response: `Chúc bạn ngủ thật ngon và có những giấc mơ đẹp nha! Nghỉ ngơi sớm để ngày mai tràn đầy năng lượng tiếp tục học tập và làm việc nhé!`,
   },
   {
     id: 'user_identity',
@@ -136,30 +164,30 @@ export const MOCK_RULES: MockRule[] = [
       'biết tui là ai', 'biet tui la ai', 'biết tôi là ai', 'biet toi la ai',
       'biết mình là ai', 'biet minh la ai', 'tôi là ai', 'tui là ai', 'mình là ai'
     ],
-    response: `Chào bạn! Là kênh tư vấn trực tuyến, mình không lưu giữ danh tính cá nhân ngoài đời của bạn. Mình chỉ tương tác và giải đáp thông tin trực tiếp cho bạn qua từng tin nhắn thôi. Bạn đang cần tìm hiểu vấn đề gì nào?`,
+    response: `Mình chỉ là trợ lý ảo hỗ trợ qua màn hình thôi nè, nên mình không biết được danh tính ngoài đời của bạn đâu. Bạn cứ yên tâm trò chuyện và hỏi đáp thoải mái nha!`,
   },
   {
     id: 'gratitude',
     keywords: [
       'cảm ơn', 'cam on', 'cảm ơn bạn', 'thank', 'thanks', 'cảm ơn nha', 'tuyệt vời', 'hay quá', 'ok bạn', 'ok cảm ơn'
     ],
-    response: `Dạ không có chi! Rất vui vì đã hỗ trợ được thông tin hữu ích cho bạn. Nếu có bất kỳ thắc mắc nào khác, bạn cứ nhắn cho mình nhé! Chúc bạn học tập thật tốt!`,
+    response: `Dạ không có chi đâu bạn ơi! Giúp được bạn là mình vui lắm rồi nè. Nếu có bất kỳ thắc mắc nào khác thì bạn cứ nhắn cho mình nhé. Chúc bạn học tập thật tốt!`,
   },
 
-  // --- 1. ĐỊNH DANH BOT VÀ THÔNG TIN TRƯỜNG DNC ---
+  // --- 2. ĐỊNH DANH VÀ THÔNG TIN TRƯỜNG ĐẠI HỌC NAM CẦN THƠ (DNC) ---
   {
     id: 'bot_identity',
     keywords: [
       'bạn là ai', 'cậu là ai', 'em là ai', 'mày là ai', 'bot là ai', 'trợ lý là ai'
     ],
-    response: `Chào bạn! Mình là bộ phận Tư vấn & Hỗ trợ Sinh viên của Cổng HTSV (Trường Đại học Nam Cần Thơ - DNC).
+    response: `Mình là trợ lý ảo đồng hành cùng sinh viên trên Cổng HTSV (Trường Đại học Nam Cần Thơ - DNC) nè!
 
-Mình có thể hỗ trợ bạn:
-* **Học tập & Kỹ năng:** Giải đáp lập trình, giải thích môn học, bài tập, ngoại ngữ, kỹ năng mềm...
-* **Thông tin Trường Đại học Nam Cần Thơ (DNC):** Biểu học phí ổn định suốt khóa, 4 phương thức xét tuyển, Ký túc xá, Bệnh viện DNC...
-* **Tiện ích Cổng HTSV:** Diễn đàn Confession, dịch vụ Một cửa (xin giấy xác nhận sinh viên, bảng điểm, hoãn NVQS), tra cứu lịch học...
+Mình luôn ở đây 24/7 để:
+* Trò chuyện, giải đáp kiến thức học tập, lập trình và phương pháp học đại học.
+* Cung cấp thông tin chính xác về trường DNC: học phí ổn định, 4 phương thức xét tuyển, Ký túc xá, Bệnh viện DNC...
+* Hướng dẫn bạn sử dụng các tính năng trên web: Diễn đàn Confession, Dịch vụ Một cửa xin giấy tờ online, tra cứu lịch học...
 
-Bạn cần tìm hiểu thông tin nào cứ gửi câu hỏi cho mình nhé!`,
+Bạn đang cần mình giải đáp nội dung nào nè?`,
   },
   {
     id: 'school_info',
@@ -174,22 +202,19 @@ Bạn cần tìm hiểu thông tin nào cứ gửi câu hỏi cho mình nhé!`,
       'dnc là gì', 'dnc là trường gì',
       'mã trường', 'địa chỉ trường'
     ],
-    response: `### **Trường Đại học Nam Cần Thơ (DNC)**
-Dạ chào bạn! Cổng thông tin và Kênh tư vấn này trực thuộc **Trường Đại học Nam Cần Thơ (Nam Can Tho University - DNC)** bạn nhé!
+    response: `Dạ chào bạn! Cổng thông tin và Kênh tư vấn này trực thuộc **Trường Đại học Nam Cần Thơ (Nam Can Tho University - DNC)** bạn nha!
 
-* **Tên trường:** Trường Đại học Nam Cần Thơ (Mã trường: \`DNC\`)
+* **Tên trường:** Trường Đại học Nam Cần Thơ (Mã trường: \`DNC\`).
 * **Địa chỉ:** Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ.
-* **Hotline / Zalo Tuyển sinh:** \`0939 257 838\` - \`02923 798 222\` - \`02923 798 333\`
-* **Email:** \`phongtuyensinh@nctu.edu.vn\`
-* **Website chính thức:** [https://nctu.edu.vn](https://nctu.edu.vn)
-* **Cơ sở vật chất nổi bật:**
- * **Bệnh viện Đại học Nam Cần Thơ:** Quy mô 300 giường bệnh quốc tế, phục vụ khám chữa bệnh và thực hành lâm sàng cho sinh viên Y Dược.
- * **Showroom Ô tô Nam Cần Thơ DNC:** Xưởng thực hành và nghiên cứu ô tô hiện đại.
- * **Viện Nghiên cứu & Phát triển Dược liệu:** Bào chế và ứng dụng dược phẩm.
- * **Khu Ký túc xá máy lạnh, Thư viện số và Khu thể thao đa năng.**`,
+* **Hotline / Zalo Tuyển sinh:** \`0939 257 838\` - \`02923 798 222\` - \`02923 798 333\`.
+* **Website chính thức:** [https://nctu.edu.vn](https://nctu.edu.vn).
+
+Trường mình có cơ sở vật chất cực kỳ hiện đại: **Bệnh viện Đại học Nam Cần Thơ** (đa khoa quốc tế 300 giường), **Showroom Ô tô Nam Cần Thơ DNC**, Viện nghiên cứu dược liệu, Ký túc xá máy lạnh và khu thể thao đa năng.
+
+Bạn đang quan tâm đến ngành học hay thông tin nào của trường nè?`,
   },
 
-  // --- 2. PHƯƠNG THỨC XÉT TUYỂN & TUYỂN SINH ---
+  // --- 3. PHƯƠNG THỨC XÉT TUYỂN & TUYỂN SINH ---
   {
     id: 'admissions',
     keywords: [
@@ -197,71 +222,54 @@ Dạ chào bạn! Cổng thông tin và Kênh tư vấn này trực thuộc **Tr
       'tổ hợp môn', 'cách xét tuyển', 'đgnl', 'điểm chuẩn', 'xét tuyển thế nào',
       'tuyển sinh 2026', 'thủ tục nhập học', 'hồ sơ xét tuyển', 'xét tuyển'
     ],
-    response: `### **4 Phương thức xét tuyển chính thức vào Đại học Nam Cần Thơ (DNC)**
+    response: `Chào bạn nhé! Nếu bạn đang muốn xét tuyển vào Đại học Nam Cần Thơ (DNC) thì trường có 4 phương thức rất thuận lợi để bạn lựa chọn nè:
 
-1. **Phương thức 1 (Mã 100) - Xét kết quả thi Tốt nghiệp THPT:**
- * Tổng điểm 3 môn trong tổ hợp xét tuyển đạt ngưỡng đảm bảo chất lượng đầu vào của trường.
-2. **Phương thức 2 (Mã 200) - Xét kết quả học tập cấp THPT (Học bạ):**
- * *Cách 1:* Điểm trung bình cả năm lớp 12 của 3 môn trong tổ hợp xét tuyển $\\ge 18.0$ điểm.
- * *Cách 2:* Điểm trung bình cả năm lớp 12 $\\ge 6.0$ điểm.
- * *Cách 3:* Tổng điểm trung bình 3 học kỳ (HK1, HK2 lớp 11 và HK1 lớp 12) $\\ge 18.0$ điểm.
-3. **Phương thức 3 (Mã 402) - Xét điểm thi Đánh giá năng lực (ĐGNL):**
- * Dựa trên kết quả kỳ thi Đánh giá năng lực do ĐHQG TP.HCM tổ chức.
-4. **Phương thức 4 (Mã 301) - Xét tuyển thẳng:**
- * Theo đúng quy định tuyển thẳng của Bộ Giáo dục & Đào tạo.
+1. **Xét kết quả thi Tốt nghiệp THPT:** Điểm 3 môn tổ hợp đạt ngưỡng đảm bảo chất lượng đầu vào của trường.
+2. **Xét học bạ THPT (rất linh hoạt với 3 cách tính):**
+   * *Cách 1:* Điểm trung bình cả năm lớp 12 của 3 môn tổ hợp từ 18.0 điểm trở lên.
+   * *Cách 2:* Điểm trung bình cả năm lớp 12 từ 6.0 điểm trở lên.
+   * *Cách 3:* Tổng điểm trung bình 3 học kỳ (HK1, HK2 lớp 11 và HK1 lớp 12) từ 18.0 điểm trở lên.
+3. **Xét điểm thi Đánh giá năng lực (ĐGNL):** Dựa trên kết quả kỳ thi do ĐHQG TP.HCM tổ chức.
+4. **Xét tuyển thẳng:** Theo đúng quy định tuyển thẳng của Bộ GD&ĐT.
 
-> ️ **Lưu ý đối với Khối ngành Sức khỏe (Y khoa, Dược học, Xét nghiệm, Răng-Hàm-Mặt, Điều dưỡng):** Thí sinh xét theo học bạ phải có học lực lớp 12 xếp loại **Giỏi** hoặc điểm xét tốt nghiệp THPT từ **8.0 trở lên** (theo quy định của Bộ GD&ĐT).`,
+*Lưu ý nhỏ:* Riêng khối ngành Sức khỏe (Y khoa, Dược học, Răng - Hàm - Mặt, Điều dưỡng, Xét nghiệm) thì học bạ lớp 12 cần xếp loại **Giỏi** hoặc điểm xét tốt nghiệp từ **8.0 trở lên** nha bạn. Bạn đang tính nộp hồ sơ theo phương thức nào vậy nè?`,
   },
 
-  // --- 3. HỌC PHÍ VÀ HỌC BỔNG ---
+  // --- 4. HỌC PHÍ VÀ HỌC BỔNG ---
   {
     id: 'tuition',
     keywords: [
       'học phí', 'hoc phi', 'tiền học', 'biểu phí', 'học bổng', 'miễn giảm học phí', 'học phí bao nhiêu', 'tiền học một kỳ'
     ],
-    response: `### **Chính sách Học phí DNC (Cam kết ỔN ĐỊNH suốt khóa học)**
-DNC áp dụng chính sách **học phí ổn định toàn khóa** (đơn giá tín chỉ không thay đổi trong suốt quá trình theo học). Mỗi năm học gồm 3 học kỳ, trung bình 10 - 12 tín chỉ / học kỳ.
+    response: `Chào bạn nha! Về học phí tại Đại học Nam Cần Thơ (DNC) thì trường có một điểm cộng rất lớn là **học phí cam kết giữ ổn định suốt toàn khóa**, không tăng bất ngờ qua các năm học đâu bạn nhé.
 
-* **Nhóm ngành 1 (Từ 10 - 11 triệu đồng / học kỳ):**
- * Kinh tế số, Kế toán, Tài chính - Ngân hàng, TMĐT, Quản trị kinh doanh, Marketing, Kinh doanh quốc tế, Truyền thông đa phương tiện, Quan hệ công chúng (PR).
- * Luật, Luật kinh tế, Ngôn ngữ Anh.
- * Quản trị dịch vụ du lịch, Quản trị khách sạn, Quản trị nhà hàng.
- * **Công nghệ thông tin, Khoa học máy tính, Kỹ thuật phần mềm, Trí tuệ nhân tạo (AI), Mạng máy tính.**
-* **Nhóm ngành 2 (Từ 12 - 13 triệu đồng / học kỳ):**
- * Kiến trúc, Bất động sản, Công nghệ kỹ thuật hóa học, Công nghệ thực phẩm, Logistics và Quản lý chuỗi cung ứng.
-* **Nhóm ngành 3 (Từ 14 - 15 triệu đồng / học kỳ):**
- * **Công nghệ kỹ thuật Ô tô**, Điện - Điện tử, Kỹ thuật cơ khí động lực, Kỹ thuật xét nghiệm y học, Kỹ thuật hình ảnh y học, Điều dưỡng, Quản lý bệnh viện.
-* **Khối Sức khỏe đặc thù:**
- * Dược học: khoảng **18 - 22 triệu đồng / học kỳ**.
- * Y khoa (Bác sĩ Đa khoa) & Răng - Hàm - Mặt: khoảng **45 - 50 triệu đồng / học kỳ** (đã bao gồm chi phí đào tạo thực hành lâm sàng tại Bệnh viện Đại học Nam Cần Thơ).
+Mỗi năm học gồm 3 học kỳ, mức học phí trung bình từng nhóm ngành như sau:
+* **Nhóm 1 (Khoảng 10 - 11 triệu đồng / học kỳ):** Kinh tế, Quản trị kinh doanh, Marketing, Luật, Ngôn ngữ Anh, **Công nghệ thông tin, Kỹ thuật phần mềm, Trí tuệ nhân tạo (AI)**...
+* **Nhóm 2 (Khoảng 12 - 13 triệu đồng / học kỳ):** Kiến trúc, Bất động sản, Công nghệ thực phẩm, Logistics và Quản lý chuỗi cung ứng...
+* **Nhóm 3 (Khoảng 14 - 15 triệu đồng / học kỳ):** **Công nghệ kỹ thuật Ô tô**, Điện - Điện tử, Kỹ thuật xét nghiệm y học, Điều dưỡng...
+* **Khối Sức khỏe đặc thù:** Dược học khoảng **18 - 22 triệu / kỳ**; Y khoa (Bác sĩ Đa khoa) & Răng - Hàm - Mặt khoảng **45 - 50 triệu / kỳ** (mức này đã bao gồm toàn bộ chi phí thực hành lâm sàng tại Bệnh viện DNC rồi nha).
 
- **Chính sách Học bổng & Ưu đãi:**
-* Học bổng tuyển sinh đầu vào dành cho thủ khoa, á khoa và thí sinh có điểm xét tuyển cao.
-* Học bổng khuyến khích học tập từng kỳ dành cho sinh viên Khá, Giỏi, Xuất sắc.`,
+Ngoài ra trường còn có nhiều chính sách học bổng cho tân sinh viên và học bổng khuyến khích học tập từng kỳ nữa. Bạn đang quan tâm đến học phí của ngành nào cụ thể không nè?`,
   },
 
-  // --- 4. NGÀNH CÔNG NGHỆ THÔNG TIN & TRÍ TUỆ NHÂN TẠO ---
+  // --- 5. NGÀNH CÔNG NGHỆ THÔNG TIN & TRÍ TUỆ NHÂN TẠO ---
   {
     id: 'it',
     keywords: [
       'công nghệ thông tin', 'ngành cntt', 'kỹ thuật phần mềm', 'khoa học máy tính',
       'trí tuệ nhân tạo', 'ngành ai', 'học ai', 'an toàn thông tin', 'mạng máy tính', 'ngành it', 'học it', 'học cntt'
     ],
-    response: `### **Khối ngành Công nghệ Thông tin & AI tại DNC**
-* **Các ngành đào tạo:**
- * ️ **Công nghệ thông tin** (Mã ngành: \`7480201\`) - Bằng Kỹ sư (150 tín chỉ)
- * ️ **Kỹ thuật phần mềm** (Mã ngành: \`7480103\`) - Bằng Kỹ sư
- * **Trí tuệ nhân tạo (AI)** (Mã ngành: \`7480107\`) - Bằng Kỹ sư
- * **Khoa học máy tính** (Mã ngành: \`7480101\`)
- * **Mạng máy tính & Truyền thông dữ liệu** (Mã ngành: \`7480102\`)
- * ️ **An toàn thông tin** (Mã ngành: \`7480202\`)
- * **Công nghệ kỹ thuật Bán dẫn** (Mã ngành: \`7480101.\`)
+    response: `Chào bạn! Khối ngành Công nghệ Thông tin và AI tại DNC đang là ngành học cực kỳ hot với chương trình đào tạo hiện đại nè:
+
+* **Các ngành đào tạo (Cấp bằng Kỹ sư):** Công nghệ thông tin, Kỹ thuật phần mềm, Trí tuệ nhân tạo (AI), Khoa học máy tính, An toàn thông tin, Mạng máy tính.
 * **Tổ hợp môn xét tuyển:** \`A00\` (Toán, Lý, Hóa), \`A01\` (Toán, Lý, Anh), \`D01\` (Toán, Văn, Anh), \`C01\` (Toán, Văn, Lý).
-* **Mức học phí:** Nhóm 1 (khoảng **10 - 11 triệu đồng / học kỳ**, ổn định suốt khóa).
-* **Cơ sở thực hành:** Phòng Lab máy tính cấu hình cao, máy lạnh 100%, hệ sinh thái phần mềm thực tế và kết nối việc làm với các doanh nghiệp công nghệ lớn.`,
+* **Mức học phí:** Thuộc Nhóm 1, khoảng **10 - 11 triệu đồng / học kỳ** và cam kết giữ ổn định suốt khóa học.
+* **Môi trường học tập:** Hệ thống phòng Lab máy tính cấu hình cao, máy lạnh 100%, thực hành dự án thực tế và trường liên kết việc làm với nhiều doanh nghiệp công nghệ lớn.
+
+Bạn đang thích theo hướng lập trình phần mềm, làm web hay chuyên sâu về Trí tuệ nhân tạo (AI) nè?`,
   },
 
-  // --- 5. KHỐI NGÀNH SỨC KHỎE (Y KHOA, DƯỢC, XÉT NGHIỆM, ĐIỀU DƯỠNG) ---
+  // --- 6. KHỐI NGÀNH SỨC KHỎE (Y KHOA, DƯỢC, XÉT NGHIỆM, ĐIỀU DƯỠNG) ---
   {
     id: 'health',
     keywords: [
@@ -269,36 +277,34 @@ DNC áp dụng chính sách **học phí ổn định toàn khóa** (đơn giá 
       'xét nghiệm y học', 'răng hàm mặt', 'sức khỏe', 'bệnh viện dnc',
       'bệnh viện nam cần thơ', 'học y', 'học dược'
     ],
-    response: `### **Khối ngành Sức khỏe tại Đại học Nam Cần Thơ**
+    response: `Chào bạn! Khối ngành Sức khỏe tại DNC có thế mạnh vượt trội nhờ có riêng **Bệnh viện Đại học Nam Cần Thơ** (bệnh viện đa khoa quốc tế 300 giường nằm sát trường) để sinh viên thực hành lâm sàng trực tiếp nè:
+
 * **Các ngành đào tạo mũi nhọn:**
- * 🩺 **Y khoa (Bác sĩ Đa khoa):** Mã ngành \`7720101\` (Đào tạo 6 năm).
- * **Răng - Hàm - Mặt:** Mã ngành \`7720501\` (Đào tạo 6 năm).
- * **Dược học:** Mã ngành \`7720201\` (Bằng Dược sĩ, đào tạo 5 năm).
- * **Kỹ thuật xét nghiệm y học:** Mã ngành \`7720601\` (Đào tạo 4 năm).
- * **Kỹ thuật hình ảnh y học:** Mã ngành \`7720602\`.
- * 🩹 **Điều dưỡng** (Đa khoa, Gây mê hồi sức, Thẩm mỹ, Hộ sinh, Nha khoa): Mã ngành \`7720301\`.
- * **Quản lý bệnh viện:** Mã ngành \`7720802\`.
-* **Tổ hợp môn xét tuyển:** \`B00\` (Toán, Hóa, Sinh), \`A00\` (Toán, Lý, Hóa), \`D07\` (Toán, Hóa, Anh), \`B08\` (Toán, Sinh, Anh).
-* **Lợi thế vượt trội:**
- * Thực hành lâm sàng ngay tại **Bệnh viện Đại học Nam Cần Thơ** (bệnh viện đa khoa quốc tế 300 giường nằm liền kề trường).
- * Trung tâm mô phỏng tiền lâm sàng hiện đại và Viện Nghiên cứu Phát triển Dược liệu.`,
+  * Y khoa (Bác sĩ Đa khoa - đào tạo 6 năm).
+  * Răng - Hàm - Mặt (đào tạo 6 năm).
+  * Dược học (Bằng Dược sĩ - đào tạo 5 năm).
+  * Kỹ thuật xét nghiệm y học, Kỹ thuật hình ảnh y học, Điều dưỡng, Quản lý bệnh viện.
+* **Tổ hợp xét tuyển:** \`B00\` (Toán, Hóa, Sinh), \`A00\` (Toán, Lý, Hóa), \`D07\` (Toán, Hóa, Anh), \`B08\` (Toán, Sinh, Anh).
+* **Điều kiện xét học bạ:** Yêu cầu học lực lớp 12 đạt loại Giỏi hoặc điểm tốt nghiệp THPT từ 8.0 trở lên theo quy định của Bộ GD&ĐT.
+
+Bạn đang muốn tìm hiểu về ngành Bác sĩ Y khoa, Dược học hay ngành nào trong khối sức khỏe nè?`,
   },
 
-  // --- 6. NGÀNH CÔNG NGHỆ KỸ THUẬT Ô TÔ ---
+  // --- 7. NGÀNH CÔNG NGHỆ KỸ THUẬT Ô TÔ ---
   {
     id: 'auto',
     keywords: ['ô tô', 'kỹ thuật ô tô', 'công nghệ ô tô', 'ô tô điện', 'cơ khí động lực', 'showroom ô tô', 'học ô tô'],
-    response: `### **Ngành Công nghệ Kỹ thuật Ô tô tại DNC**
-* **Mã ngành:** \`7510205\` (Chương trình Ô tô truyền thống & Ô tô điện).
-* **Văn bằng:** Kỹ sư Công nghệ kỹ thuật Ô tô.
+    response: `Chào bạn! Ngành Công nghệ Kỹ thuật Ô tô tại DNC cực kỳ xịn sò luôn nha:
+
+* **Chương trình:** Đào tạo Kỹ sư Ô tô với 2 định hướng: Ô tô truyền thống và Ô tô điện thông minh.
+* **Điểm nhấn đặc biệt:** Trường sở hữu riêng **Showroom Ô tô Nam Cần Thơ DNC** và xưởng bảo dưỡng, sửa chữa quy mô lớn. Sinh viên được cầm đồ nghề thực hành trực tiếp trên các dòng xe hiện đại ngay tại trường.
+* **Học phí:** Khoảng **14 - 15 triệu đồng / học kỳ** và cam kết ổn định toàn khóa.
 * **Tổ hợp xét tuyển:** \`A00\` (Toán, Lý, Hóa), \`A01\` (Toán, Lý, Anh), \`C01\` (Toán, Văn, Lý), \`D01\` (Toán, Văn, Anh).
-* **Điểm nhấn đặc biệt:**
- * Trường có riêng **Showroom Ô tô Nam Cần Thơ DNC** và xưởng bảo dưỡng, sửa chữa thực nghiệm quy mô lớn.
- * Sinh viên được thực hành trực tiếp trên các dòng xe hiện đại, động cơ đốt trong và công nghệ ô tô điện thông minh.
-* **Mức học phí:** Nhóm 3 (khoảng **14 - 15 triệu đồng / học kỳ**, cam kết ổn định toàn khóa).`,
+
+Bạn có đam mê về động cơ xe hay công nghệ ô tô điện không nè?`,
   },
 
-  // --- 7. KHỐI KINH TẾ, LUẬT, TRUYỀN THÔNG, DU LỊCH ---
+  // --- 8. KHỐI KINH TẾ, LUẬT, TRUYỀN THÔNG, DU LỊCH ---
   {
     id: 'business_law',
     keywords: [
@@ -306,41 +312,45 @@ DNC áp dụng chính sách **học phí ổn định toàn khóa** (đơn giá 
       'logistics', 'kế toán', 'ngành luật', 'luật kinh tế',
       'truyền thông đa phương tiện', 'quan hệ công chúng', 'quản trị khách sạn'
     ],
-    response: `### **Khối ngành Kinh tế, Luật, Truyền thông & Dịch vụ tại DNC**
+    response: `Chào bạn! Khối ngành Kinh tế, Luật, Truyền thông và Dịch vụ tại DNC có rất nhiều ngành năng động để bạn chọn nè:
+
 * **Kinh tế & Quản trị:** Quản trị kinh doanh, Marketing, Kinh tế số, Logistics & Quản lý chuỗi cung ứng, Kinh doanh quốc tế, Tài chính - Ngân hàng, Kế toán, Thương mại điện tử.
-* **Luật:** Luật học, Luật kinh tế, Luật quốc tế (Đào tạo chuyên sâu kiến thức pháp lý và tranh tụng thực tế).
+* **Luật:** Luật học, Luật kinh tế, Luật quốc tế.
 * **Truyền thông & Xã hội:** Quan hệ công chúng (PR), Truyền thông đa phương tiện, Ngôn ngữ Anh.
-* **Du lịch & Nhà hàng:** Quản trị dịch vụ du lịch và lữ hành, Quản trị khách sạn, Quản trị nhà hàng và dịch vụ ăn uống.
-* **Học phí:** Khoảng **10 - 13 triệu đồng / học kỳ** tùy ngành, ổn định suốt khóa.`,
+* **Du lịch:** Quản trị dịch vụ du lịch, Quản trị khách sạn, Quản trị nhà hàng.
+* **Học phí:** Khoảng **10 - 13 triệu đồng / học kỳ** tùy ngành, cam kết ổn định suốt khóa.
+
+Bạn đang phân vân giữa ngành kinh tế hay ngành truyền thông nè?`,
   },
 
-  // --- 8. KÝ TÚC XÁ & ĐỜI SỐNG SINH VIÊN ---
+  // --- 9. KÝ TÚC XÁ & ĐỜI SỐNG SINH VIÊN ---
   {
     id: 'dorm',
     keywords: ['ký túc xá', 'ktx', 'phòng trọ', 'ở ktx', 'nội trú', 'cơ sở vật chất ktx', 'ở trọ'],
-    response: `### **Ký túc xá Trường Đại học Nam Cần Thơ (DNC)**
-* **Vị trí:** Nằm ngay bên trong khuôn viên trường (168 Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ), đi bộ vài bước đến giảng đường.
-* **Tiện nghi hiện đại:**
- * Phòng ở sạch đẹp, thoáng mát, trang bị giường tầng, bàn học, quạt, máy lạnh, máy nước nóng lạnh.
- * Hệ thống Wifi phủ sóng toàn khu ký túc xá.
- * Camera an ninh, đội bảo vệ kiểm soát thẻ từ ra vào 24/7.
- * Sát cạnh nhà ăn sinh viên, siêu thị mini, phòng Gym và sân bóng đá, bóng rổ, cầu lông.
-* **Cách thức đăng ký:** Sinh viên đăng ký online qua mục **Ký túc xá** trên Cổng HTSV hoặc làm thủ tục trực tiếp tại Ban Quản lý Ký túc xá DNC trong đợt nhập học.`,
+    response: `Ký túc xá DNC nằm ngay trong khuôn viên trường luôn nha bạn, chỉ cần đi bộ vài bước là tới giảng đường rồi, cực kỳ tiện lợi!
+
+* Phòng ở đây sạch sẽ, trang bị sẵn giường tầng, bàn học, quạt, máy lạnh, máy nước nóng lạnh và wifi 24/7.
+* An ninh có bảo vệ trực và camera thẻ từ nghiêm ngặt, bước ra cửa là có nhà ăn sinh viên, siêu thị mini, phòng Gym và sân thể thao đa năng.
+* Bạn có thể nộp đơn đăng ký phòng online trực tiếp ngay trên Cổng HTSV này đó.
+
+Bạn đang muốn đăng ký phòng mấy người hay cần hỏi gì thêm về KTX nè?`,
   },
 
-  // --- 9. CÂU LẠC BỘ & HOẠT ĐỘNG ĐOÀN HỘI ---
+  // --- 10. CÂU LẠC BỘ & HOẠT ĐỘNG ĐOÀN HỘI ---
   {
     id: 'clubs',
     keywords: ['câu lạc bộ', 'clb', 'hoạt động sinh viên', 'ngoại khóa', 'phong trào', 'đoàn hội', 'tình nguyện'],
-    response: `### **Hơn 57 Câu Lạc Bộ Sinh Viên tại DNC**
-Sinh viên DNC được thỏa sức phát triển đam mê và kỹ năng mềm với đa dạng CLB:
-* **Học thuật:** CLB Công nghệ thông tin, CLB Tiếng Anh E2C, CLB Tiếng Anh DNC, CLB Dược sĩ tương lai, CLB Bác sĩ trẻ, CLB Luật gia tương lai, CLB Kỹ sư Ô tô...
-* **Kỹ năng & Nghệ thuật:** CLB MC và Tổ chức sự kiện, CLB Âm nhạc, CLB Nhiếp ảnh, CLB Dance, CLB Bạn đọc...
+    response: `Sinh viên DNC tụi mình có hơn 57 Câu Lạc Bộ hoạt động sôi nổi lắm nha bạn:
+
+* **Học thuật:** CLB Công nghệ thông tin, CLB Tiếng Anh E2C, CLB Dược sĩ tương lai, CLB Bác sĩ trẻ, CLB Kỹ sư Ô tô...
+* **Kỹ năng & Nghệ thuật:** CLB MC và Tổ chức sự kiện, CLB Âm nhạc, CLB Nhiếp ảnh, CLB Dance...
 * **Thể thao & Tình nguyện:** CLB Bóng đá, CLB Bóng chuyền, CLB Cầu lông, Đội Công tác xã hội, CLB Giọt Máu DNC...
-* **Sự kiện nổi bật:** Cuộc thi Hoa khôi DNC (Miss DNC), Hội thao truyền thống, Mùa hè xanh, Ngày hội việc làm DNC Job Fair.`,
+* **Sự kiện lớn hàng năm:** Cuộc thi Hoa khôi DNC (Miss DNC), Hội thao truyền thống, Mùa hè xanh, Ngày hội việc làm DNC Job Fair.
+
+Tham gia CLB vừa có thêm bạn bè, vừa rèn luyện kỹ năng mềm và được cộng nhiều điểm rèn luyện nữa đó!`,
   },
 
-  // --- 10. HƯỚNG DẪN CỔNG SINH VIÊN HTSV & TIỆN ÍCH HỌC VỤ ---
+  // --- 11. HƯỚNG DẪN CỔNG SINH VIÊN HTSV & TIỆN ÍCH HỌC VỤ ---
   {
     id: 'htsv_features',
     keywords: [
@@ -364,35 +374,16 @@ Sinh viên DNC được thỏa sức phát triển đam mê và kỹ năng mềm
       'tính năng web',
       'chức năng web'
     ],
-    response: `### **Hướng dẫn các tính năng chính trên Cổng Sinh viên HTSV:**
+    response: `Chào bạn nhé! Trên Cổng Sinh viên HTSV tụi mình đã tích hợp đầy đủ các tiện ích cực kỳ hữu ích cho bạn nè:
 
-Cổng Hỗ Trợ Sinh Viên (HTSV) - Trường Đại học Nam Cần Thơ (DNC) tích hợp đầy đủ các tiện ích học vụ và đời sống dành riêng cho sinh viên:
+1. **Diễn đàn Confession:** Nơi bạn có thể chia sẻ tâm sự, giao lưu hoặc hỏi đáp học tập. Bạn có thể chọn đăng bài ẩn danh bảo mật hoặc công khai đều được nha.
+2. **Dịch vụ Một cửa:** Giúp bạn xin giấy xác nhận sinh viên (vay vốn ngân hàng, tạm hoãn nghĩa vụ quân sự...), xin bảng điểm hay đơn hoãn thi/phúc khảo trực tuyến ngay tại nhà mà không cần đến trường xếp hàng.
+3. **Tra cứu Lịch học & Thời khóa biểu:** Xem lịch học, lịch thi, phòng học và giảng viên phụ trách theo từng ngày, từng tuần rất rõ ràng.
+4. **Ký túc xá DNC:** Xem thông tin phòng ốc máy lạnh và gửi đơn đăng ký phòng nội trú online.
+5. **Trợ lý AI:** Chính là mình nè! Luôn sẵn sàng hỗ trợ giải đáp mọi thắc mắc học tập, học phí, tuyển sinh của trường 24/7.
+6. **Hồ sơ cá nhân:** Đổi mật khẩu, xem thông tin sinh viên và có cả chế độ Giao diện tối (Dark mode) bảo vệ mắt nữa.
 
-1. **Diễn đàn Sinh viên & Confession:**
-   * Chia sẻ tâm sự, giao lưu, thảo luận học tập và đời sống sinh viên.
-   * Hỗ trợ chế độ **Đăng ẩn danh** bảo mật hoặc đăng công khai bằng tài khoản.
-   * Tương tác bình luận, bày tỏ cảm xúc và kết nối cùng cộng đồng sinh viên DNC.
-
-2. **Dịch vụ Một cửa (Hỗ trợ & Báo cáo):**
-   * Đăng ký trực tuyến các loại giấy tờ học vụ mà không cần xếp hàng:
-     * *Giấy xác nhận sinh viên* (vay vốn ngân hàng chính sách, tạm hoãn nghĩa vụ quân sự, làm vé xe buýt...).
-     * *Bảng điểm học tập chính thức*.
-     * *Đơn xin hoãn thi / phúc khảo bài thi*.
-   * Theo dõi tiến độ duyệt hồ sơ minh bạch theo thời gian thực.
-
-3. **Tra cứu Lịch học & Thời khóa biểu:**
-   * Xem thời khóa biểu theo tuần, ngày với đầy đủ thông tin phòng học, ca học, tên môn học và giảng viên giảng dạy.
-
-4. **Ký túc xá DNC:**
-   * Tra cứu thông tin phòng, tiện nghi ký túc xá máy lạnh và nộp đơn đăng ký phòng nội trú trực tuyến.
-
-5. **Trợ lý Tư vấn AI Sinh viên 24/7:**
-   * Hỗ trợ giải đáp nhanh thông tin trường DNC (học phí ổn định suốt khóa, 4 phương thức xét tuyển, cơ sở vật chất Bệnh viện DNC, Showroom Ô tô...).
-   * Giải đáp kiến thức học tập, lập trình/code, phương pháp học đại học.
-
-6. **Tài khoản & Cá nhân hóa:**
-   * Cập nhật thông tin sinh viên, đổi mật khẩu an toàn.
-   * Hỗ trợ giao diện Sáng / Tối (Light & Dark Mode) bảo vệ mắt khi sử dụng vào ban đêm.`,
+Bạn đang muốn dùng thử tính năng nào trước, mình hướng dẫn chi tiết cho bạn nha?`,
   },
   {
     id: 'dang_ky_mon',
@@ -400,15 +391,13 @@ Cổng Hỗ Trợ Sinh Viên (HTSV) - Trường Đại học Nam Cần Thơ (DNC
       'đăng ký môn', 'dang ky mon', 'đăng ký học phần', 'dang ky hoc phan',
       'đăng ký tín chỉ', 'rút học phần', 'hủy môn', 'học lại', 'học cải thiện'
     ],
-    response: `### **Quy trình Đăng ký Môn học & Học phần tại DNC:**
-1. **Thời gian đăng ký:** Theo thông báo chính thức của Phòng Quản lý Đào tạo trước mỗi học kỳ (mỗi năm học gồm 3 học kỳ).
-2. **Các bước thực hiện:**
-   * Đăng nhập tài khoản sinh viên vào cổng thông tin đào tạo của trường.
-   * Kiểm tra chương trình đào tạo của khóa/ngành và danh sách môn học mở trong kỳ.
-   * Chọn học phần và lớp học phần phù hợp với thời khóa biểu cá nhân, nhấn **Lưu đăng ký**.
-3. **Đăng ký Học lại / Học cải thiện:**
-   * Học lại: Bắt buộc đối với các học phần bị điểm F (dưới 4.0 thang điểm 10).
-   * Học cải thiện: Dành cho học phần đạt điểm D hoặc D+ muốn nâng cao điểm trung bình tích lũy (GPA). Điểm học phần mới sẽ thay thế cho điểm cũ.`,
+    response: `Dạ về việc đăng ký môn học và học phần thì bạn lưu ý các bước này nha:
+
+1. Mỗi năm học ở DNC có 3 học kỳ. Trước mỗi kỳ, Phòng Quản lý Đào tạo sẽ có thông báo thời gian mở cổng đăng ký tín chỉ cụ thể.
+2. Bạn đăng nhập vào tài khoản sinh viên trên cổng đào tạo, xem danh sách môn học mở trong kỳ và bấm chọn lớp học phần phù hợp với thời khóa biểu của mình rồi nhấn **Lưu đăng ký**.
+3. Nếu bạn muốn **Học cải thiện** (áp dụng cho môn đạt điểm D hoặc D+ để kéo GPA) hay **Học lại** (bắt buộc với môn bị điểm F), bạn cũng đăng ký chung trong đợt này luôn nha.
+
+Bạn đang cần hỏi về môn học nào hay gặp trục trặc gì khi đăng ký không nè?`,
   },
   {
     id: 'diem_ren_luyen',
@@ -416,25 +405,24 @@ Cổng Hỗ Trợ Sinh Viên (HTSV) - Trường Đại học Nam Cần Thơ (DNC
       'điểm rèn luyện', 'diem ren luyen', 'rèn luyện sinh viên',
       'xếp loại rèn luyện', 'cộng điểm rèn luyện', 'đánh giá rèn luyện'
     ],
-    response: `### **Quy chế Điểm Rèn Luyện Sinh viên DNC:**
-* **Thang điểm:** Đánh giá theo thang điểm 100 cho mỗi học kỳ.
-* **Các khung xếp loại:**
-  * Xuất sắc: Từ 90 đến 100 điểm.
-  * Tốt: Từ 80 đến cận 90 điểm.
-  * Khá: Từ 65 đến cận 80 điểm.
-  * Trung bình: Từ 50 đến cận 65 điểm.
-  * Yếu / Kém: Dưới 50 điểm.
-* **Cách tích lũy điểm:** Tham gia các phong trào Đoàn - Hội, hoạt động tình nguyện (Mùa hè xanh, Tiếp sức mùa thi), hội thảo học thuật, phong trào thể dục thể thao và chấp hành tốt nội quy nhà trường.`,
+    response: `Về điểm rèn luyện ở DNC thì mỗi học kỳ sinh viên sẽ được đánh giá theo thang điểm 100 nha bạn:
+
+* **Xuất sắc:** từ 90 đến 100 điểm.
+* **Tốt:** từ 80 đến cận 90 điểm.
+* **Khá:** từ 65 đến cận 80 điểm.
+* **Trung bình:** từ 50 đến cận 65 điểm.
+* Dưới 50 điểm là mức Yếu/Kém nè.
+
+Để có điểm rèn luyện cao, bạn chỉ cần chịu khó tham gia các hoạt động Đoàn - Hội, phong trào tình nguyện (Mùa hè xanh, Tiếp sức mùa thi), các buổi hội thảo học thuật hoặc giải đấu thể thao của trường là được cộng nhiều điểm lắm đó!`,
   },
   {
     id: 'bhyt',
     keywords: [
       'bảo hiểm y tế', 'bao hiem y te', 'bhyt', 'thẻ bhyt', 'khám chữa bệnh dnc'
     ],
-    response: `### **Bảo hiểm Y tế (BHYT) Sinh viên DNC:**
-* BHYT là bảo hiểm bắt buộc theo luật đối với toàn bộ học sinh, sinh viên trên toàn quốc.
-* **Đặc quyền sinh viên DNC:** Nơi đăng ký khám chữa bệnh ban đầu có thể đăng ký trực tiếp tại **Bệnh viện Đại học Nam Cần Thơ** (bệnh viện đa khoa quốc tế 300 giường nằm liền kề trường) với đầy đủ trang thiết bị hiện đại và chế độ thanh toán bảo hiểm đúng tuyến.
-* Hàng năm, trường sẽ có thông báo thu phí BHYT và gia hạn thẻ tự động cho sinh viên theo từng đợt.`,
+    response: `Dạ về Bảo hiểm y tế (BHYT) thì đây là bảo hiểm bắt buộc theo luật dành cho sinh viên nha bạn.
+
+Đặc biệt, sinh viên DNC tụi mình có một quyền lợi rất lớn là được đăng ký nơi khám chữa bệnh ban đầu ngay tại **Bệnh viện Đại học Nam Cần Thơ** (bệnh viện quốc tế 300 giường nằm liền kề trường luôn), khám bệnh đúng tuyến và thanh toán đầy đủ theo quy định BHYT. Hàng năm trường sẽ thông báo thu phí và gia hạn thẻ định kỳ cho bạn yên tâm sử dụng nhé.`,
   },
   {
     id: 'lien_he_dnc',
@@ -442,12 +430,13 @@ Cổng Hỗ Trợ Sinh Viên (HTSV) - Trường Đại học Nam Cần Thơ (DNC
       'liên hệ', 'lien he', 'số điện thoại', 'so dien thoai', 'sdt',
       'hotline dnc', 'phòng đào tạo', 'phòng công tác sinh viên', 'phòng ctsv', 'địa chỉ dnc'
     ],
-    response: `### **Thông tin Liên hệ Trường Đại học Nam Cần Thơ (DNC):**
-* **Địa chỉ:** Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ.
-* **Hotline Tuyển sinh & Tư vấn:** \`0939 257 838\` - \`02923 798 222\` - \`02923 798 333\`
+    response: `Dạ bạn có thể liên hệ với Trường Đại học Nam Cần Thơ (DNC) qua các kênh chính thức này nha:
+
+* **Địa chỉ trường:** Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ.
+* **Hotline Tuyển sinh & Tư vấn:** \`0939 257 838\` - \`02923 798 222\` - \`02923 798 333\`.
 * **Website:** [https://nctu.edu.vn](https://nctu.edu.vn)
-* **Email tuyển sinh:** \`phongtuyensinh@nctu.edu.vn\`
-* **Bộ phận Một cửa hỗ trợ sinh viên:** Tầng trệt Tòa nhà Hiệu bộ DNC (Làm việc từ Thứ Hai đến Thứ Bảy trong giờ hành chính).`,
+* **Email tuyển sinh:** \`phongtuyensinh@nctu.edu.vn\`.
+* **Bộ phận hỗ trợ sinh viên trực tiếp:** Tầng trệt Tòa nhà Hiệu bộ DNC (Làm việc từ Thứ Hai đến Thứ Bảy trong giờ hành chính).`,
   },
   {
     id: 'tai_khoan_htsv',
@@ -455,58 +444,59 @@ Cổng Hỗ Trợ Sinh Viên (HTSV) - Trường Đại học Nam Cần Thơ (DNC
       'tài khoản', 'tai khoan', 'đăng nhập', 'dang nhap', 'đăng ký', 'dang ky',
       'mật khẩu', 'mat khau', 'quên mật khẩu', 'đổi mật khẩu'
     ],
-    response: `### **Hướng dẫn Quản lý Tài khoản Cổng HTSV:**
-* **Đăng nhập:** Nhấn nút **"Đăng nhập"** ở góc trên bên phải màn hình, điền Mã sinh viên (hoặc Email) và mật khẩu của bạn.
-* **Quên mật khẩu:** Trên trang đăng nhập, nhấp vào liên kết *"Quên mật khẩu?"* và làm theo hướng dẫn gửi mã xác thực về email sinh viên để đặt lại.
-* **Bảo mật:** Bạn có thể vào mục **Hồ sơ cá nhân** để đổi mật khẩu định kỳ nhằm bảo vệ an toàn cho tài khoản và thông tin bài viết của mình.`,
+    response: `Về tài khoản trên Cổng HTSV thì bạn lưu ý các thao tác này nhé:
+
+* **Đăng nhập:** Bạn bấm nút **"Đăng nhập"** ở góc trên bên phải màn hình, điền Mã sinh viên (hoặc Email) cùng mật khẩu của bạn là vào được ngay.
+* **Quên mật khẩu:** Nếu lỡ quên mật khẩu, ở trang đăng nhập bạn bấm vào *"Quên mật khẩu?"* rồi làm theo hướng dẫn để nhận mã xác thực qua email sinh viên nhé.
+* **Bảo mật:** Bạn có thể vào mục **Hồ sơ cá nhân** để đổi mật khẩu định kỳ nhằm bảo vệ tài khoản của mình an toàn nhất nha.`,
   },
   {
     id: 'confession',
     keywords: ['confession', 'ẩn danh', 'đăng bài', 'bài viết', 'diễn đàn', 'forum'],
-    response: `### **Hướng dẫn đăng Confession trên diễn đàn HTSV:**
-1. Nhấp vào nút **"+"** (hoặc nút **"Đăng bài"**) trên thanh điều hướng hoặc truy cập trang **Diễn đàn Confession**.
-2. Nhập tiêu đề và nội dung bài viết bạn muốn chia sẻ.
-3. Bật tùy chọn **"Đăng ẩn danh"** nếu bạn không muốn lộ danh tính tài khoản.
-4. Chọn thẻ chủ đề phù hợp (*Học tập, Tình cảm, Đời sống, Góc hỏi đáp DNC...*).
-5. Nhấn **"Gửi bài viết"** để chia sẻ câu chuyện cùng cộng đồng sinh viên!`,
+    response: `Để đăng bài tâm sự trên Diễn đàn Confession của HTSV thì dễ lắm nha bạn ơi:
+
+1. Bạn vào trang **Diễn đàn Confession** hoặc bấm nút **"+"** (Đăng bài) trên thanh menu.
+2. Nhập tiêu đề và nội dung câu chuyện bạn muốn chia sẻ.
+3. Nếu muốn giữ bí mật danh tính thì bạn chỉ cần gạt bật nút **"Đăng ẩn danh"** là xong, không ai biết bạn là ai đâu nha.
+4. Chọn chuyên mục phù hợp (như Học tập, Tình cảm, Đời sống...) rồi nhấn **Gửi bài viết** là bài của bạn sẽ lên sóng để mọi người cùng đọc và tương tác nè!`,
   },
   {
     id: 'mot_cua',
     keywords: ['giấy xác nhận', 'xác nhận sinh viên', 'bảng điểm', 'thủ tục', 'một cửa', 'chứng nhận', 'hoãn nghĩa vụ'],
-    response: `### **Thủ tục Dịch vụ Một cửa - Xin giấy tờ sinh viên:**
-1. Đăng nhập vào tài khoản Cổng HTSV của bạn.
-2. Truy cập mục **"Hỗ trợ & Báo cáo"** (Dịch vụ Một cửa sinh viên).
-3. Chọn loại yêu cầu:
- * **Xin cấp Giấy xác nhận sinh viên** (Vay vốn ngân hàng chính sách, tạm hoãn nghĩa vụ quân sự, làm vé xe buýt...).
- * **Xin cấp Bảng điểm học tập chính thức**.
- * **Đơn xin hoãn thi / phúc khảo bài thi**.
-4. Điền lý do và gửi yêu cầu.
-5. Tiến độ sẽ được cập nhật trực tuyến và bạn nhận kết quả tại Phòng Công tác Sinh viên (Tòa nhà Hiệu bộ DNC) sau 2 - 3 ngày làm việc.`,
+    response: `Dịch vụ Một cửa trên HTSV sinh ra để giúp các bạn làm giấy tờ sinh viên online siêu tiện lợi đó nha! Bạn không cần phải đến tận phòng ban xếp hàng đâu:
+
+1. Bạn vào mục **Hỗ trợ & Báo cáo** (Dịch vụ Một cửa).
+2. Chọn loại giấy tờ bạn cần, ví dụ:
+   * *Giấy xác nhận sinh viên* (để vay vốn ngân hàng, tạm hoãn nghĩa vụ quân sự hay làm vé xe buýt...).
+   * *Bảng điểm học tập*.
+   * *Đơn xin hoãn thi hoặc phúc khảo*.
+3. Điền lý do và nhấn gửi.
+4. Hệ thống sẽ báo tiến độ xử lý hồ sơ cho bạn, thường sau 2 - 3 ngày làm việc là bạn có thể đến Tòa nhà Hiệu bộ nhận kết quả rồi nha!`,
   },
   {
     id: 'lap_trinh',
     keywords: ['lập trình web', 'lập trình wed', 'web là gì', 'frontend', 'backend', 'học lập trình', 'code web'],
-    response: `### **Lộ trình học Lập trình Web cho sinh viên:**
-Lập trình web gồm 2 phần chính:
+    response: `Về lộ trình học Lập trình Web cho người mới bắt đầu thì bạn có thể đi theo các bước này nè:
 
 1. **Frontend (Giao diện người dùng):**
- * **HTML5 & CSS3:** Xây dựng khung giao diện và định dạng giao diện đẹp mắt.
- * **JavaScript (ES6+) & TypeScript:** Xử lý logic và tăng tính tương tác, chặt chẽ về dữ liệu.
- * **Framework hiện đại:** **React 19**, Next.js hoặc Vue.js.
- * **Styling:** Tailwind CSS 4.
+   * Bắt đầu với **HTML5 & CSS3** để tạo khung và trang trí giao diện đẹp mắt.
+   * Học **JavaScript (ES6+) & TypeScript** để xử lý logic tương tác mượt mà.
+   * Lên framework hiện đại: **React 19** kết hợp với **Tailwind CSS 4** (dự án HTSV này cũng đang dùng công nghệ này đó bạn).
 
-2. **Backend (Xử lý máy chủ & Cơ sở dữ liệu):**
- * **Ngôn ngữ:** Node.js (Express/NestJS), Python (FastAPI/Django), Java (Spring Boot) hoặc C# (.NET).
- * **Cơ sở dữ liệu:** PostgreSQL, MySQL, MongoDB.
- * **RESTful API & Xác thực:** JWT, OAuth2.`,
+2. **Backend (Máy chủ & Dữ liệu):**
+   * Học **Node.js (NestJS / Express)** hoặc Python / Java.
+   * Học cơ sở dữ liệu: **PostgreSQL**, MySQL hoặc MongoDB.
+   * Học cách viết RESTful API và xác thực tài khoản qua JWT.
+
+Bạn đang muốn tập trung học làm giao diện (Frontend) hay làm hệ thống phía sau (Backend) nè?`,
   },
   {
     id: 'lich_hoc',
     keywords: ['lịch học', 'lịch thi', 'thời khóa biểu', 'đăng ký môn', 'tín chỉ', 'học vụ'],
-    response: `### **Tra cứu Lịch học & Lịch thi DNC:**
-* Xem thời khóa biểu theo tuần và ngày tại mục **"Lịch học"** trên thanh menu HTSV.
-* Hệ thống hiển thị rõ ràng phòng học, ca học, tên môn học và giảng viên phụ trách.
-* Đầu mỗi học kỳ, sinh viên theo dõi thông báo từ Phòng Đào tạo để đăng ký tín chỉ học phần đúng hạn.`,
+    response: `Để xem lịch học và lịch thi, bạn chỉ cần vào mục **"Lịch học"** trên thanh menu HTSV nha!
+
+* Hệ thống sẽ hiển thị thời khóa biểu rõ ràng theo từng tuần, từng ngày: phòng học ở tòa nhà nào, ca mấy giờ, tên môn học và giảng viên giảng dạy.
+* Bạn nhớ theo dõi lịch thường xuyên để không bị nhầm ca học hay phòng thi nhé!`,
   },
 ];
 
@@ -616,6 +606,66 @@ export function getMockResponse(question: string): string {
     if (admRule) return admRule.response;
   }
 
+  // Ý định: Ăn cơm / Đói bụng
+  if (noTone.includes('an com') || noTone.includes('an gi') || noTone.includes('doi bung')) {
+    const eatRule = MOCK_RULES.find((r) => r.id === 'eating');
+    if (eatRule) return eatRule.response;
+  }
+
+  // Ý định: Tâm trạng buồn / Stress / Áp lực
+  if (noTone.includes('buon') || noTone.includes('met moi') || noTone.includes('stress') || noTone.includes('ap luc') || noTone.includes('chan qua') || noTone.includes('nan qua')) {
+    const moodRule = MOCK_RULES.find((r) => r.id === 'mood');
+    if (moodRule) return moodRule.response;
+  }
+
+  // Ý định: Khen ngợi bot
+  if (noTone.includes('thong minh') || noTone.includes('gioi qua') || noTone.includes('de thuong') || noTone.includes('dang yeu') || noTone.includes('xin qua') || noTone.includes('hay qua')) {
+    const compRule = MOCK_RULES.find((r) => r.id === 'compliment');
+    if (compRule) return compRule.response;
+  }
+
+  // Ý định: Chúc ngủ ngon
+  if (noTone.includes('ngu ngon') || noTone.includes('di ngu') || noTone.includes('buon ngu')) {
+    const sleepRule = MOCK_RULES.find((r) => r.id === 'sleep');
+    if (sleepRule) return sleepRule.response;
+  }
+
+  // Ý định: Confession / Tâm sự ẩn danh
+  if (noTone.includes('confession') || noTone.includes('an danh') || noTone.includes('tam su')) {
+    const cfsRule = MOCK_RULES.find((r) => r.id === 'confession');
+    if (cfsRule) return cfsRule.response;
+  }
+
+  // Ý định: Dịch vụ Một cửa / Xin giấy tờ
+  if (noTone.includes('mot cua') || noTone.includes('giay xac nhan') || noTone.includes('bang diem') || noTone.includes('hoan thi')) {
+    const mcRule = MOCK_RULES.find((r) => r.id === 'mot_cua');
+    if (mcRule) return mcRule.response;
+  }
+
+  // Ý định: Ký túc xá / Ở trọ
+  if (noTone.includes('ky tuc xa') || noTone.includes('ktx') || noTone.includes('phong tro')) {
+    const ktxRule = MOCK_RULES.find((r) => r.id === 'dorm');
+    if (ktxRule) return ktxRule.response;
+  }
+
+  // Ý định: Câu lạc bộ / Hoạt động
+  if (noTone.includes('cau lac bo') || noTone.includes('clb') || noTone.includes('ngoai khoa')) {
+    const clbRule = MOCK_RULES.find((r) => r.id === 'clubs');
+    if (clbRule) return clbRule.response;
+  }
+
+  // Ý định: Lập trình / Code web
+  if (noTone.includes('lap trinh') || noTone.includes('code web') || noTone.includes('hoc code')) {
+    const codeRule = MOCK_RULES.find((r) => r.id === 'lap_trinh');
+    if (codeRule) return codeRule.response;
+  }
+
+  // Ý định: Lịch học / Thời khóa biểu
+  if (noTone.includes('lich hoc') || noTone.includes('lich thi') || noTone.includes('thoi khoa bieu')) {
+    const lhRule = MOCK_RULES.find((r) => r.id === 'lich_hoc');
+    if (lhRule) return lhRule.response;
+  }
+
   // Ý định: Đăng ký môn học / tín chỉ / học lại
   if (
     noTone.includes('dang ky mon') ||
@@ -646,14 +696,13 @@ export function getMockResponse(question: string): string {
     if (lhRule) return lhRule.response;
   }
 
-  // 3. Phản hồi trung thực khi không biết / không có dữ liệu:
-  // "Hỏi cái gì phải trả lời đúng cái đó. Nếu không biết thì nói không biết nha."
-  return `Về câu hỏi **"${raw}"**, hiện tại tôi chưa có dữ liệu hoặc không biết câu trả lời chính xác cho nội dung này.
+  // 3. Phản hồi trung thực, tự nhiên như con người khi không biết / không có dữ liệu:
+  return `Dạ về câu này thì hiện tại mình chưa có thông tin chính xác nên không dám trả lời bừa cho bạn nè. Vì mình là trợ lý chuyên về học tập, thủ tục học vụ và thông tin Trường Đại học Nam Cần Thơ (DNC) á.
 
-Nếu bạn cần giải đáp về thủ tục học vụ, quy chế hay thông tin tại Trường Đại học Nam Cần Thơ (DNC), bạn có thể liên hệ trực tiếp:
-* **Phòng Quản lý Đào tạo / Phòng Công tác Sinh viên DNC:** Số 168 Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ.
+Nếu bạn cần giải đáp về thủ tục học tập hay quy chế thi cử, bạn có thể liên hệ trực tiếp:
+* **Phòng Quản lý Đào tạo / Công tác Sinh viên DNC:** Số 168 Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ.
 * **Hotline / Zalo hỗ trợ:** \`0939 257 838\` - \`02923 798 222\`
-* Hoặc gửi yêu cầu qua mục **Dịch vụ Một cửa** trên Cổng HTSV để được hỗ trợ nhé.`;
+* Hoặc gửi yêu cầu qua mục **Dịch vụ Một cửa** trên Cổng HTSV để thầy cô hỗ trợ bạn nhanh nhất nha!`;
 }
 
 /**
