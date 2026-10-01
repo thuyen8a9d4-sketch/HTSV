@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Banknote,
-  Bot,
   Building,
   ChatBubble,
   Close,
@@ -13,12 +12,12 @@ import {
   RotateCcw,
   School,
   Send,
-  Sparkles,
 } from '../../components/Icons';
 import type { ChatMessage, QuickSuggestion } from './chatbot-types';
 import { getEffectiveApiKey, sendChatMessage } from './chatbot-service';
 import { QUICK_SUGGESTIONS, generateFollowUpSuggestions } from './chatbot-knowledge';
 import { ChatMarkdown } from './ChatMarkdown';
+import { AiAvatar } from './AiAvatar';
 import './chatbot.css';
 
 const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v2';
@@ -296,10 +295,10 @@ export function ChatbotWidget() {
           aria-expanded={false}
           aria-controls="htsv-chat-panel"
           className="htsv-chat-trigger"
-          aria-label="Mở Trợ lý Ảo HTSV"
+          aria-label="Mở Trợ lý AI HTSV"
         >
-          <ChatBubble className="h-6 w-6" />
-          <span className="htsv-chat-trigger-tooltip">Trợ lý Sinh viên HTSV</span>
+          <AiAvatar size="100%" isAnimated />
+          <span className="htsv-chat-trigger-tooltip">Trợ lý AI HTSV</span>
         </button>
       )}
 
@@ -316,19 +315,20 @@ export function ChatbotWidget() {
           {/* Header */}
           <div className="htsv-chat-header flex items-center justify-between gap-2 px-4 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
-              <div className="htsv-chat-avatar">
-                <Bot className="h-5 w-5" />
-              </div>
+              <AiAvatar size={40} />
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="htsv-chat-title text-sm font-bold">
-                    Trợ lý Sinh viên HTSV
+                    Trợ lý AI Sinh viên
                   </h3>
-                  <Sparkles className="htsv-chat-tag h-3.5 w-3.5 shrink-0" />
+                  <span className="inline-flex items-center rounded-full bg-indigo-500/15 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                    AI
+                  </span>
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs" title="Đang trực tuyến" aria-label="Đang trực tuyến" />
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="htsv-chat-subtitle text-[11px] font-medium">
-                    {hasApiKey ? 'AI Trực tuyến' : 'Cơ sở dữ liệu mẫu'}
+                    {hasApiKey ? 'Powered by Gemini AI • 24/7' : 'Trí tuệ nhân tạo sinh viên'}
                   </span>
                 </div>
               </div>
