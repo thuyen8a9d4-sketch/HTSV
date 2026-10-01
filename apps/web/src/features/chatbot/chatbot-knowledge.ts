@@ -340,7 +340,126 @@ Sinh viên DNC được thỏa sức phát triển đam mê và kỹ năng mềm
 * **Sự kiện nổi bật:** Cuộc thi Hoa khôi DNC (Miss DNC), Hội thao truyền thống, Mùa hè xanh, Ngày hội việc làm DNC Job Fair.`,
   },
 
-  // --- 10. HƯỚNG DẪN CỔNG SINH VIÊN HTSV ---
+  // --- 10. HƯỚNG DẪN CỔNG SINH VIÊN HTSV & TIỆN ÍCH HỌC VỤ ---
+  {
+    id: 'htsv_features',
+    keywords: [
+      'hướng dẫn các tính năng trên cổng sinh viên htsv',
+      'tính năng trên cổng sinh viên htsv',
+      'tính năng cổng sinh viên',
+      'hướng dẫn các tính năng',
+      'tính năng của htsv',
+      'tính năng htsv',
+      'cổng htsv có tính năng gì',
+      'cổng sinh viên có tính năng gì',
+      'các tính năng trên cổng sinh viên',
+      'các tính năng của cổng sinh viên',
+      'các chức năng của web',
+      'web này có tính năng gì',
+      'hướng dẫn sử dụng cổng sinh viên',
+      'hướng dẫn dùng web',
+      'hướng dẫn htsv',
+      'cổng sinh viên htsv',
+      'htsv là gì',
+      'tính năng web',
+      'chức năng web'
+    ],
+    response: `### **Hướng dẫn các tính năng chính trên Cổng Sinh viên HTSV:**
+
+Cổng Hỗ Trợ Sinh Viên (HTSV) - Trường Đại học Nam Cần Thơ (DNC) tích hợp đầy đủ các tiện ích học vụ và đời sống dành riêng cho sinh viên:
+
+1. **Diễn đàn Sinh viên & Confession:**
+   * Chia sẻ tâm sự, giao lưu, thảo luận học tập và đời sống sinh viên.
+   * Hỗ trợ chế độ **Đăng ẩn danh** bảo mật hoặc đăng công khai bằng tài khoản.
+   * Tương tác bình luận, bày tỏ cảm xúc và kết nối cùng cộng đồng sinh viên DNC.
+
+2. **Dịch vụ Một cửa (Hỗ trợ & Báo cáo):**
+   * Đăng ký trực tuyến các loại giấy tờ học vụ mà không cần xếp hàng:
+     * *Giấy xác nhận sinh viên* (vay vốn ngân hàng chính sách, tạm hoãn nghĩa vụ quân sự, làm vé xe buýt...).
+     * *Bảng điểm học tập chính thức*.
+     * *Đơn xin hoãn thi / phúc khảo bài thi*.
+   * Theo dõi tiến độ duyệt hồ sơ minh bạch theo thời gian thực.
+
+3. **Tra cứu Lịch học & Thời khóa biểu:**
+   * Xem thời khóa biểu theo tuần, ngày với đầy đủ thông tin phòng học, ca học, tên môn học và giảng viên giảng dạy.
+
+4. **Ký túc xá DNC:**
+   * Tra cứu thông tin phòng, tiện nghi ký túc xá máy lạnh và nộp đơn đăng ký phòng nội trú trực tuyến.
+
+5. **Trợ lý Tư vấn AI Sinh viên 24/7:**
+   * Hỗ trợ giải đáp nhanh thông tin trường DNC (học phí ổn định suốt khóa, 4 phương thức xét tuyển, cơ sở vật chất Bệnh viện DNC, Showroom Ô tô...).
+   * Giải đáp kiến thức học tập, lập trình/code, phương pháp học đại học.
+
+6. **Tài khoản & Cá nhân hóa:**
+   * Cập nhật thông tin sinh viên, đổi mật khẩu an toàn.
+   * Hỗ trợ giao diện Sáng / Tối (Light & Dark Mode) bảo vệ mắt khi sử dụng vào ban đêm.`,
+  },
+  {
+    id: 'dang_ky_mon',
+    keywords: [
+      'đăng ký môn', 'dang ky mon', 'đăng ký học phần', 'dang ky hoc phan',
+      'đăng ký tín chỉ', 'rút học phần', 'hủy môn', 'học lại', 'học cải thiện'
+    ],
+    response: `### **Quy trình Đăng ký Môn học & Học phần tại DNC:**
+1. **Thời gian đăng ký:** Theo thông báo chính thức của Phòng Quản lý Đào tạo trước mỗi học kỳ (mỗi năm học gồm 3 học kỳ).
+2. **Các bước thực hiện:**
+   * Đăng nhập tài khoản sinh viên vào cổng thông tin đào tạo của trường.
+   * Kiểm tra chương trình đào tạo của khóa/ngành và danh sách môn học mở trong kỳ.
+   * Chọn học phần và lớp học phần phù hợp với thời khóa biểu cá nhân, nhấn **Lưu đăng ký**.
+3. **Đăng ký Học lại / Học cải thiện:**
+   * Học lại: Bắt buộc đối với các học phần bị điểm F (dưới 4.0 thang điểm 10).
+   * Học cải thiện: Dành cho học phần đạt điểm D hoặc D+ muốn nâng cao điểm trung bình tích lũy (GPA). Điểm học phần mới sẽ thay thế cho điểm cũ.`,
+  },
+  {
+    id: 'diem_ren_luyen',
+    keywords: [
+      'điểm rèn luyện', 'diem ren luyen', 'rèn luyện sinh viên',
+      'xếp loại rèn luyện', 'cộng điểm rèn luyện', 'đánh giá rèn luyện'
+    ],
+    response: `### **Quy chế Điểm Rèn Luyện Sinh viên DNC:**
+* **Thang điểm:** Đánh giá theo thang điểm 100 cho mỗi học kỳ.
+* **Các khung xếp loại:**
+  * Xuất sắc: Từ 90 đến 100 điểm.
+  * Tốt: Từ 80 đến cận 90 điểm.
+  * Khá: Từ 65 đến cận 80 điểm.
+  * Trung bình: Từ 50 đến cận 65 điểm.
+  * Yếu / Kém: Dưới 50 điểm.
+* **Cách tích lũy điểm:** Tham gia các phong trào Đoàn - Hội, hoạt động tình nguyện (Mùa hè xanh, Tiếp sức mùa thi), hội thảo học thuật, phong trào thể dục thể thao và chấp hành tốt nội quy nhà trường.`,
+  },
+  {
+    id: 'bhyt',
+    keywords: [
+      'bảo hiểm y tế', 'bao hiem y te', 'bhyt', 'thẻ bhyt', 'khám chữa bệnh dnc'
+    ],
+    response: `### **Bảo hiểm Y tế (BHYT) Sinh viên DNC:**
+* BHYT là bảo hiểm bắt buộc theo luật đối với toàn bộ học sinh, sinh viên trên toàn quốc.
+* **Đặc quyền sinh viên DNC:** Nơi đăng ký khám chữa bệnh ban đầu có thể đăng ký trực tiếp tại **Bệnh viện Đại học Nam Cần Thơ** (bệnh viện đa khoa quốc tế 300 giường nằm liền kề trường) với đầy đủ trang thiết bị hiện đại và chế độ thanh toán bảo hiểm đúng tuyến.
+* Hàng năm, trường sẽ có thông báo thu phí BHYT và gia hạn thẻ tự động cho sinh viên theo từng đợt.`,
+  },
+  {
+    id: 'lien_he_dnc',
+    keywords: [
+      'liên hệ', 'lien he', 'số điện thoại', 'so dien thoai', 'sdt',
+      'hotline dnc', 'phòng đào tạo', 'phòng công tác sinh viên', 'phòng ctsv', 'địa chỉ dnc'
+    ],
+    response: `### **Thông tin Liên hệ Trường Đại học Nam Cần Thơ (DNC):**
+* **Địa chỉ:** Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ.
+* **Hotline Tuyển sinh & Tư vấn:** \`0939 257 838\` - \`02923 798 222\` - \`02923 798 333\`
+* **Website:** [https://nctu.edu.vn](https://nctu.edu.vn)
+* **Email tuyển sinh:** \`phongtuyensinh@nctu.edu.vn\`
+* **Bộ phận Một cửa hỗ trợ sinh viên:** Tầng trệt Tòa nhà Hiệu bộ DNC (Làm việc từ Thứ Hai đến Thứ Bảy trong giờ hành chính).`,
+  },
+  {
+    id: 'tai_khoan_htsv',
+    keywords: [
+      'tài khoản', 'tai khoan', 'đăng nhập', 'dang nhap', 'đăng ký', 'dang ky',
+      'mật khẩu', 'mat khau', 'quên mật khẩu', 'đổi mật khẩu'
+    ],
+    response: `### **Hướng dẫn Quản lý Tài khoản Cổng HTSV:**
+* **Đăng nhập:** Nhấn nút **"Đăng nhập"** ở góc trên bên phải màn hình, điền Mã sinh viên (hoặc Email) và mật khẩu của bạn.
+* **Quên mật khẩu:** Trên trang đăng nhập, nhấp vào liên kết *"Quên mật khẩu?"* và làm theo hướng dẫn gửi mã xác thực về email sinh viên để đặt lại.
+* **Bảo mật:** Bạn có thể vào mục **Hồ sơ cá nhân** để đổi mật khẩu định kỳ nhằm bảo vệ an toàn cho tài khoản và thông tin bài viết của mình.`,
+  },
   {
     id: 'confession',
     keywords: ['confession', 'ẩn danh', 'đăng bài', 'bài viết', 'diễn đàn', 'forum'],
@@ -425,6 +544,7 @@ function containsKeyword(normalizedText: string, noToneText: string, keyword: st
 /**
  * Hàm tìm kiếm phản hồi ngoại tuyến thông minh (Smart Offline Engine)
  * Luôn trả lời đúng trọng tâm và tự nhiên theo câu hỏi của người dùng.
+ * Nếu không biết, thành thật trả lời không biết và hướng dẫn liên hệ đúng kênh.
  */
 export function getMockResponse(question: string): string {
   const raw = question.trim();
@@ -438,13 +558,29 @@ export function getMockResponse(question: string): string {
     }
   }
 
-  // 2. Nhận diện ý định theo ngữ cảnh nếu câu hỏi ngắn gọn:
-  // Ý định 1: Chào hỏi
-  if (noTone === 'hi' || noTone === 'hello' || noTone === 'chao' || noTone.startsWith('chao ban')) {
-    return MOCK_RULES[0].response;
+  // 2. Nhận diện ý định theo ngữ cảnh phong phú:
+  // Ý định: Tính năng cổng HTSV / Web
+  if (
+    (noTone.includes('tinh nang') || noTone.includes('chuc nang')) &&
+    (noTone.includes('htsv') || noTone.includes('cong') || noTone.includes('web') || noTone.includes('he thong') || noTone.includes('trang web'))
+  ) {
+    const featRule = MOCK_RULES.find((r) => r.id === 'htsv_features');
+    if (featRule) return featRule.response;
+  }
+  if (
+    (noTone.includes('huong dan') || noTone.includes('su dung') || noTone.includes('cach dung')) &&
+    (noTone.includes('htsv') || noTone.includes('cong') || noTone.includes('web'))
+  ) {
+    const featRule = MOCK_RULES.find((r) => r.id === 'htsv_features');
+    if (featRule) return featRule.response;
   }
 
-  // Ý định 2: Hỏi danh tính người dùng ("bạn biết tui là ai", "tôi là ai")
+  // Ý định: Chào hỏi
+  if (noTone === 'hi' || noTone === 'hello' || noTone === 'chao' || noTone.startsWith('chao ban')) {
+    return MOCK_RULES.find((r) => r.id === 'greeting')?.response || MOCK_RULES[2].response;
+  }
+
+  // Ý định: Hỏi danh tính người dùng ("bạn biết tui là ai", "tôi là ai")
   if (
     noTone.includes('biet tui la ai') ||
     noTone.includes('biet toi la ai') ||
@@ -452,41 +588,72 @@ export function getMockResponse(question: string): string {
     noTone === 'toi la ai' ||
     noTone === 'tui la ai'
   ) {
-    return MOCK_RULES[1].response;
+    const identRule = MOCK_RULES.find((r) => r.id === 'user_identity');
+    if (identRule) return identRule.response;
   }
 
-  // Ý định 3: Hỏi về trường / địa chỉ
+  // Ý định: Hỏi về trường / địa chỉ
   if (
     noTone.includes('truong nao') ||
     noTone.includes('truong gi') ||
     noTone.includes('dai hoc nam can tho') ||
-    noTone.includes('dh nam can tho')
+    noTone.includes('dh nam can tho') ||
+    noTone === 'dnc'
   ) {
     const schoolRule = MOCK_RULES.find((r) => r.id === 'school_info');
     if (schoolRule) return schoolRule.response;
   }
 
-  // Ý định 4: Hỏi về học phí / tiền bạc
+  // Ý định: Hỏi về học phí / tiền bạc
   if (noTone.includes('hoc phi') || noTone.includes('tien hoc') || noTone.includes('bao nhieu tien')) {
     const tuitionRule = MOCK_RULES.find((r) => r.id === 'tuition');
     if (tuitionRule) return tuitionRule.response;
   }
 
-  // Ý định 5: Hỏi về tuyển sinh / xét tuyển / học bạ
+  // Ý định: Hỏi về tuyển sinh / xét tuyển / học bạ
   if (noTone.includes('xet tuyen') || noTone.includes('tuyen sinh') || noTone.includes('xet hoc ba')) {
     const admRule = MOCK_RULES.find((r) => r.id === 'admissions');
     if (admRule) return admRule.response;
   }
 
-  // 3. Phản hồi tự nhiên thân thiện khi không khớp từ khóa cục bộ
-  return `Chào bạn! Cảm ơn bạn đã đặt câu hỏi .
+  // Ý định: Đăng ký môn học / tín chỉ / học lại
+  if (
+    noTone.includes('dang ky mon') ||
+    noTone.includes('hoc phan') ||
+    noTone.includes('tin chi') ||
+    noTone.includes('hoc lai') ||
+    noTone.includes('hoc cai thien')
+  ) {
+    const dkRule = MOCK_RULES.find((r) => r.id === 'dang_ky_mon');
+    if (dkRule) return dkRule.response;
+  }
 
-Hiện tại mình đang ở chế độ phản hồi nhanh. Mình có thể hỗ trợ bạn mọi thông tin:
-* **Giải đáp học tập, lập trình & kiến thức tổng quát**
-* **Thông tin Trường Đại học Nam Cần Thơ (DNC):** Ngành học, học phí ổn định, 4 phương thức tuyển sinh, Ký túc xá, Bệnh viện DNC...
-* **Tiện ích Cổng HTSV:** Confession, Dịch vụ Một cửa, lịch học, lịch thi...
+  // Ý định: Điểm rèn luyện
+  if (noTone.includes('ren luyen')) {
+    const drlRule = MOCK_RULES.find((r) => r.id === 'diem_ren_luyen');
+    if (drlRule) return drlRule.response;
+  }
 
-Bạn có thể mô tả cụ thể hơn câu hỏi để mình hỗ trợ bạn chính xác nhất nhé!`;
+  // Ý định: BHYT
+  if (noTone.includes('bhyt') || noTone.includes('bao hiem')) {
+    const bhytRule = MOCK_RULES.find((r) => r.id === 'bhyt');
+    if (bhytRule) return bhytRule.response;
+  }
+
+  // Ý định: Liên hệ / Hotline
+  if (noTone.includes('lien he') || noTone.includes('hotline') || noTone.includes('so dien thoai') || noTone.includes('sdt')) {
+    const lhRule = MOCK_RULES.find((r) => r.id === 'lien_he_dnc');
+    if (lhRule) return lhRule.response;
+  }
+
+  // 3. Phản hồi trung thực khi không biết / không có dữ liệu:
+  // "Hỏi cái gì phải trả lời đúng cái đó. Nếu không biết thì nói không biết nha."
+  return `Về câu hỏi **"${raw}"**, hiện tại tôi chưa có dữ liệu hoặc không biết câu trả lời chính xác cho nội dung này.
+
+Nếu bạn cần giải đáp về thủ tục học vụ, quy chế hay thông tin tại Trường Đại học Nam Cần Thơ (DNC), bạn có thể liên hệ trực tiếp:
+* **Phòng Quản lý Đào tạo / Phòng Công tác Sinh viên DNC:** Số 168 Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ.
+* **Hotline / Zalo hỗ trợ:** \`0939 257 838\` - \`02923 798 222\`
+* Hoặc gửi yêu cầu qua mục **Dịch vụ Một cửa** trên Cổng HTSV để được hỗ trợ nhé.`;
 }
 
 /**
@@ -593,6 +760,8 @@ export function generateFollowUpSuggestions(userPrompt: string, botResponse: str
 
   // 7. Nhóm Tiện ích Cổng HTSV (Confession, Một cửa, Lịch học)
   if (
+    noTone.includes('tinh nang') ||
+    noTone.includes('htsv') ||
     noTone.includes('confession') ||
     noTone.includes('giay xac nhan') ||
     noTone.includes('mot cua') ||
