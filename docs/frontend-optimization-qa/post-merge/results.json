@@ -1,0 +1,140 @@
+{
+  "results": [],
+  "checks": [
+    "Mobile drawer Escape returns focus and restores scroll",
+    "Request validation, save and persistence",
+    "Forum search, empty result, mobile input size",
+    "Long unbroken forum text does not overflow",
+    "Forum error state and recovery",
+    "Forum invalid state and recovery",
+    "Forum empty state and recovery",
+    "Chat corrupt history, reset pending answer, landscape and Escape",
+    "Gallery stops GPU draws offscreen and resumes when visible",
+    "Dark theme and reduced motion layout",
+    "Service page does not download WebGL bundles",
+    "Guest protected route preserves next URL"
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    }
+  ]
+}

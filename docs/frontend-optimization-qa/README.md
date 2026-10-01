@@ -1,6 +1,6 @@
 # Kiểm tra tối ưu frontend — 01/10/2026
 
-Giữ giao diện bản trên máy theo lựa chọn của Zuzong. Bản phát hành được ghép từ `origin/main` tại `d4dec3c` với thay đổi frontend; không thay đổi backend, database, biến môi trường, dependency hay lockfile. Không đưa tệp nén logo vào bản phát hành.
+Giữ giao diện bản trên máy theo lựa chọn của Zuzong. Bản phát hành được ghép từ `origin/main` tại `d4dec3c`, sau đó đồng bộ cập nhật mới đến `bdcbd49`. Giữ logic chatbot mới trên GitHub cùng giao diện trên máy; không thay đổi backend, database, biến môi trường, dependency hay lockfile. Không đưa tệp nén logo vào bản phát hành.
 
 ## Thay đổi
 
@@ -22,6 +22,8 @@ node apps/web/scripts/verify-optimization.cjs <duong-dan-playwright> http://127.
 ```
 
 Script chặn API bằng dữ liệu kiểm thử và chặn dịch vụ bên ngoài. `results.json` ghi kết quả theo trang/kích thước và các kiểm tra tương tác. Ảnh trang chủ được chụp sau khi cuộn qua nội dung để kích hoạt hiệu ứng hiện nội dung.
+
+Kết quả: **69/69 lượt bố cục**, **12/12 nhóm tương tác**, **0 lỗi JavaScript**. Đã xem ảnh trang chủ và diễn đàn trên điện thoại, diễn đàn desktop. Sau khi ghép logic chatbot mới, chạy lại lint/build và các nhóm tương tác; bằng chứng riêng trong `post-merge/results.json`.
 
 Gói JavaScript chính trước tối ưu: **1.444,05 KB** (gzip **443,30 KB**). Sau tối ưu: khoảng **345,72 KB** (gzip **106,58 KB**). Đây là kích thước entry chunk, không phải tổng tải hoặc mức tăng FPS. Three.js vẫn khoảng **572,38 KB** và còn cảnh báo chunk lớn, nhưng được tải riêng theo nhu cầu.
 

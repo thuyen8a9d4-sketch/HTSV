@@ -210,4 +210,3 @@ const results = [];
     assert.equal(results.filter((r) => r.document > r.viewport + 1 || r.unnamed.length).length, 0, 'Layout or accessible labels failed');
   } finally { await browser.close(); }
 })().catch((error) => { console.error(error); process.exit(1); });
-
