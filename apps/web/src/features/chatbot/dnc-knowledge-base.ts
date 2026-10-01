@@ -1728,15 +1728,29 @@ export function resolveDncAddress(noTone: string): string {
     return `**Khu phức hợp Ký túc xá Đại học Nam Cần Thơ** nằm ngay bên trong khuôn viên trường tại địa chỉ: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.\n\n* **Đặc điểm:** Sức chứa hơn 2.000 sinh viên, gồm các dãy phòng quạt và phòng máy lạnh tiện nghi, wifi bao phủ, an ninh thẻ từ 24/7 và sát cạnh căng-tin trường.`;
   }
 
-  // 4. Viện dược liệu / Viện sức khỏe / Trung tâm phần mềm / Thư viện / Hồ bơi / Sân vận động
+  // 4. Khám chữa bệnh BHYT sinh viên ở đâu
+  if (noTone.includes('bhyt') || noTone.includes('bao hiem')) {
+    return `Sinh viên tham gia Bảo hiểm Y tế (BHYT) tại Trường Đại học Nam Cần Thơ được đăng ký nơi khám chữa bệnh ban đầu trực tiếp tại **Bệnh viện Đại học Nam Cần Thơ** (địa chỉ: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ** - ngay bên trong khuôn viên trường). Khi đi khám, bạn xuất trình thẻ BHYT (hoặc ứng dụng VssID) và thẻ sinh viên để được hưởng 100% quyền lợi đúng tuyến nhé!`;
+  }
+
+  // 4.1. Thư viện điện tử DNC
+  if (noTone.includes('thu vien')) {
+    return `**Thư viện điện tử Trường Đại học Nam Cần Thơ** nằm tại **Tòa nhà Thư viện Trung tâm**, bên trong khuôn viên trường (Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ).\n\n* **Tiện nghi:** Trang bị 100% máy lạnh, hệ thống máy tính tra cứu số hóa, hàng chục ngàn đầu sách giáo trình - tham khảo và các phòng học nhóm yên tĩnh.\n* **Thời gian phục vụ:** Giờ hành chính từ thứ Hai đến thứ Bảy hàng tuần.`;
+  }
+
+  // 4.2. Tuyến xe buýt đến trường
+  if (noTone.includes('xe buyt') || noTone.includes('xe bus')) {
+    return `Tuyến xe buýt đi qua Trường Đại học Nam Cần Thơ có trạm dừng ngay trước cổng trường tại: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.\n\n* **Ưu đãi sinh viên:** Sinh viên DNC được hưởng chính sách trợ giá vé xe buýt khi xuất trình Thẻ sinh viên hoặc Giấy xác nhận sinh viên.`;
+  }
+
+  // 4.3. Viện dược liệu / Viện sức khỏe / Trung tâm phần mềm / Hồ bơi / Sân vận động
   if (
     noTone.includes('vien duoc lieu') ||
     noTone.includes('vien nghien cuu') ||
     noTone.includes('trung tam phan mem') ||
     noTone.includes('ho boi') ||
     noTone.includes('san bong') ||
-    noTone.includes('san van dong') ||
-    noTone.includes('thu vien')
+    noTone.includes('san van dong')
   ) {
     return `Cơ sở này nằm ngay bên trong khuôn viên Trường Đại học Nam Cần Thơ, địa chỉ: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.`;
   }
@@ -2019,6 +2033,27 @@ Showroom Ô tô Nam Cần Thơ DNC là mô hình doanh nghiệp trong trường 
   ) {
     const resortItem = DNC_KNOWLEDGE_BASE.find((item) => item.id === 'dnc-resort');
     if (resortItem) return resortItem.answer;
+  }
+
+  // 11.1. Câu hỏi về Thư viện điện tử DNC
+  if (noTone.includes('thu vien') || noTone.includes('sach') || noTone.includes('tai lieu hoc tap')) {
+    return `### 📚 **Thư viện điện tử Trường Đại học Nam Cần Thơ (DNC)**
+
+Thư viện điện tử DNC tọa lạc tại **Tòa nhà Thư viện Trung tâm** bên trong khuôn viên trường:
+
+* **Không gian học tập & Nghiên cứu:** Trang bị 100% máy lạnh, thiết kế hiện đại, yên tĩnh với nhiều khu vực: Khu đọc sách chung, Phòng thảo luận nhóm, Khu tự học cá nhân.
+* **Tài liệu & Học liệu phong phú:** Hàng chục ngàn đầu sách giáo trình, tài liệu tham khảo chuyên ngành cập nhật mới nhất, cùng hệ thống máy tính tra cứu số hóa kết nối các cơ sở dữ liệu học thuật quốc tế.
+* **Thời gian mở cửa phục vụ:** Giờ hành chính từ **thứ Hai đến thứ Bảy** (Buổi sáng: 7h00 - 11h30, Buổi chiều: 13h00 - 17h00).
+* **Quyền lợi sinh viên:** Sinh viên chỉ cần mang theo **Thẻ sinh viên** để quét mã mượn/trả sách hoặc sử dụng phòng máy tính tra cứu hoàn toàn miễn phí.`;
+  }
+
+  // 11.2. Tuyến xe buýt đến trường
+  if (noTone.includes('xe buyt') || noTone.includes('xe bus')) {
+    return `### 🚌 **Tuyến xe buýt đến Trường Đại học Nam Cần Thơ (DNC)**
+
+* **Trạm dừng xe buýt:** Nằm ngay trước cổng chính của Trường Đại học Nam Cần Thơ (Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ).
+* **Các tuyến xe buýt chính:** Các tuyến xe buýt nội ô TP. Cần Thơ và liên tỉnh (tuyến Ba Láng - Ô Môn, tuyến Trung tâm Cần Thơ - Phong Điền...) chạy liên tục mỗi 15 - 20 phút một chuyến.
+* **Chính sách ưu đãi:** Sinh viên DNC được hưởng chính sách **trợ giá vé xe buýt học sinh - sinh viên** khi xuất trình Thẻ sinh viên hoặc Giấy xác nhận sinh viên DNC.`;
   }
 
   // 12. Tìm kiếm tổng quan ngành học (CHỈ KHI người dùng thực sự hỏi về ngành học cụ thể)

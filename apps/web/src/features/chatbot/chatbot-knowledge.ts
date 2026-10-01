@@ -319,12 +319,12 @@ Bạn đang muốn tìm hiểu về điều kiện của loại học bổng nà
     ],
     response: `Dạ về chi phí phòng ở tại Ký túc xá Đại học Nam Cần Thơ (DNC) thì cực kỳ hợp lý và tiết kiệm cho sinh viên luôn nha bạn:
 
-* **Mức phí phòng:** Dao động từ khoảng **350.000đ - 600.000đ / sinh viên / tháng** (tùy thuộc vào loại phòng quạt tiêu chuẩn hay phòng máy lạnh hiện đại).
+* **Mức phí phòng:** Dao động từ khoảng **450.000đ - 1.200.000đ / sinh viên / tháng** (phòng quạt tiêu chuẩn khoảng **450.000đ - 600.000đ/tháng**, phòng máy lạnh khoảng **800.000đ - 1.200.000đ/tháng**).
 * **Tiện nghi trong phòng:** Trang bị sẵn giường tầng, nệm, bàn học cá nhân, tủ đồ có khóa, quạt, máy lạnh, bình nước nóng lạnh và hệ thống wifi phủ sóng toàn khu.
 * **Chi phí điện, nước:** Tính theo chỉ số đồng hồ riêng của từng phòng theo đúng biểu giá nhà nước dành cho sinh viên.
 * **An ninh & Tiện ích:** Bảo vệ trực 24/7, thẻ từ ra vào, có căng-tin nhà ăn sinh viên, siêu thị mini, sân bóng đá, hồ bơi và phòng gym ngay dưới chân tòa nhà.
 
-Bạn có thể nộp đơn đăng ký phòng trực tuyến ngay trên mục **Đời sống sinh viên** của Cổng HTSV này đó nha! Bạn đang muốn tìm phòng mấy người nè?`,
+Bạn có thể nộp đơn đăng ký phòng trực tuyến ngay trên mục **Hỗ trợ** hoặc **Đời sống sinh viên** của Cổng HTSV này đó nha! Bạn đang muốn tìm phòng mấy người nè?`,
   },
 
   // --- 4.3. THỦ TỤC XIN GIẤY XÁC NHẬN SINH VIÊN ---
@@ -1227,22 +1227,86 @@ export function getMockResponse(question: string): string {
     if (rule) return rule.response;
   }
 
-  // 16.5. Tra cứu dữ liệu chuyên sâu từ website Đại học Nam Cần Thơ (nctu.edu.vn)
-  // Bao gồm tất cả các ngành đào tạo, mã ngành, khối xét tuyển, thời gian đào tạo, câu lạc bộ
-  const dncDeepData = searchDncKnowledge(raw);
-  if (dncDeepData) {
-    return dncDeepData;
+  // 17. Ý định: Báo cáo bài viết hoặc bình luận vi phạm trên Diễn đàn / Confession
+  if (
+    noTone.includes('bao cao') ||
+    noTone.includes('to cao') ||
+    noTone.includes('report') ||
+    (noTone.includes('vi pham') && (noTone.includes('bai') || noTone.includes('binh luan') || noTone.includes('noi dung')))
+  ) {
+    const faq3Rule = MOCK_RULES.find((r) => r.id === 'faq_report_content');
+    if (faq3Rule) return faq3Rule.response;
   }
 
-  // 17. Kiểm tra từ khóa chính xác trong MOCK_RULES
-  for (const rule of MOCK_RULES) {
-    if (rule.keywords.some((k) => containsKeyword(normalized, noTone, k))) {
-      return rule.response;
-    }
+  // 18. Ý định: Thời gian duyệt bài Confession
+  if (
+    (noTone.includes('confession') || noTone.includes('bai viet') || noTone.includes('bai dang') || noTone.includes('dang bai')) &&
+    (noTone.includes('bao lau') || noTone.includes('duyet') || noTone.includes('phe duyet') || noTone.includes('kiem duyet') || noTone.includes('khi nao') || noTone.includes('cho'))
+  ) {
+    const faq2Rule = MOCK_RULES.find((r) => r.id === 'faq_moderation_time');
+    if (faq2Rule) return faq2Rule.response;
   }
 
-  // 18. Nhận diện ý định theo ngữ cảnh phong phú
-  // Ý định: Tính năng cổng HTSV / Web
+  // 19. Ý định: Đăng bài ẩn danh có an toàn / lộ danh tính không
+  if (
+    (noTone.includes('an danh') || noTone.includes('giau ten') || noTone.includes('dau ten')) &&
+    (noTone.includes('danh tinh') || noTone.includes('biet') || noTone.includes('lo') || noTone.includes('ai') || noTone.includes('an toan') || noTone.includes('so'))
+  ) {
+    const faq1Rule = MOCK_RULES.find((r) => r.id === 'faq_anonymous_safety');
+    if (faq1Rule) return faq1Rule.response;
+  }
+
+  // 20. Ý định: Quên mật khẩu hoặc không nhận được OTP
+  if (
+    (noTone.includes('mat khau') || noTone.includes('otp') || noTone.includes('xac thuc') || noTone.includes('tai khoan')) &&
+    (noTone.includes('quen') || noTone.includes('khong nhan') || noTone.includes('khong ve') || noTone.includes('lay lai') || noTone.includes('loi'))
+  ) {
+    const faq4Rule = MOCK_RULES.find((r) => r.id === 'faq_account_security');
+    if (faq4Rule) return faq4Rule.response;
+  }
+
+  // 21. Ý định: Cập nhật Mã sinh viên (MSSV), lớp và ngành học
+  if (
+    (noTone.includes('ma sinh vien') || noTone.includes('mssv') || noTone.includes('lop') || noTone.includes('nganh hoc')) &&
+    (noTone.includes('cap nhat') || noTone.includes('doi') || noTone.includes('sai') || noTone.includes('xac thuc') || noTone.includes('chinh sua'))
+  ) {
+    const faq5Rule = MOCK_RULES.find((r) => r.id === 'faq_student_verification');
+    if (faq5Rule) return faq5Rule.response;
+  }
+
+  // 22. Ý định: Đăng ký môn học / tín chỉ / học phần / rút môn
+  if (
+    noTone.includes('dang ky mon') ||
+    noTone.includes('dang ky hoc phan') ||
+    noTone.includes('dang ky tin chi') ||
+    noTone.includes('tin chi') ||
+    noTone.includes('rut hoc phan') ||
+    noTone.includes('huy mon') ||
+    (noTone.includes('mon hoc') && noTone.includes('dang ky'))
+  ) {
+    const dkRule = MOCK_RULES.find((r) => r.id === 'dang_ky_mon');
+    if (dkRule) return dkRule.response;
+  }
+
+  // 23. Ý định: Điểm rèn luyện
+  if (noTone.includes('ren luyen') || noTone.includes('drl')) {
+    const drlRule = MOCK_RULES.find((r) => r.id === 'diem_ren_luyen');
+    if (drlRule) return drlRule.response;
+  }
+
+  // 24. Ý định: Bảo hiểm y tế (BHYT)
+  if (noTone.includes('bhyt') || noTone.includes('bao hiem y te') || (noTone.includes('bao hiem') && (noTone.includes('kham') || noTone.includes('benh vien') || noTone.includes('sinh vien')))) {
+    const bhytRule = MOCK_RULES.find((r) => r.id === 'bhyt');
+    if (bhytRule) return bhytRule.response;
+  }
+
+  // 25. Ý định: Lịch học / Thời khóa biểu / Lịch thi
+  if (noTone.includes('lich hoc') || noTone.includes('lich thi') || noTone.includes('thoi khoa bieu')) {
+    const lhRule = MOCK_RULES.find((r) => r.id === 'lich_hoc');
+    if (lhRule) return lhRule.response;
+  }
+
+  // 26. Ý định: Tính năng cổng HTSV / Web
   if (
     (noTone.includes('tinh nang') || noTone.includes('chuc nang')) &&
     (noTone.includes('htsv') || noTone.includes('cong') || noTone.includes('web') || noTone.includes('he thong') || noTone.includes('trang web'))
@@ -1258,12 +1322,83 @@ export function getMockResponse(question: string): string {
     if (featRule) return featRule.response;
   }
 
-  // Ý định: Chào hỏi
-  if (noTone === 'hi' || noTone === 'hello' || noTone === 'chao' || noTone.startsWith('chao ban') || noTone.startsWith('xin chao')) {
+  // 27. Ý định: Diễn đàn Confession / Tâm sự
+  if (noTone.includes('confession') || (noTone.includes('tam su') && noTone.includes('dien dan')) || (noTone.includes('dang bai') && noTone.includes('dien dan'))) {
+    const cfsRule = MOCK_RULES.find((r) => r.id === 'confession');
+    if (cfsRule) return cfsRule.response;
+  }
+
+  // 28. Ý định: Dịch vụ Một cửa / Xin giấy tờ
+  if (noTone.includes('mot cua') || noTone.includes('giay xac nhan') || noTone.includes('bang diem') || noTone.includes('hoan thi')) {
+    const mcRule = MOCK_RULES.find((r) => r.id === 'mot_cua');
+    if (mcRule) return mcRule.response;
+  }
+
+  // 29. Ý định: Hệ sinh thái doanh nghiệp trong trường DNC
+  if (
+    noTone.includes('he sinh thai') ||
+    noTone.includes('doanh nghiep trong truong') ||
+    noTone.includes('dnc travel') ||
+    noTone.includes('ho boi') ||
+    noTone.includes('vien duoc lieu') ||
+    (noTone.includes('co so vat chat') && noTone.includes('dnc'))
+  ) {
+    const ecoRule = MOCK_RULES.find((r) => r.id === 'dnc_ecosystem');
+    if (ecoRule) return ecoRule.response;
+  }
+
+  // 30. Ý định: Lịch sử thành lập & Lãnh đạo DNC
+  if (
+    noTone.includes('thanh lap') ||
+    noTone.includes('lich su') ||
+    noTone.includes('vo tong xuan') ||
+    noTone.includes('nguyen tien dung') ||
+    noTone.includes('chu tich hoi dong')
+  ) {
+    const histRule = MOCK_RULES.find((r) => r.id === 'dnc_history_leadership');
+    if (histRule) return histRule.response;
+  }
+
+  // 31. Ý định: Chuẩn đầu ra & Điều kiện tốt nghiệp DNC
+  if (
+    noTone.includes('tot nghiep') ||
+    noTone.includes('chuan dau ra') ||
+    noTone.includes('toeic') ||
+    noTone.includes('vstep') ||
+    noTone.includes('dieu kien tot nghiep')
+  ) {
+    const gradRule = MOCK_RULES.find((r) => r.id === 'dnc_graduation_standards');
+    if (gradRule) return gradRule.response;
+  }
+
+  // 32. Ý định: Liên hệ / Hotline DNC
+  if (noTone.includes('lien he') || noTone.includes('hotline') || noTone.includes('so dien thoai') || noTone.includes('sdt')) {
+    const lhRule = MOCK_RULES.find((r) => r.id === 'lien_he_dnc');
+    if (lhRule) return lhRule.response;
+  }
+
+  // 33. Tra cứu dữ liệu chuyên sâu từ website Đại học Nam Cần Thơ (nctu.edu.vn)
+  // Bao gồm tất cả các ngành đào tạo, mã ngành, khối xét tuyển, thời gian đào tạo, câu lạc bộ, bệnh viện, resort, showroom, KTX...
+  const dncDeepData = searchDncKnowledge(raw);
+  if (dncDeepData) {
+    return dncDeepData;
+  }
+
+  // 34. Ý định: Chào hỏi (chỉ khi thuần túy là lời chào ngắn gọn)
+  if (
+    noTone === 'hi' ||
+    noTone === 'hello' ||
+    noTone === 'chao' ||
+    noTone === 'chao ban' ||
+    noTone === 'xin chao' ||
+    noTone === 'alo' ||
+    noTone === 'hey' ||
+    ((noTone.startsWith('chao ban') || noTone.startsWith('xin chao')) && noTone.length < 20)
+  ) {
     return MOCK_RULES.find((r) => r.id === 'greeting')?.response || MOCK_RULES[2].response;
   }
 
-  // Ý định: Hỏi danh tính người dùng ("bạn biết tui là ai", "tôi là ai")
+  // 35. Ý định: Hỏi danh tính người dùng ("bạn biết tui là ai", "tôi là ai")
   if (
     noTone.includes('biet tui la ai') ||
     noTone.includes('biet toi la ai') ||
@@ -1275,7 +1410,7 @@ export function getMockResponse(question: string): string {
     if (identRule) return identRule.response;
   }
 
-  // Ý định: Hỏi về trường / địa chỉ
+  // 36. Ý định: Hỏi về trường / địa chỉ tổng quan
   if (
     (noTone.includes('truong nao') ||
       noTone.includes('truong gi') ||
@@ -1298,190 +1433,59 @@ export function getMockResponse(question: string): string {
     if (schoolRule) return schoolRule.response;
   }
 
-  // Ý định: Hỏi về học phí / tiền bạc
+  // 37. Ý định: Hỏi về học phí / tiền bạc chung
   if (noTone.includes('hoc phi') || noTone.includes('tien hoc') || noTone.includes('bao nhieu tien')) {
     const tuitionRule = MOCK_RULES.find((r) => r.id === 'tuition');
     if (tuitionRule) return tuitionRule.response;
   }
 
-  // Ý định: Hỏi về tuyển sinh / xét tuyển / học bạ
+  // 38. Ý định: Hỏi về tuyển sinh / xét tuyển / học bạ chung
   if (noTone.includes('xet tuyen') || noTone.includes('tuyen sinh') || noTone.includes('xet hoc ba')) {
     const admRule = MOCK_RULES.find((r) => r.id === 'admissions');
     if (admRule) return admRule.response;
   }
 
-  // Ý định: Ăn cơm / Đói bụng
+  // 39. Ý định: Ăn cơm / Đói bụng
   if (noTone.includes('an com') || noTone.includes('an gi') || noTone.includes('doi bung')) {
     const eatRule = MOCK_RULES.find((r) => r.id === 'eating');
     if (eatRule) return eatRule.response;
   }
 
-  // Ý định: Tâm trạng buồn / Stress / Áp lực
+  // 40. Ý định: Tâm trạng buồn / Stress / Áp lực
   if (noTone.includes('buon') || noTone.includes('met moi') || noTone.includes('stress') || noTone.includes('ap luc') || noTone.includes('chan qua') || noTone.includes('nan qua')) {
     const moodRule = MOCK_RULES.find((r) => r.id === 'mood');
     if (moodRule) return moodRule.response;
   }
 
-  // Ý định: Khen ngợi bot
+  // 41. Ý định: Khen ngợi bot
   if (noTone.includes('thong minh') || noTone.includes('gioi qua') || noTone.includes('de thuong') || noTone.includes('dang yeu') || noTone.includes('xin qua') || noTone.includes('hay qua')) {
     const compRule = MOCK_RULES.find((r) => r.id === 'compliment');
     if (compRule) return compRule.response;
   }
 
-  // Ý định: Chúc ngủ ngon
+  // 42. Ý định: Chúc ngủ ngon
   if (noTone.includes('ngu ngon') || noTone.includes('di ngu') || noTone.includes('buon ngu')) {
     const sleepRule = MOCK_RULES.find((r) => r.id === 'sleep');
     if (sleepRule) return sleepRule.response;
   }
 
-  // Ý định: Confession / Tâm sự ẩn danh
-  if (noTone.includes('confession') || noTone.includes('an danh') || noTone.includes('tam su')) {
-    const cfsRule = MOCK_RULES.find((r) => r.id === 'confession');
-    if (cfsRule) return cfsRule.response;
+  // 43. Ý định: Cảm ơn
+  if (noTone.includes('cam on') || noTone.includes('thank')) {
+    const gratRule = MOCK_RULES.find((r) => r.id === 'gratitude');
+    if (gratRule) return gratRule.response;
   }
 
-  // Ý định: Dịch vụ Một cửa / Xin giấy tờ
-  if (noTone.includes('mot cua') || noTone.includes('giay xac nhan') || noTone.includes('bang diem') || noTone.includes('hoan thi')) {
-    const mcRule = MOCK_RULES.find((r) => r.id === 'mot_cua');
-    if (mcRule) return mcRule.response;
+  // 44. Ý định: Bot là ai
+  if (noTone.includes('ban la ai') || noTone.includes('tro ly la ai') || noTone.includes('bot la ai') || noTone.includes('cau la ai')) {
+    const botRule = MOCK_RULES.find((r) => r.id === 'bot_identity');
+    if (botRule) return botRule.response;
   }
 
-  // Ý định: Ký túc xá / Ở trọ
-  if (noTone.includes('ky tuc xa') || noTone.includes('ktx') || noTone.includes('phong tro')) {
-    const ktxRule = MOCK_RULES.find((r) => r.id === 'dorm');
-    if (ktxRule) return ktxRule.response;
-  }
-
-  // Ý định: Câu lạc bộ / Hoạt động
-  if (noTone.includes('cau lac bo') || noTone.includes('clb') || noTone.includes('ngoai khoa')) {
-    const clbRule = MOCK_RULES.find((r) => r.id === 'clubs');
-    if (clbRule) return clbRule.response;
-  }
-
-  // Ý định: Lập trình / Code web
-  if (noTone.includes('lap trinh') || noTone.includes('code web') || noTone.includes('hoc code')) {
-    const codeRule = MOCK_RULES.find((r) => r.id === 'lap_trinh');
-    if (codeRule) return codeRule.response;
-  }
-
-  // Ý định: Lịch học / Thời khóa biểu
-  if (noTone.includes('lich hoc') || noTone.includes('lich thi') || noTone.includes('thoi khoa bieu')) {
-    const lhRule = MOCK_RULES.find((r) => r.id === 'lich_hoc');
-    if (lhRule) return lhRule.response;
-  }
-
-  // Ý định: Đăng ký môn học / tín chỉ / học lại
-  if (
-    noTone.includes('dang ky mon') ||
-    noTone.includes('hoc phan') ||
-    noTone.includes('tin chi') ||
-    noTone.includes('hoc lai') ||
-    noTone.includes('hoc cai thien')
-  ) {
-    const dkRule = MOCK_RULES.find((r) => r.id === 'dang_ky_mon');
-    if (dkRule) return dkRule.response;
-  }
-
-  // Ý định: Điểm rèn luyện
-  if (noTone.includes('ren luyen')) {
-    const drlRule = MOCK_RULES.find((r) => r.id === 'diem_ren_luyen');
-    if (drlRule) return drlRule.response;
-  }
-
-  // Ý định: BHYT
-  if (noTone.includes('bhyt') || noTone.includes('bao hiem')) {
-    const bhytRule = MOCK_RULES.find((r) => r.id === 'bhyt');
-    if (bhytRule) return bhytRule.response;
-  }
-
-  // Ý định: FAQ 01 - Đăng bài ẩn danh có lộ danh tính không
-  if (
-    (noTone.includes('an danh') || noTone.includes('giau ten') || noTone.includes('dau ten')) &&
-    (noTone.includes('danh tinh') || noTone.includes('biet') || noTone.includes('lo') || noTone.includes('ai') || noTone.includes('an toan') || noTone.includes('so'))
-  ) {
-    const faq1Rule = MOCK_RULES.find((r) => r.id === 'faq_anonymous_safety');
-    if (faq1Rule) return faq1Rule.response;
-  }
-
-  // Ý định: FAQ 02 - Thời gian duyệt bài Confession
-  if (
-    (noTone.includes('confession') || noTone.includes('bai viet') || noTone.includes('bai dang') || noTone.includes('dang bai')) &&
-    (noTone.includes('bao lau') || noTone.includes('duyet') || noTone.includes('phe duyet') || noTone.includes('kiem duyet') || noTone.includes('khi nao') || noTone.includes('cho'))
-  ) {
-    const faq2Rule = MOCK_RULES.find((r) => r.id === 'faq_moderation_time');
-    if (faq2Rule) return faq2Rule.response;
-  }
-
-  // Ý định: FAQ 03 - Báo cáo bài viết hoặc bình luận vi phạm
-  if (
-    noTone.includes('bao cao') ||
-    noTone.includes('to cao') ||
-    noTone.includes('report') ||
-    (noTone.includes('vi pham') && (noTone.includes('bai viet') || noTone.includes('binh luan') || noTone.includes('noi dung')))
-  ) {
-    const faq3Rule = MOCK_RULES.find((r) => r.id === 'faq_report_content');
-    if (faq3Rule) return faq3Rule.response;
-  }
-
-  // Ý định: FAQ 04 - Quên mật khẩu hoặc không nhận được OTP
-  if (
-    (noTone.includes('mat khau') || noTone.includes('otp') || noTone.includes('xac thuc') || noTone.includes('tai khoan')) &&
-    (noTone.includes('quen') || noTone.includes('khong nhan') || noTone.includes('khong ve') || noTone.includes('lay lai') || noTone.includes('loi'))
-  ) {
-    const faq4Rule = MOCK_RULES.find((r) => r.id === 'faq_account_security');
-    if (faq4Rule) return faq4Rule.response;
-  }
-
-  // Ý định: FAQ 05 - Mã sinh viên, lớp và ngành học cập nhật thế nào
-  if (
-    (noTone.includes('ma sinh vien') || noTone.includes('mssv') || noTone.includes('lop') || noTone.includes('nganh hoc')) &&
-    (noTone.includes('cap nhat') || noTone.includes('doi') || noTone.includes('sai') || noTone.includes('xac thuc') || noTone.includes('chinh sua'))
-  ) {
-    const faq5Rule = MOCK_RULES.find((r) => r.id === 'faq_student_verification');
-    if (faq5Rule) return faq5Rule.response;
-  }
-
-  // Ý định: Hệ sinh thái doanh nghiệp trong trường DNC
-  if (
-    noTone.includes('he sinh thai') ||
-    noTone.includes('doanh nghiep trong truong') ||
-        noTone.includes('dnc travel') ||
-    noTone.includes('ho boi') ||
-    noTone.includes('vien duoc lieu') ||
-    (noTone.includes('co so vat chat') && noTone.includes('dnc'))
-  ) {
-    const ecoRule = MOCK_RULES.find((r) => r.id === 'dnc_ecosystem');
-    if (ecoRule) return ecoRule.response;
-  }
-
-  // Ý định: Lịch sử thành lập & Lãnh đạo DNC
-  if (
-    noTone.includes('thanh lap') ||
-    noTone.includes('lich su') ||
-    noTone.includes('vo tong xuan') ||
-    noTone.includes('nguyen tien dung') ||
-    noTone.includes('chu tich hoi dong')
-  ) {
-    const histRule = MOCK_RULES.find((r) => r.id === 'dnc_history_leadership');
-    if (histRule) return histRule.response;
-  }
-
-  // Ý định: Chuẩn đầu ra & Điều kiện tốt nghiệp DNC
-  if (
-    noTone.includes('tot nghiep') ||
-    noTone.includes('chuan dau ra') ||
-    noTone.includes('toeic') ||
-    noTone.includes('vstep') ||
-    noTone.includes('dieu kien tot nghiep')
-  ) {
-    const gradRule = MOCK_RULES.find((r) => r.id === 'dnc_graduation_standards');
-    if (gradRule) return gradRule.response;
-  }
-
-  // Ý định: Liên hệ / Hotline
-  if (noTone.includes('lien he') || noTone.includes('hotline') || noTone.includes('so dien thoai') || noTone.includes('sdt')) {
-    const lhRule = MOCK_RULES.find((r) => r.id === 'lien_he_dnc');
-    if (lhRule) return lhRule.response;
+  // 45. Quét qua từ khóa chính xác của MOCK_RULES
+  for (const rule of MOCK_RULES) {
+    if (rule.keywords.some((k) => containsKeyword(normalized, noTone, k))) {
+      return rule.response;
+    }
   }
 
   // 19. Khi không có thông tin chắc chắn -> Nói thẳng thắn không biết:
