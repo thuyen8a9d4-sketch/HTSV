@@ -1736,7 +1736,7 @@ export function resolveDncAddress(noTone: string): string {
     noTone.includes('dai hoc can tho') ||
     (noTone.includes('dai hoc') && !noTone.includes('nam can tho') && !noTone.includes('dnc') && !noTone.includes('truong minh') && !noTone.includes('truong nay'))
   ) {
-    return `Dạ hiện tại mình là trợ lý tư vấn chuyên sâu của **Trường Đại học Nam Cần Thơ (DNC)**, nên mình không có dữ liệu địa chỉ của các trường khác ngoài DNC bạn nha. Bạn có thể tra cứu trên Google Maps hoặc website chính thức của trường đó nhé!`;
+    return `Dạ trường này mình không biết địa chỉ nha bạn! Vì mình là trợ lý chuyên sâu về Trường Đại học Nam Cần Thơ (DNC) thôi nè. Bạn có thể tra cứu trên Google Maps hoặc website chính thức của trường đó nhé!`;
   }
 
   // 8. Toàn trường Đại học Nam Cần Thơ
@@ -1751,7 +1751,7 @@ export function resolveDncAddress(noTone: string): string {
   }
 
   // 9. Hỏi địa chỉ nơi lạ / không xác định
-  return `Dạ hiện tại mình chưa có thông tin chính xác về địa chỉ của nơi bạn vừa hỏi.\n\nVì mình là trợ lý ảo chuyên sâu hỗ trợ thông tin **Trường Đại học Nam Cần Thơ (DNC)** và hệ thống Cổng HTSV, nếu bạn cần hỏi vị trí các phòng ban, khoa viện của trường, bạn vui lòng liên hệ Tổng đài trường: **0939 257 838** - **02923 798 222** để được thầy cô hướng dẫn chính xác nhất nhé!`;
+  return `Dạ địa chỉ này mình không biết nha bạn! Mình chỉ nắm rõ thông tin và các địa điểm bên trong khuôn viên Trường Đại học Nam Cần Thơ (DNC) thôi nè. Nếu bạn cần hỏi về cơ sở hay phòng ban của trường, bạn vui lòng liên hệ Tổng đài DNC: **0939 257 838** - **02923 798 222** để được thầy cô hướng dẫn vị trí nhé!`;
 }
 
 /**

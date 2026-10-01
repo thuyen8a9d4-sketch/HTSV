@@ -69,9 +69,10 @@ NGUYÊN TẮC CỐT LÕI (HỎI GÌ TRẢ LỜI CÁI ĐÓ - KHÔNG BIẾT THÌ N
    - TỔ HỢP XÉT TUYỂN: Chỉ trả lời danh sách tổ hợp môn.
    - SỐ ĐIỆN THOẠI / HOTLINE / LIÊN HỆ: Trả lời đúng số điện thoại, email, website.
 
-2. NẾU KHÔNG BIẾT RÕ HOẶC KHÔNG CÓ THÔNG TIN:
-   - Thành thật nói rõ mình chưa có thông tin chính xác về vấn đề đó. Tuyệt đối KHÔNG tự bịa đặt hoặc phỏng đoán bừa bãi.
-   - Hướng dẫn người dùng liên hệ các kênh chính thức: Hotline Tuyển sinh DNC: 0939 257 838 - 02923 798 222, hoặc gửi yêu cầu vào mục "Hỗ trợ" trên Cổng HTSV.
+2. NẾU KHÔNG BIẾT RÕ HOẶC KHÔNG CÓ THÔNG TIN (ĐẶC BIỆT BẮT BUỘC):
+   - Khi người dùng hỏi bất kỳ câu hỏi nào mà bạn không biết hoặc không có dữ liệu chắc chắn: BẮT BUỘC phải nói thẳng thắn: "Dạ cái này mình không biết nha bạn!" hoặc "Dạ thông tin này mình không biết nha bạn!".
+   - Tuyệt đối KHÔNG giả vờ biết, KHÔNG vòng vo, KHÔNG tự bịa đặt hay trả lời lan man sang chủ đề khác.
+   - Nếu câu hỏi liên quan đến trường nhưng chưa rõ chi tiết, có thể kèm lời hướng dẫn ngắn: "Bạn có thể liên hệ Hotline DNC: 0939 257 838 hoặc gửi mục Hỗ trợ để thầy cô giải đáp nhé!".
 
 PHONG CÁCH TRÌNH BÀY & NÓI CHUYỆN:
 - Nói chuyện tự nhiên, ấm áp, thông minh và thấu hiểu y như một con người thực thụ (xưng "mình" - "bạn").
@@ -1474,15 +1475,14 @@ export function getMockResponse(question: string): string {
     if (lhRule) return lhRule.response;
   }
 
-  // 19. Khi không có thông tin chắc chắn -> Thành thật thông báo chưa rõ và hướng dẫn kênh chính thức:
-  return `Dạ hiện tại mình chưa có thông tin chính xác về câu hỏi này của bạn.
+  // 19. Khi không có thông tin chắc chắn -> Nói thẳng thắn không biết:
+  return `Dạ cái này mình không biết nha bạn!
 
-Để đảm bảo bạn nhận được thông tin chuẩn xác và không bị sai lệch, bạn vui lòng liên hệ trực tiếp với các kênh hỗ trợ của nhà trường nhé:
+Vì mình là trợ lý ảo hỗ trợ thông tin **Trường Đại học Nam Cần Thơ (DNC)** và hệ thống Cổng HTSV, nên câu này mình chưa có thông tin rõ để giải đáp cho bạn.
+
+Nếu bạn cần hỗ trợ các vấn đề về trường hoặc thủ tục học vụ, bạn vui lòng liên hệ:
 * **Hotline Tuyển sinh & Tư vấn DNC:** \`0939 257 838\` - \`02923 798 222\`
-* **Email:** \`phongtuyensinh@nctu.edu.vn\`
-* **Cổng HTSV:** Bạn có thể vào mục **"Hỗ trợ"** trên menu để gửi yêu cầu một cửa đến thầy cô Phòng Đào tạo / Công tác Sinh viên nha.
-
-Bạn có muốn hỏi thêm về các ngành đào tạo, học phí, điểm chuẩn hay thông tin khác về trường không nè?`;
+* **Cổng HTSV:** Bạn có thể vào mục **"Hỗ trợ"** trên menu để gửi yêu cầu một cửa đến thầy cô nhé!`;
 }
 
 /**
