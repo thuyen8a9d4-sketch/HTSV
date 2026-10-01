@@ -22,31 +22,41 @@ NGUYÊN TẮC GIAO TIẾP VÀ TRẢ LỜI (BẮT BUỘC):
  * Kỹ năng sống & Học tập: Soạn thảo văn bản, viết email, viết CV, viết luận, phương pháp học tập hiệu quả, tư vấn giải quyết vấn đề...
  - Trả lời chi tiết, logic, có ví dụ minh họa và định dạng Markdown chuẩn đẹp.
 
-3. HIỂU BIẾT CHUYÊN SÂU VỀ DỰ ÁN HTSV & TRƯỜNG ĐẠI HỌC NAM CẦN THƠ (DNC):
+3. HIỂU BIẾT CHUYÊN SÂU VỀ DỰ ÁN HTSV & TRƯỜNG ĐẠI HỌC NAM CẦN THƠ (DNC - https://nctu.edu.vn):
  Khi người dùng có thắc mắc hoặc nhắc đến trường, học tập, tuyển sinh hoặc hệ thống HTSV, bạn nắm vững và cung cấp thông tin chuẩn xác sau:
  - TRƯỜNG ĐẠI HỌC NAM CẦN THƠ (DNC):
- * Mã trường: DNC
- * Địa chỉ: Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ.
- * Hotline Tuyển sinh: 0939 257 838 - 02923 798 222 - 02923 798 333
- * Website: https://nctu.edu.vn - Email: phongtuyensinh@nctu.edu.vn
- * Tiện ích: Bệnh viện Đại học Nam Cần Thơ (đa khoa quốc tế 300 giường), Showroom Ô tô Nam Cần Thơ DNC, Viện Nghiên cứu & Phát triển Dược liệu, Ký túc xá máy lạnh an ninh 24/7.
+ * Thành lập: 25/01/2013 theo Quyết định số 230/QĐ-TTg của Thủ tướng Chính phủ.
+ * Lãnh đạo tiêu biểu: Chủ tịch Hội đồng trường TS.LS. Nguyễn Tiến Dũng; Cố Hiệu trưởng Danh dự GS.TS. Võ Tòng Xuân.
+ * Mã trường: DNC - Địa chỉ: Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ.
+ * Hotline Tuyển sinh: 0939 257 838 - 02923 798 222 - 02923 798 333 - Email: phongtuyensinh@nctu.edu.vn
+ * Mô hình tiên phong: "Doanh nghiệp trong trường đại học" với hệ sinh thái thực hành quy mô lớn:
+   - Bệnh viện Đại học Nam Cần Thơ (300 giường đạt chuẩn quốc tế AACI Hoa Kỳ; Giai đoạn 2: Bệnh viện Quốc tế 1.500 tỷ đồng nâng công suất lên 1.000 giường Trung tâm Y học học thuật).
+   - Showroom Ô tô Nam Cần Thơ DNC & xưởng bảo dưỡng, sửa chữa thực tế.
+   - Viện Nghiên cứu & Phát triển Dược liệu.
+   - Trung tâm Phát triển Phần mềm & AI DNC.
+   - DNC Travel & Khu Resort sinh thái DNC.
+   - Ký túc xá máy lạnh 2.000 chỗ, hồ bơi chuẩn quốc gia, sân bóng đá cỏ nhân tạo, thư viện số.
  - PHƯƠNG THỨC XÉT TUYỂN:
- * 1. Điểm thi THPT; 2. Học bạ THPT (3 cách tính điểm); 3. Điểm ĐGNL ĐHQG TP.HCM; 4. Tuyển thẳng.
+ * 1. Điểm thi THPT; 2. Học bạ THPT (3 cách tính điểm linh hoạt); 3. Điểm ĐGNL ĐHQG TP.HCM; 4. Tuyển thẳng.
  * Khối Sức khỏe (Y, Dược, Xét nghiệm, Răng-Hàm-Mặt, Điều dưỡng) yêu cầu học lực lớp 12 loại Giỏi hoặc điểm xét tốt nghiệp >= 8.0.
- - CHÍNH SÁCH HỌC PHÍ (Ổn định suốt khóa học):
- * Nhóm 1 (Kinh tế, CNTT, Luật, Ngôn ngữ Anh...): ~10 - 11 triệu/kỳ.
+ - CHÍNH SÁCH HỌC PHÍ (Cam kết ỔN ĐỊNH suốt khóa học):
+ * Nhóm 1 (Kinh tế, CNTT, Luật, Ngôn ngữ Anh...): ~10 - 11 triệu/kỳ (3 kỳ/năm).
  * Nhóm 2 (Kiến trúc, Công nghệ thực phẩm, Logistics...): ~12 - 13 triệu/kỳ.
  * Nhóm 3 (Công nghệ Ô tô, Điện-Điện tử, Kỹ thuật xét nghiệm...): ~14 - 15 triệu/kỳ.
  * Dược học: ~18 - 22 triệu/kỳ; Y khoa & Răng-Hàm-Mặt: ~45 - 50 triệu/kỳ.
- - HỆ THỐNG HTSV (CỔNG SINH VIÊN):
- * Diễn đàn Confession: Chia sẻ tâm sự ẩn danh hoặc công khai, bình luận, tương tác.
- * Dịch vụ Một cửa: Đăng ký xin giấy xác nhận sinh viên, bảng điểm, đơn hoãn NVQS, hoãn thi.
- * Lịch học & Lịch thi: Tra cứu thời khóa biểu phòng học theo tuần và ngày.
 
-PHONG CÁCH TRÌNH BÀY:
-- Tiếng Việt tự nhiên, lịch sự, thân thiện (xưng "mình" - "bạn").
-- Dùng Markdown sạch sẽ: in đậm từ khóa, danh sách gạch đầu dòng, khối mã code với tên ngôn ngữ nếu có code.
-- Tuyệt đối KHÔNG sử dụng các biểu tượng emoji cảm xúc hay emoji đồ họa (như robot, mũ cử nhân, máy tính, ngôi sao, sách, v.v.). Trình bày chuyên nghiệp, trang nhã, chuẩn mực của kênh tư vấn sinh viên.`;
+4. BỘ QUY CHẾ & HỎI ĐÁP CỘNG ĐỒNG (FAQ CỔNG HTSV):
+ - Đăng bài ẩn danh: Tuyệt đối không bị lộ danh tính. Hệ thống ẩn hoàn toàn họ tên, email, avatar, hiển thị dưới tên "Người dùng ẩn danh".
+ - Thời gian duyệt bài Confession: Bài viết được kiểm duyệt văn minh và thường được duyệt trong vòng vài giờ làm việc.
+ - Báo cáo vi phạm: Vào mục "Hỗ trợ" -> "Tạo báo cáo mẫu" (Báo cáo vi phạm nội dung) để báo cáo bài viết/bình luận có nội dung xấu, quấy rối, xúc phạm.
+ - Quên mật khẩu / OTP xác thực: Kiểm tra hòm thư rác (Spam/Junk), bấm gửi lại mã OTP, hoặc vào mục "Hỗ trợ" gửi yêu cầu Hỗ trợ tài khoản & bảo mật.
+ - Cập nhật MSSV, lớp, ngành học: Thông tin được đối chiếu và kích hoạt tự động khi hoàn tất xác thực thông tin tại trường hoặc qua hệ thống đào tạo chính thức. Có thể yêu cầu chỉnh sửa qua Dịch vụ Một cửa.
+
+PHONG CÁCH TRÌNH BÀY & NÓI CHUYỆN:
+- Nói chuyện tự nhiên, ấm áp, thông minh và thấu hiểu y như một con người thực thụ (xưng "mình" - "bạn").
+- Hỏi đúng chủ đề gì thì trả lời thẳng vào chủ đề đó, không lan man, không chèn tiêu đề cứng nhắc.
+- Khi gặp câu hỏi chưa rõ hoặc không có dữ liệu, hãy thành thật trả lời mình chưa có thông tin chính xác thay vì phỏng đoán hay bịa đặt.
+- Tuyệt đối KHÔNG sử dụng các biểu tượng emoji cảm xúc hay emoji đồ họa (như robot, mũ cử nhân, máy tính, ngôi sao, v.v.). Trình bày bằng văn bản Markdown trang nhã, dễ đọc.`;
 
 export const QUICK_SUGGESTIONS: QuickSuggestion[] = [
   {
@@ -498,6 +508,177 @@ Bạn đang muốn tập trung học làm giao diện (Frontend) hay làm hệ t
 * Hệ thống sẽ hiển thị thời khóa biểu rõ ràng theo từng tuần, từng ngày: phòng học ở tòa nhà nào, ca mấy giờ, tên môn học và giảng viên giảng dạy.
 * Bạn nhớ theo dõi lịch thường xuyên để không bị nhầm ca học hay phòng thi nhé!`,
   },
+
+  // --- 12. HỎI ĐÁP & QUY CHẾ CỘNG ĐỒNG (FAQ HTSV) ---
+  {
+    id: 'faq_anonymous_safety',
+    keywords: [
+      'đăng bài ẩn danh thì người khác có biết danh tính của mình không',
+      'đăng bài ẩn danh',
+      'bài ẩn danh',
+      'ẩn danh có bị lộ không',
+      'người khác có biết danh tính',
+      'lộ danh tính',
+      'ẩn danh có an toàn không',
+      'đăng giấu tên',
+      'người dùng ẩn danh',
+      'ẩn danh có ai biết'
+    ],
+    response: `Hoàn toàn không bạn nha! Khi bạn bật chế độ "Ẩn danh", hệ thống sẽ hiển thị bài viết dưới tên "Người dùng ẩn danh" và ẩn hoàn toàn 100% họ tên, email cũng như ảnh đại diện của bạn với tất cả thành viên khác trên diễn đàn. Bạn có thể an tâm chia sẻ tâm sự mà không sợ bị lộ danh tính nhé!`,
+  },
+  {
+    id: 'faq_moderation_time',
+    keywords: [
+      'bài viết confession gửi lên mất bao lâu để được phê duyệt',
+      'bài viết confession gửi lên mất bao lâu',
+      'confession duyệt mất bao lâu',
+      'bao lâu được phê duyệt',
+      'bao lâu được duyệt',
+      'phê duyệt confession',
+      'duyệt bài confession',
+      'thời gian duyệt bài',
+      'khi nào bài được duyệt',
+      'duyệt bài mất bao lâu',
+      'chờ duyệt bài'
+    ],
+    response: `Dạ bài viết Confession sau khi gửi lên thường được phê duyệt trong vòng vài giờ làm việc nha bạn!
+
+Tất cả bài viết đều được đội ngũ kiểm duyệt xem xét cẩn thận để đảm bảo đúng tiêu chuẩn cộng đồng: văn minh, tôn trọng, không có nội dung xúc phạm, công kích cá nhân hay vi phạm thuần phong mỹ tục. Sau khi duyệt xong, bài viết sẽ lập tức xuất hiện trên diễn đàn cho mọi người cùng đọc nè!`,
+  },
+  {
+    id: 'faq_report_content',
+    keywords: [
+      'làm thế nào để báo cáo bài viết hoặc bình luận vi phạm',
+      'báo cáo bài viết hoặc bình luận vi phạm',
+      'báo cáo bài viết',
+      'báo cáo bình luận',
+      'báo cáo vi phạm',
+      'tố cáo bài viết',
+      'tố cáo bình luận',
+      'report bài viết',
+      'thấy bài viết xấu',
+      'báo cáo vi phạm ở đâu',
+      'cách report vi phạm'
+    ],
+    response: `Nếu bạn thấy có bài viết hoặc bình luận vi phạm tiêu chuẩn cộng đồng (quấy rối, xúc phạm hay phát tán thông tin sai lệch), bạn có thể báo cáo rất dễ dàng nha:
+
+1. Bạn truy cập vào mục **"Hỗ trợ"** trên thanh menu.
+2. Chọn **"Tạo báo cáo mẫu"** (với loại yêu cầu: *Báo cáo vi phạm nội dung*).
+3. Dán đường link bài viết hoặc bình luận đó và ghi rõ lý do vi phạm.
+4. Sau đó bạn có thể theo dõi tiến độ xử lý của ban quản trị tại mục **"Theo dõi yêu cầu"** trên hệ thống nè!`,
+  },
+  {
+    id: 'faq_account_security',
+    keywords: [
+      'quên mật khẩu hoặc không nhận được mã otp xác thực thì làm sao',
+      'không nhận được mã otp xác thực',
+      'không nhận được mã otp',
+      'không nhận được otp',
+      'mã otp xác thực',
+      'lỗi mã otp',
+      'quên mật khẩu không có otp',
+      'otp không gửi về',
+      'mã xác thực không về',
+      'quên mật khẩu',
+      'lấy lại mật khẩu'
+    ],
+    response: `Nếu bạn lỡ quên mật khẩu hoặc chờ mãi không thấy mã OTP xác thực gửi về, bạn thử các bước này xem sao nha:
+
+1. **Kiểm tra hòm thư rác (Spam / Junk):** Rất nhiều trường hợp email chứa mã OTP bị chuyển nhầm vào mục Spam của Gmail hoặc Outlook.
+2. **Bấm gửi lại OTP:** Sau khoảng 60 giây, bạn có thể bấm nút yêu cầu gửi lại mã một lần nữa.
+3. **Gửi yêu cầu hỗ trợ tài khoản:** Nếu vẫn chưa nhận được, bạn hãy vào mục **"Hỗ trợ"** trên HTSV và chọn loại yêu cầu *Hỗ trợ tài khoản & bảo mật*, ban quản trị sẽ kiểm tra trực tiếp và hỗ trợ cấp lại cho bạn nhé!`,
+  },
+  {
+    id: 'faq_student_verification',
+    keywords: [
+      'mã sinh viên, lớp và ngành học được cập nhật như thế nào',
+      'cập nhật mã sinh viên',
+      'mã sinh viên lớp và ngành học',
+      'cập nhật lớp và ngành học',
+      'đổi mã sinh viên',
+      'đổi lớp',
+      'đổi ngành học',
+      'xác thực mã sinh viên',
+      'sai thông tin sinh viên',
+      'thông tin sinh viên cập nhật như thế nào',
+      'sai mã sinh viên'
+    ],
+    response: `Về thông tin cá nhân như Mã sinh viên (MSSV), Lớp và Ngành học thì bạn lưu ý nhé:
+
+* Các thông tin này sẽ được đối chiếu và kích hoạt tự động khi bạn hoàn tất xác thực thông tin sinh viên tại trường DNC hoặc qua hệ thống liên kết tài khoản đào tạo chính thức của nhà trường.
+* Nếu bạn phát hiện thông tin hiển thị bị sai lệch (ví dụ bạn chuyển lớp, đổi ngành học hay sai số MSSV), bạn chỉ cần vào mục **"Hỗ trợ & Báo cáo"** (Dịch vụ Một cửa) và gửi yêu cầu điều chỉnh thông tin sinh viên để thầy cô cập nhật lại cho bạn nha!`,
+  },
+
+  // --- 13. DỮ LIỆU CHUYÊN SÂU TỪ WEBSITE TRƯỜNG ĐẠI HỌC NAM CẦN THƠ (NCTU.EDU.VN) ---
+  {
+    id: 'dnc_ecosystem',
+    keywords: [
+      'hệ sinh thái dnc',
+      'mô hình doanh nghiệp trong trường',
+      'doanh nghiệp trong trường đại học',
+      'bệnh viện quốc tế đại học nam cần thơ',
+      'giai đoạn 2 bệnh viện dnc',
+      'cơ sở vật chất dnc có gì',
+      'trường dnc có gì nổi bật',
+      'resort dnc',
+      'dnc travel',
+      'hồ bơi dnc',
+      'viện dược liệu dnc'
+    ],
+    response: `Đại học Nam Cần Thơ (DNC) tự hào là một trong những trường đại học tiên phong tại ĐBSCL áp dụng mô hình đào tạo **"Doanh nghiệp trong trường đại học"** với hệ sinh thái thực hành cực kỳ quy mô nha bạn:
+
+* **Bệnh viện Đại học Nam Cần Thơ:** Đạt chứng nhận quốc tế AACI Hoa Kỳ, quy mô Giai đoạn 1 là 300 giường bệnh đa khoa. Đặc biệt trường đã khởi công Giai đoạn 2 (Bệnh viện Quốc tế 1.500 tỷ đồng) nâng công suất lên 1.000 giường theo mô hình Trung tâm Y học học thuật (Academic Medical Center).
+* **Showroom Ô tô Nam Cần Thơ DNC:** Xưởng bảo dưỡng, sửa chữa và kinh doanh xe hiện đại phục vụ thực hành cho sinh viên ngành Ô tô.
+* **Viện Nghiên cứu & Phát triển Dược liệu:** Nghiên cứu và ứng dụng các sản phẩm dược liệu, đông trùng hạ thảo, thực phẩm bảo vệ sức khỏe.
+* **Trung tâm Phát triển Phần mềm & AI DNC:** Nơi sinh viên CNTT thực chiến các dự án phần mềm thực tế.
+* **Hệ sinh thái Du lịch:** Công ty Du lịch DNC Travel và Khu Resort sinh thái DNC phục vụ đào tạo ngành Du lịch, Khách sạn, Nhà hàng.
+* **Thể thao & Đời sống:** Hồ bơi đạt chuẩn quốc gia, sân bóng đá cỏ nhân tạo, nhà thi đấu đa năng và khu Ký túc xá máy lạnh 2.000 chỗ.
+
+Bạn thấy cơ sở vật chất ở DNC xịn sò không nè!`,
+  },
+  {
+    id: 'dnc_history_leadership',
+    keywords: [
+      'lịch sử hình thành dnc',
+      'dnc thành lập năm nào',
+      'chủ tịch trường dnc',
+      'hiệu trưởng dnc',
+      'võ tòng xuân',
+      'nguyễn tiến dũng dnc',
+      'thành lập trường dnc'
+    ],
+    response: `Dạ về lịch sử và ban lãnh đạo của Trường Đại học Nam Cần Thơ (DNC) thì rất đáng tự hào nè:
+
+* **Thành lập:** Trường được thành lập theo Quyết định số 230/QĐ-TTg ngày 25/01/2013 của Thủ tướng Chính phủ.
+* **Lãnh đạo sáng lập & điều hành:**
+  * **Chủ tịch Hội đồng trường:** Tiến sĩ, Luật sư Nguyễn Tiến Dũng.
+  * **Cố Hiệu trưởng Danh dự:** Giáo sư, Tiến sĩ, Nhà giáo Nhân dân Võ Tòng Xuân - nhà khoa học nông nghiệp hàng đầu Việt Nam và thế giới, người đã dành trọn tâm huyết cho sự phát triển của DNC.
+* **Quy mô hiện tại:** Trường đào tạo khoảng 49 ngành ở các bậc Đại học, Thạc sĩ và Tiến sĩ, với quy mô hơn 20.000 học viên, sinh viên đang theo học.
+
+Bạn muốn tìm hiểu thêm về ngành học nào của trường nè?`,
+  },
+  {
+    id: 'dnc_graduation_standards',
+    keywords: [
+      'chuẩn đầu ra dnc',
+      'điều kiện tốt nghiệp dnc',
+      'chuẩn ngoại ngữ dnc',
+      'chuẩn tin học dnc',
+      'toeic dnc',
+      'vstep dnc',
+      'làm sao để tốt nghiệp dnc'
+    ],
+    response: `Về điều kiện tốt nghiệp và chuẩn đầu ra tại DNC thì bạn cần hoàn thành những yêu cầu chính này nha:
+
+1. **Tích lũy đủ số tín chỉ** theo đúng khung chương trình đào tạo của ngành/khóa học (trung bình 120 - 150 tín chỉ tùy bằng Cử nhân hay Kỹ sư).
+2. **Điểm trung bình tích lũy (GPA):** Đạt từ 2.0/4.0 trở lên (không có môn nào bị điểm F chưa học lại).
+3. **Chuẩn đầu ra Ngoại ngữ:** Đạt chứng chỉ tiếng Anh theo quy định của trường (như VSTEP B1/B2 hoặc TOEIC quốc tế tương đương tùy ngành).
+4. **Chuẩn đầu ra Tin học:** Đạt chuẩn Ứng dụng CNTT cơ bản hoặc nâng cao.
+5. **Chứng chỉ Giáo dục Quốc phòng - An ninh & Giáo dục Thể chất.**
+6. **Điểm rèn luyện toàn khóa:** Đạt từ loại Trung bình trở lên và không trong thời gian bị kỷ luật.
+
+Bạn đang học năm mấy rồi nè, chuẩn bị chuẩn đầu ra đến đâu rồi?`,
+  },
 ];
 
 /**
@@ -690,6 +871,91 @@ export function getMockResponse(question: string): string {
     if (bhytRule) return bhytRule.response;
   }
 
+  // Ý định: FAQ 01 - Đăng bài ẩn danh có lộ danh tính không
+  if (
+    (noTone.includes('an danh') || noTone.includes('giau ten') || noTone.includes('dau ten')) &&
+    (noTone.includes('danh tinh') || noTone.includes('biet') || noTone.includes('lo') || noTone.includes('ai') || noTone.includes('an toan') || noTone.includes('so'))
+  ) {
+    const faq1Rule = MOCK_RULES.find((r) => r.id === 'faq_anonymous_safety');
+    if (faq1Rule) return faq1Rule.response;
+  }
+
+  // Ý định: FAQ 02 - Thời gian duyệt bài Confession
+  if (
+    (noTone.includes('confession') || noTone.includes('bai viet') || noTone.includes('bai dang') || noTone.includes('dang bai')) &&
+    (noTone.includes('bao lau') || noTone.includes('duyet') || noTone.includes('phe duyet') || noTone.includes('kiem duyet') || noTone.includes('khi nao') || noTone.includes('cho'))
+  ) {
+    const faq2Rule = MOCK_RULES.find((r) => r.id === 'faq_moderation_time');
+    if (faq2Rule) return faq2Rule.response;
+  }
+
+  // Ý định: FAQ 03 - Báo cáo bài viết hoặc bình luận vi phạm
+  if (
+    noTone.includes('bao cao') ||
+    noTone.includes('to cao') ||
+    noTone.includes('report') ||
+    (noTone.includes('vi pham') && (noTone.includes('bai viet') || noTone.includes('binh luan') || noTone.includes('noi dung')))
+  ) {
+    const faq3Rule = MOCK_RULES.find((r) => r.id === 'faq_report_content');
+    if (faq3Rule) return faq3Rule.response;
+  }
+
+  // Ý định: FAQ 04 - Quên mật khẩu hoặc không nhận được OTP
+  if (
+    (noTone.includes('mat khau') || noTone.includes('otp') || noTone.includes('xac thuc') || noTone.includes('tai khoan')) &&
+    (noTone.includes('quen') || noTone.includes('khong nhan') || noTone.includes('khong ve') || noTone.includes('lay lai') || noTone.includes('loi'))
+  ) {
+    const faq4Rule = MOCK_RULES.find((r) => r.id === 'faq_account_security');
+    if (faq4Rule) return faq4Rule.response;
+  }
+
+  // Ý định: FAQ 05 - Mã sinh viên, lớp và ngành học cập nhật thế nào
+  if (
+    (noTone.includes('ma sinh vien') || noTone.includes('mssv') || noTone.includes('lop') || noTone.includes('nganh hoc')) &&
+    (noTone.includes('cap nhat') || noTone.includes('doi') || noTone.includes('sai') || noTone.includes('xac thuc') || noTone.includes('chinh sua'))
+  ) {
+    const faq5Rule = MOCK_RULES.find((r) => r.id === 'faq_student_verification');
+    if (faq5Rule) return faq5Rule.response;
+  }
+
+  // Ý định: Hệ sinh thái doanh nghiệp trong trường DNC
+  if (
+    noTone.includes('he sinh thai') ||
+    noTone.includes('doanh nghiep trong truong') ||
+    noTone.includes('resort') ||
+    noTone.includes('dnc travel') ||
+    noTone.includes('ho boi') ||
+    noTone.includes('vien duoc lieu') ||
+    (noTone.includes('co so vat chat') && noTone.includes('dnc'))
+  ) {
+    const ecoRule = MOCK_RULES.find((r) => r.id === 'dnc_ecosystem');
+    if (ecoRule) return ecoRule.response;
+  }
+
+  // Ý định: Lịch sử thành lập & Lãnh đạo DNC
+  if (
+    noTone.includes('thanh lap') ||
+    noTone.includes('lich su') ||
+    noTone.includes('vo tong xuan') ||
+    noTone.includes('nguyen tien dung') ||
+    noTone.includes('chu tich hoi dong')
+  ) {
+    const histRule = MOCK_RULES.find((r) => r.id === 'dnc_history_leadership');
+    if (histRule) return histRule.response;
+  }
+
+  // Ý định: Chuẩn đầu ra & Điều kiện tốt nghiệp DNC
+  if (
+    noTone.includes('tot nghiep') ||
+    noTone.includes('chuan dau ra') ||
+    noTone.includes('toeic') ||
+    noTone.includes('vstep') ||
+    noTone.includes('dieu kien tot nghiep')
+  ) {
+    const gradRule = MOCK_RULES.find((r) => r.id === 'dnc_graduation_standards');
+    if (gradRule) return gradRule.response;
+  }
+
   // Ý định: Liên hệ / Hotline
   if (noTone.includes('lien he') || noTone.includes('hotline') || noTone.includes('so dien thoai') || noTone.includes('sdt')) {
     const lhRule = MOCK_RULES.find((r) => r.id === 'lien_he_dnc');
@@ -818,9 +1084,38 @@ export function generateFollowUpSuggestions(userPrompt: string, botResponse: str
     noTone.includes('bang diem')
   ) {
     return [
-      'Làm thế nào để đăng Confession ẩn danh an toàn?',
-      'Xin cấp Giấy xác nhận sinh viên mất bao lâu?',
-      'Cách xem thời khóa biểu và phòng học trên HTSV',
+      'Đăng bài ẩn danh thì người khác có biết danh tính không?',
+      'Bài viết Confession gửi lên mất bao lâu để được phê duyệt?',
+      'Làm thế nào để báo cáo bài viết hoặc bình luận vi phạm?',
+    ];
+  }
+
+  // 7.1. Nhóm Hỏi đáp Quy chế FAQ
+  if (
+    noTone.includes('an danh') ||
+    noTone.includes('phe duyet') ||
+    noTone.includes('bao cao') ||
+    noTone.includes('otp') ||
+    noTone.includes('ma sinh vien')
+  ) {
+    return [
+      'Quên mật khẩu hoặc không nhận được mã OTP thì làm sao?',
+      'Mã sinh viên, lớp và ngành học được cập nhật như thế nào?',
+      'Đăng bài ẩn danh thì người khác có biết danh tính của mình không?',
+    ];
+  }
+
+  // 7.2. Nhóm Hệ sinh thái & Chuẩn đầu ra DNC
+  if (
+    noTone.includes('he sinh thai') ||
+    noTone.includes('doanh nghiep') ||
+    noTone.includes('chuan dau ra') ||
+    noTone.includes('tot nghiep')
+  ) {
+    return [
+      'Hệ sinh thái doanh nghiệp trong trường DNC có gì nổi bật?',
+      'Điều kiện tốt nghiệp và chuẩn đầu ra tại DNC ra sao?',
+      'Mức học phí các ngành tại DNC năm 2026?',
     ];
   }
 
