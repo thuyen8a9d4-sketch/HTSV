@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { BotAvatar, botAvatarTypes } from 'bot-avatars';
-import type { BotAvatarType } from 'bot-avatars';
+import { BotAvatar, botAvatarTypes } from './bot-avatars';
+import type { BotAvatarType } from './bot-avatars';
 import {
   Banknote,
   Building,
