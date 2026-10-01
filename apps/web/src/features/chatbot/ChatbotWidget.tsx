@@ -14,11 +14,10 @@ import {
   RotateCcw,
   School,
   Send,
-  Settings,
 } from '../../components/Icons';
 import { useTheme } from '../../lib/theme';
 import type { ChatMessage, QuickSuggestion } from './chatbot-types';
-import { getEffectiveApiKey, getStoredCustomApiKey, setCustomApiKey, sendChatMessage } from './chatbot-service';
+import { sendChatMessage } from './chatbot-service';
 import { QUICK_SUGGESTIONS, generateFollowUpSuggestions } from './chatbot-knowledge';
 import { ChatMarkdown } from './ChatMarkdown';
 import './chatbot.css';
@@ -121,9 +120,6 @@ export function ChatbotWidget() {
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [avatarType, setAvatarType] = useState<BotAvatarType>('clover');
-  const [showSettings, setShowSettings] = useState(false);
-  const [apiKeyInput, setApiKeyInput] = useState(() => getStoredCustomApiKey());
-  const [hasApiKey, setHasApiKey] = useState(() => Boolean(getEffectiveApiKey()));
   const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialMessages());
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -136,19 +132,6 @@ export function ChatbotWidget() {
   const streamIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const requestVersion = useRef(0);
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleSaveApiKey = () => {
-    setCustomApiKey(apiKeyInput);
-    setHasApiKey(Boolean(getEffectiveApiKey()));
-    setShowSettings(false);
-  };
-
-  const handleClearApiKey = () => {
-    setApiKeyInput('');
-    setCustomApiKey('');
-    setHasApiKey(Boolean(getEffectiveApiKey()));
-    setShowSettings(false);
-  };
 
   // Clean up streaming timer on unmount
   useEffect(() => {
@@ -383,16 +366,8 @@ export function ChatbotWidget() {
                   <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs" title="Đang trực tuyến" aria-label="Đang trực tuyến" />
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="htsv-chat-subtitle text-[11px] font-medium">
-                    {hasApiKey ? (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                        Gemini 2.0 Flash (Trực tuyến)
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-sky-600 dark:text-sky-400">
-                        Trí tuệ HTSV (Tự nhiên & Chuẩn xác)
-                      </span>
-                    )}
+                  <span className="htsv-chat-subtitle text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                    Giải đáp thông tin sinh viên DNC
                   </span>
                 </div>
               </div>
@@ -400,15 +375,6 @@ export function ChatbotWidget() {
 
             {/* Actions */}
             <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setShowSettings(!showSettings)}
-                title="Cài đặt Google Gemini API Key"
-                className={`htsv-chat-action-btn rounded-xl p-2 focus:outline-hidden ${showSettings ? 'text-blue-600 bg-blue-50/50 dark:bg-slate-800' : ''}`}
-                aria-label="Cài đặt khóa API"
-              >
-                <Settings className="h-4 w-4" />
-              </button>
               <button
                 type="button"
                 onClick={handleClearHistory}
@@ -429,71 +395,6 @@ export function ChatbotWidget() {
               </button>
             </div>
           </div>
-
-          {/* Settings Modal Overlay */}
-          {showSettings && (
-            <div className="absolute inset-0 z-30 flex flex-col justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
-              <div className="rounded-2xl border border-slate-200/60 bg-white p-4 shadow-2xl dark:border-slate-700/60 dark:bg-slate-900">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-2.5 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <Settings className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    <h4 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100">
-                      Cài đặt Trợ lý AI (Tùy chọn)
-                    </h4>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowSettings(false)}
-                    className="rounded-lg p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                    aria-label="Đóng cài đặt"
-                  >
-                    <Close className="h-4 w-4" />
-                  </button>
-                </div>
-
-                <div className="mt-3 space-y-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Google Gemini API Key
-                    </label>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                      Dán khóa API từ <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-blue-600 underline dark:text-blue-400">Google AI Studio</a> để kết nối trực tuyến với Gemini 2.0 Flash:
-                    </p>
-                    <input
-                      type="password"
-                      value={apiKeyInput}
-                      onChange={(e) => setApiKeyInput(e.target.value)}
-                      placeholder="AIzaSy..."
-                      className="mt-2 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-mono text-slate-800 outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-                    />
-                  </div>
-
-                  <div className="rounded-xl bg-blue-50/80 p-2.5 text-[11px] leading-relaxed text-blue-900 dark:bg-blue-950/40 dark:text-blue-300">
-                    <strong>Lưu ý:</strong> Nếu không nhập API Key, Chatbot sẽ chạy <strong>Bộ Trí Tuệ Tích Hợp HTSV</strong> hoàn toàn miễn phí, phản hồi tự nhiên và trả lời đúng 100% trọng tâm!
-                  </div>
-
-                  <div className="flex items-center justify-end gap-2 pt-1">
-                    {apiKeyInput && (
-                      <button
-                        type="button"
-                        onClick={handleClearApiKey}
-                        className="rounded-xl px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-                      >
-                        Xóa khóa
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={handleSaveApiKey}
-                      className="rounded-xl bg-blue-600 px-4 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-700"
-                    >
-                      Lưu cài đặt
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Message List */}
           <div ref={messageListRef} className="htsv-chat-body flex-1 space-y-4 overflow-y-auto p-4">
