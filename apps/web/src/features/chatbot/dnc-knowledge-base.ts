@@ -1583,6 +1583,7 @@ Sinh viên DNC được tham gia rất nhiều hoạt động đoàn thể, kỹ
 
 
 function removeTones(str: string): string {
+  if (!str) return '';
   return str
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -1592,44 +1593,346 @@ function removeTones(str: string): string {
 }
 
 /**
+ * Format danh sách tổ hợp môn thô dạng JSON thành định dạng Markdown đẹp, dễ đọc
+ */
+export function formatSubjectGroups(raw: string): string {
+  const matches = [...raw.matchAll(/code':\s*'([^']+)',\s*'subject1':\s*'([^']+)',\s*'subject2':\s*'([^']+)',\s*'subject3':\s*'([^']+)'/g)];
+  if (matches.length === 0) return raw;
+  return matches.map((m) => `* \`${m[1]}\`: ${m[2]}, ${m[3]}, ${m[4]}`).join('\n');
+}
+
+/**
+ * Tìm kiếm ngành học DNC theo tên/từ khóa người dùng nhập
+ */
+export function findMajorByQuery(noTone: string): KnowledgeItem | null {
+  const majorItems = DNC_KNOWLEDGE_BASE.filter((item) => item.category === 'nganh_hoc');
+
+  // Ưu tiên các ngành phổ biến / tên viết tắt trước
+  if (noTone.includes('o to') || noTone.includes('dong luc')) {
+    return majorItems.find((m) => m.id === 'dnc-major-cong_nghe_ky_thuat_o_to') || null;
+  }
+  if (noTone.includes('y khoa') || noTone.includes('bac si da khoa') || noTone.includes('y da khoa')) {
+    return majorItems.find((m) => m.id === 'dnc-major-y_khoa') || null;
+  }
+  if (noTone.includes('rang ham mat')) {
+    return majorItems.find((m) => m.id === 'dnc-major-rang_-_ham_-_mat') || null;
+  }
+  if (noTone.includes('duoc') || noTone.includes('duoc si')) {
+    return majorItems.find((m) => m.id === 'dnc-major-duoc_hoc') || null;
+  }
+  if (noTone.includes('xet nghiem y hoc') || noTone.includes('xet nghiem')) {
+    return majorItems.find((m) => m.id.includes('xet_nghiem')) || null;
+  }
+  if (noTone.includes('hinh anh y hoc')) {
+    return majorItems.find((m) => m.id.includes('hinh_anh')) || null;
+  }
+  if (noTone.includes('dieu duong')) {
+    return majorItems.find((m) => m.id.includes('dieu_duong')) || null;
+  }
+  if (noTone.includes('cntt') || noTone.includes('cong nghe thong tin')) {
+    return majorItems.find((m) => m.id === 'dnc-major-cong_nghe_thong_tin') || null;
+  }
+  if (noTone.includes('tri tue nhan tao') || noTone.includes('ai')) {
+    return majorItems.find((m) => m.id.includes('tri_tue_nhan_tao')) || majorItems.find((m) => m.id === 'dnc-major-cong_nghe_thong_tin') || null;
+  }
+  if (noTone.includes('phan mem')) {
+    return majorItems.find((m) => m.id.includes('phan_mem')) || null;
+  }
+  if (noTone.includes('khoa hoc may tinh')) {
+    return majorItems.find((m) => m.id.includes('khoa_hoc_may_tinh')) || null;
+  }
+  if (noTone.includes('kinh te so')) {
+    return majorItems.find((m) => m.id.includes('kinh_te_so')) || null;
+  }
+  if (noTone.includes('marketing')) {
+    return majorItems.find((m) => m.id.includes('marketing')) || null;
+  }
+  if (noTone.includes('logistics')) {
+    return majorItems.find((m) => m.id.includes('logistics')) || null;
+  }
+  if (noTone.includes('luat kinh te')) {
+    return majorItems.find((m) => m.id.includes('luat_kinh_te')) || null;
+  }
+  if (noTone.includes('luat')) {
+    return majorItems.find((m) => m.id.includes('luat_hoc')) || majorItems.find((m) => m.id.includes('luat')) || null;
+  }
+  if (noTone.includes('ngon ngu anh')) {
+    return majorItems.find((m) => m.id.includes('ngon_ngu_anh')) || null;
+  }
+  if (noTone.includes('quan tri kinh doanh') || noTone.includes('qtkd')) {
+    return majorItems.find((m) => m.id.includes('quan_tri_kinh_doanh')) || null;
+  }
+  if (noTone.includes('du lich')) {
+    return majorItems.find((m) => m.id.includes('du_lich')) || null;
+  }
+  if (noTone.includes('kien truc')) {
+    return majorItems.find((m) => m.id.includes('kien_truc')) || null;
+  }
+  if (noTone.includes('xay dung')) {
+    return majorItems.find((m) => m.id.includes('xay_dung')) || null;
+  }
+
+  // Quét qua toàn bộ danh sách 86 ngành theo độ dài từ khóa
+  for (const item of majorItems) {
+    for (const kw of item.keywords) {
+      const kwNoTone = removeTones(kw);
+      if (kwNoTone.length >= 5 && noTone.includes(kwNoTone)) {
+        return item;
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Trả lời chuyên sâu và chính xác về ĐỊA CHỈ & VỊ TRÍ
+ */
+export function resolveDncAddress(noTone: string): string {
+  // 1. Showroom Ô tô Nam Cần Thơ DNC
+  if (noTone.includes('showroom') || (noTone.includes('o to') && (noTone.includes('xe') || noTone.includes('gara') || noTone.includes('xuong')))) {
+    return `**Showroom Ô tô Nam Cần Thơ DNC** có địa chỉ tại: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.\n\n* **Vị trí cụ thể:** Tọa lạc ngay bên trong khuôn viên Trường Đại học Nam Cần Thơ.\n* **Quy mô & Tiện ích:** Bao gồm khu trưng bày các dòng xe ô tô hiện đại cùng hệ thống xưởng bảo dưỡng, sửa chữa quy mô lớn. Nơi đây vừa phục vụ đào tạo thực hành thực tế cho sinh viên ngành Công nghệ Kỹ thuật Ô tô, vừa hoạt động kinh doanh dịch vụ cho khách hàng bên ngoài.`;
+  }
+
+  // 2. Bệnh viện Đại học Nam Cần Thơ
+  if (noTone.includes('benh vien') || noTone.includes('bv dnc')) {
+    return `**Bệnh viện Đại học Nam Cần Thơ** có địa chỉ tại: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.\n\n* **Vị trí:** Tọa lạc ngay bên trong khuôn viên Trường Đại học Nam Cần Thơ (DNC).\n* **Hotline cấp cứu & khám chữa bệnh:** \`02923 686 868\`\n* **Quy mô:** Đạt chuẩn quốc tế AACI Hoa Kỳ với quy mô 300 giường bệnh giai đoạn 1, trang bị máy móc y khoa hiện đại và là cơ sở thực hành lâm sàng cho sinh viên khối ngành Sức khỏe.`;
+  }
+
+  // 3. Ký túc xá DNC
+  if (noTone.includes('ky tuc xa') || noTone.includes('ktx') || noTone.includes('noi tru')) {
+    return `**Khu phức hợp Ký túc xá Đại học Nam Cần Thơ** nằm ngay bên trong khuôn viên trường tại địa chỉ: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.\n\n* **Đặc điểm:** Sức chứa hơn 2.000 sinh viên, gồm các dãy phòng quạt và phòng máy lạnh tiện nghi, wifi bao phủ, an ninh thẻ từ 24/7 và sát cạnh căng-tin trường.`;
+  }
+
+  // 4. Viện dược liệu / Viện sức khỏe / Trung tâm phần mềm / Thư viện / Hồ bơi / Sân vận động
+  if (
+    noTone.includes('vien duoc lieu') ||
+    noTone.includes('vien nghien cuu') ||
+    noTone.includes('trung tam phan mem') ||
+    noTone.includes('ho boi') ||
+    noTone.includes('san bong') ||
+    noTone.includes('san van dong') ||
+    noTone.includes('thu vien')
+  ) {
+    return `Cơ sở này nằm ngay bên trong khuôn viên Trường Đại học Nam Cần Thơ, địa chỉ: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.`;
+  }
+
+  // 5. DNC Resort
+  if (noTone.includes('resort')) {
+    return `**Khu nghỉ dưỡng sinh thái DNC Resort** (thuộc hệ sinh thái doanh nghiệp của Trường Đại học Nam Cần Thơ) tọa lạc tại: **TP. Phú Quốc, Tỉnh Kiên Giang**.`;
+  }
+
+  // 6. Phòng Đào tạo / CTSV / Văn phòng một cửa
+  if (noTone.includes('phong dao tao') || noTone.includes('ctsv') || noTone.includes('cong tac sinh vien') || noTone.includes('mot cua')) {
+    return `Văn phòng Một cửa, Phòng Đào tạo và Phòng Công tác Sinh viên nằm tại **Tòa nhà Hành chính Trung tâm**, bên trong khuôn viên Trường Đại học Nam Cần Thơ (Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ). Bạn cũng có thể gửi yêu cầu trực tuyến tại mục **"Hỗ trợ"** trên Cổng HTSV này nhé!`;
+  }
+
+  // 7. Kiểm tra nếu người dùng hỏi về trường khác ngoài DNC
+  if (
+    noTone.includes('bach khoa') ||
+    noTone.includes('kinh te quoc dan') ||
+    noTone.includes('ngoai thuong') ||
+    noTone.includes('fpt') ||
+    noTone.includes('y duoc can tho') ||
+    noTone.includes('dai hoc can tho') ||
+    (noTone.includes('dai hoc') && !noTone.includes('nam can tho') && !noTone.includes('dnc') && !noTone.includes('truong minh') && !noTone.includes('truong nay'))
+  ) {
+    return `Dạ hiện tại mình là trợ lý tư vấn chuyên sâu của **Trường Đại học Nam Cần Thơ (DNC)**, nên mình không có dữ liệu địa chỉ của các trường khác ngoài DNC bạn nha. Bạn có thể tra cứu trên Google Maps hoặc website chính thức của trường đó nhé!`;
+  }
+
+  // 8. Toàn trường Đại học Nam Cần Thơ
+  if (
+    noTone.includes('nam can tho') ||
+    noTone.includes('dnc') ||
+    noTone.includes('truong minh') ||
+    noTone.includes('truong nay') ||
+    noTone.includes('truong')
+  ) {
+    return `**Trường Đại học Nam Cần Thơ (DNC)** có địa chỉ chính thức tại: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.\n\n* **Hotline Tuyển sinh & Hỗ trợ:** \`0939 257 838\` - \`02923 798 222\`\n* **Email:** \`phongtuyensinh@nctu.edu.vn\`\n* **Website chính thức:** [https://nctu.edu.vn](https://nctu.edu.vn)`;
+  }
+
+  // 9. Hỏi địa chỉ nơi lạ / không xác định
+  return `Dạ hiện tại mình chưa có thông tin chính xác về địa chỉ của nơi bạn vừa hỏi.\n\nVì mình là trợ lý ảo chuyên sâu hỗ trợ thông tin **Trường Đại học Nam Cần Thơ (DNC)** và hệ thống Cổng HTSV, nếu bạn cần hỏi vị trí các phòng ban, khoa viện của trường, bạn vui lòng liên hệ Tổng đài trường: **0939 257 838** - **02923 798 222** để được thầy cô hướng dẫn chính xác nhất nhé!`;
+}
+
+/**
+ * Trả lời chuyên sâu và chính xác về HỌC PHÍ
+ */
+export function resolveDncTuition(noTone: string): string {
+  if (noTone.includes('ktx') || noTone.includes('ky tuc xa')) {
+    return `Mức phí Ký túc xá Đại học Nam Cần Thơ dao động từ **450.000đ - 1.200.000đ / tháng / sinh viên** tùy loại phòng:\n* **Phòng quạt:** Khoảng 450.000đ - 600.000đ / tháng.\n* **Phòng máy lạnh:** Khoảng 800.000đ - 1.200.000đ / tháng.\n* Đã bao gồm an ninh thẻ từ 24/7, wifi và các tiện ích nội trú.`;
+  }
+
+  if (noTone.includes('o to') || noTone.includes('dong luc')) {
+    return `Mức học phí ngành **Công nghệ Kỹ thuật Ô tô** tại Đại học Nam Cần Thơ là khoảng **14 - 15 triệu đồng / học kỳ** (mỗi năm có 3 học kỳ).\n\n* **Chính sách:** Nhà trường cam kết giữ nguyên mức học phí ổn định suốt toàn khóa (không tăng giá tín chỉ).\n* **Thực hành:** Đã bao gồm các học phần thực hành chuyên sâu tại Showroom Ô tô Nam Cần Thơ DNC và xưởng bảo dưỡng của trường.`;
+  }
+
+  if (noTone.includes('y khoa') || noTone.includes('bac si') || noTone.includes('rang ham mat')) {
+    return `Mức học phí ngành **Y khoa** và **Răng - Hàm - Mặt** tại Đại học Nam Cần Thơ là khoảng **45 - 50 triệu đồng / học kỳ** (mỗi năm gồm 3 học kỳ).\n\n* **Cam kết:** Học phí ổn định suốt toàn bộ khóa học 6 năm.\n* **Đặc quyền:** Đã bao gồm chi phí thực tập lâm sàng tại Bệnh viện Đại học Nam Cần Thơ và các bệnh viện liên kết lớn.`;
+  }
+
+  if (noTone.includes('duoc')) {
+    return `Mức học phí ngành **Dược học** (Bằng Dược sĩ) tại Đại học Nam Cần Thơ là khoảng **18 - 22 triệu đồng / học kỳ** (ổn định toàn bộ khóa học 5 năm).`;
+  }
+
+  if (noTone.includes('cntt') || noTone.includes('cong nghe thong tin') || noTone.includes('ai') || noTone.includes('phan mem')) {
+    return `Mức học phí ngành **Công nghệ thông tin, Phần mềm & AI** tại Đại học Nam Cần Thơ là khoảng **10 - 11 triệu đồng / học kỳ** (mỗi năm gồm 3 học kỳ, cam kết ổn định suốt khóa).`;
+  }
+
+  if (noTone.includes('kinh te') || noTone.includes('quan tri') || noTone.includes('marketing') || noTone.includes('logistics') || noTone.includes('luat') || noTone.includes('ngon ngu anh')) {
+    return `Mức học phí khối ngành **Kinh tế, Quản trị, Marketing, Logistics, Luật và Ngôn ngữ Anh** tại DNC dao động khoảng **10 - 11 triệu đồng / học kỳ** (ổn định suốt toàn khóa).`;
+  }
+
+  return `### 💵 **Chính sách Học phí Đại học Nam Cần Thơ (Cam kết ổn định toàn khóa)**
+Mỗi năm học gồm 3 học kỳ:
+* **Nhóm ngành 1 (Kinh tế, CNTT, Luật, Ngôn ngữ, Du lịch...):** Khoảng **10 - 11 triệu đồng / học kỳ**.
+* **Nhóm ngành 2 (Kiến trúc, Bất động sản, CNKT Hóa học, Thực phẩm...):** Khoảng **12 - 13 triệu đồng / học kỳ**.
+* **Nhóm ngành 3 (CNKT Ô tô, Điện - Điện tử, Kỹ thuật xét nghiệm, Điều dưỡng...):** Khoảng **14 - 15 triệu đồng / học kỳ**.
+* **Khối Sức khỏe đặc thù:**
+  * **Dược học:** Khoảng **18 - 22 triệu đồng / học kỳ**.
+  * **Y khoa & Răng - Hàm - Mặt:** Khoảng **45 - 50 triệu đồng / học kỳ** (đã bao gồm lâm sàng Bệnh viện DNC).`;
+}
+
+/**
  * Hàm tìm kiếm tri thức chuyên sâu DNC từ website nctu.edu.vn
- * Hỗ trợ tìm kiếm theo tên ngành, mã ngành, phương thức xét tuyển và câu lạc bộ
+ * Hỗ trợ nhận diện ý định chuẩn xác (Địa chỉ, Học phí, Mã ngành, Thời gian học, Tổ hợp môn)
  */
 export function searchDncKnowledge(query: string): string | null {
   const normalized = query.toLowerCase().trim();
   const noTone = removeTones(normalized);
 
-  // 1. Tìm kiếm theo mã ngành chính xác (dạng số 7 chữ số, ví dụ 7720101, 7480201...)
-  const codeMatch = normalized.match(/\b(7[0-9]{6})\b/);
-  if (codeMatch) {
-    const code = codeMatch[1];
-    const found = DNC_KNOWLEDGE_BASE.find(item => item.keywords.includes(code));
-    if (found) return found.answer;
+  // 1. Ý định ĐỊA CHỈ / Ở ĐÂU / VỊ TRÍ
+  const isAddressQuery =
+    noTone.includes('dia chi') ||
+    noTone.includes('o dau') ||
+    noTone.includes('cho nao') ||
+    noTone.includes('nam o dau') ||
+    noTone.includes('tai dau') ||
+    noTone.includes('vi tri') ||
+    noTone.includes('toa lac') ||
+    noTone.includes('duong nao') ||
+    noTone.includes('dia diem') ||
+    noTone.includes('tim duong') ||
+    noTone.includes('o quan nao') ||
+    noTone.includes('o tinh nao');
+
+  if (isAddressQuery) {
+    return resolveDncAddress(noTone);
   }
 
-  // 2. Tìm kiếm theo ngành học cụ thể (category: 'nganh_hoc')
-  // Ưu tiên các từ khóa dài hơn trước để khớp chính xác (ví dụ "y học dự phòng" trước "y học")
-  const majorItems = DNC_KNOWLEDGE_BASE.filter(item => item.category === 'nganh_hoc');
-  // Sắp xếp các từ khóa theo độ dài giảm dần
-  for (const item of majorItems) {
-    for (const kw of item.keywords) {
-      const kwNoTone = removeTones(kw);
-      if (kwNoTone.length >= 4 && (normalized.includes(kw) || noTone.includes(kwNoTone))) {
-        return item.answer;
-      }
+  // 2. Ý định HỌC PHÍ / BAO NHIÊU TIỀN
+  const isTuitionQuery =
+    noTone.includes('hoc phi') ||
+    noTone.includes('bao nhieu tien') ||
+    noTone.includes('tien hoc') ||
+    noTone.includes('chi phi hoc') ||
+    noTone.includes('dong bao nhieu') ||
+    noTone.includes('dong tien') ||
+    noTone.includes('bieu phi') ||
+    noTone.includes('muc phi');
+
+  if (isTuitionQuery) {
+    return resolveDncTuition(noTone);
+  }
+
+  // 3. Ý định MÃ NGÀNH / MÃ XÉT TUYỂN
+  const isCodeQuery =
+    noTone.includes('ma nganh') ||
+    noTone.includes('ma xet tuyen') ||
+    noTone.includes('ma tuyen sinh') ||
+    noTone.includes('ma code');
+
+  if (isCodeQuery) {
+    const major = findMajorByQuery(noTone);
+    if (major) {
+      const match = major.answer.match(/\*\*Mã ngành:\*\*\s*`?([0-9A-Z]+)`?/);
+      const code = match ? match[1] : '';
+      const nameMatch = major.question.match(/ngành\s+([^(]+)\s*\(/i);
+      const name = nameMatch ? nameMatch[1].trim() : major.id;
+      return `Mã ngành của ngành **${name}** tại Trường Đại học Nam Cần Thơ là: \`${code}\`.`;
     }
   }
 
-  // 3. Tìm kiếm theo phương thức tuyển sinh cụ thể (100, 200, 402, 407, 411)
-  if (noTone.includes('100') || noTone.includes('200') || noTone.includes('402') || noTone.includes('407') || noTone.includes('411')) {
-    const admItem = DNC_KNOWLEDGE_BASE.find(item => item.id === 'dnc-phuong-thuc-xet-tuyen');
+  // 4. Ý định THỜI GIAN ĐÀO TẠO / MẤY NĂM HỌC
+  const isDurationQuery =
+    noTone.includes('may nam') ||
+    noTone.includes('thoi gian dao tao') ||
+    noTone.includes('thoi gian hoc') ||
+    noTone.includes('hoc bao lau') ||
+    noTone.includes('bao nhieu nam') ||
+    noTone.includes('may hoc ky');
+
+  if (isDurationQuery) {
+    const major = findMajorByQuery(noTone);
+    if (major) {
+      const match = major.answer.match(/\*\*Thời gian đào tạo:\*\*\s*([^\n*]+)/);
+      const dur = match ? match[1].trim() : '';
+      const degreeMatch = major.answer.match(/\*\*Văn bằng tốt nghiệp:\*\*\s*([^\n*]+)/);
+      const degree = degreeMatch ? degreeMatch[1].trim() : '';
+      const nameMatch = major.question.match(/ngành\s+([^(]+)\s*\(/i);
+      const name = nameMatch ? nameMatch[1].trim() : major.id;
+      return `Thời gian đào tạo ngành **${name}** tại Đại học Nam Cần Thơ là **${dur}**${degree ? `, sinh viên tốt nghiệp được cấp bằng **${degree}**` : ''}.`;
+    }
+  }
+
+  // 5. Ý định TỔ HỢP XÉT TUYỂN
+  const isSubjectGroupQuery =
+    noTone.includes('to hop') ||
+    noTone.includes('khoi nao') ||
+    noTone.includes('mon nao') ||
+    noTone.includes('xet khoi gi');
+
+  if (isSubjectGroupQuery) {
+    const major = findMajorByQuery(noTone);
+    if (major) {
+      const match = major.answer.match(/\*\*Tổ hợp xét tuyển:\*\*\s*([^\n]+)/);
+      const rawGroups = match ? match[1].trim() : '';
+      const formatted = formatSubjectGroups(rawGroups);
+      const nameMatch = major.question.match(/ngành\s+([^(]+)\s*\(/i);
+      const name = nameMatch ? nameMatch[1].trim() : major.id;
+      return `Các tổ hợp môn xét tuyển ngành **${name}** tại Trường Đại học Nam Cần Thơ gồm có:\n\n${formatted}`;
+    }
+  }
+
+  // 6. Tra cứu trực tiếp theo mã ngành 7 chữ số (ví dụ 7720101, 7480201...)
+  const codeMatch = normalized.match(/\b(7[0-9]{6})\b/);
+  if (codeMatch) {
+    const code = codeMatch[1];
+    const found = DNC_KNOWLEDGE_BASE.find((item) => item.keywords.includes(code));
+    if (found) {
+      let clean = found.answer;
+      const match = clean.match(/\*\*Tổ hợp xét tuyển:\*\*\s*(\[\{.+?\}\])/);
+      if (match) clean = clean.replace(match[0], `**Tổ hợp xét tuyển:**\n${formatSubjectGroups(match[1])}`);
+      return clean;
+    }
+  }
+
+  // 7. Ý định Phương thức tuyển sinh cụ thể (100, 200, 402, 407, 411)
+  if (
+    noTone.includes('phuong thuc xet') ||
+    noTone.includes('xet hoc ba') ||
+    noTone.includes('100') ||
+    noTone.includes('200') ||
+    noTone.includes('402') ||
+    noTone.includes('407') ||
+    noTone.includes('411')
+  ) {
+    const admItem = DNC_KNOWLEDGE_BASE.find((item) => item.id === 'dnc-phuong-thuc-xet-tuyen');
     if (admItem) return admItem.answer;
   }
 
-  // 4. Tìm kiếm theo câu lạc bộ (CLB)
+  // 8. Ý định Câu lạc bộ (CLB)
   if (noTone.includes('cau lac bo') || noTone.includes('clb')) {
-    const clubItem = DNC_KNOWLEDGE_BASE.find(item => item.id === 'dnc-cau-lac-bo-tong-hop');
+    const clubItem = DNC_KNOWLEDGE_BASE.find((item) => item.id === 'dnc-cau-lac-bo-tong-hop');
     if (clubItem) return clubItem.answer;
+  }
+
+  // 9. Tìm kiếm tổng quan ngành học (khi người dùng chỉ hỏi về tên ngành hoặc hỏi giới thiệu)
+  const major = findMajorByQuery(noTone);
+  if (major && (noTone.includes('nganh') || noTone.includes('hoc') || noTone.includes('gioi thieu') || noTone.includes('tim hieu'))) {
+    let clean = major.answer;
+    const match = clean.match(/\*\*Tổ hợp xét tuyển:\*\*\s*(\[\{.+?\}\])/);
+    if (match) clean = clean.replace(match[0], `**Tổ hợp xét tuyển:**\n${formatSubjectGroups(match[1])}`);
+    return clean;
   }
 
   return null;

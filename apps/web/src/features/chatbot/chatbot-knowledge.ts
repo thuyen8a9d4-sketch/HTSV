@@ -53,10 +53,29 @@ NGUYÊN TẮC GIAO TIẾP VÀ TRẢ LỜI (BẮT BUỘC):
  - Quên mật khẩu / OTP xác thực: Kiểm tra hòm thư rác (Spam/Junk), bấm gửi lại mã OTP, hoặc vào mục "Hỗ trợ" gửi yêu cầu Hỗ trợ tài khoản & bảo mật.
  - Cập nhật MSSV, lớp, ngành học: Thông tin được đối chiếu và kích hoạt tự động khi hoàn tất xác thực thông tin tại trường hoặc qua hệ thống đào tạo chính thức. Có thể yêu cầu chỉnh sửa qua Dịch vụ Một cửa.
 
+NGUYÊN TẮC CỐT LÕI (HỎI GÌ TRẢ LỜI CÁI ĐÓ - KHÔNG BIẾT THÌ NÓI KHÔNG BIẾT):
+1. HỎI ĐÚNG CHỦ ĐỀ NÀO THÌ TRẢ LỜI ĐÚNG CHỦ ĐỀ ĐÓ (STRICT FOCUS):
+   - ĐỊA CHỈ / Ở ĐÂU / VỊ TRÍ: Trả lời chính xác địa chỉ và vị trí cụ thể của nơi được hỏi:
+     * Showroom Ô tô Nam Cần Thơ DNC: Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ (nằm ngay trong khuôn viên Trường Đại học Nam Cần Thơ, gồm khu trưng bày xe hiện đại và xưởng bảo dưỡng quy mô lớn).
+     * Bệnh viện Đại học Nam Cần Thơ: Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ (trong khuôn viên trường, quy mô 300 giường quốc tế AACI Hoa Kỳ, hotline 02923 686 868).
+     * Trường Đại học Nam Cần Thơ: Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ.
+     * Khu phức hợp Ký túc xá DNC: Trong khuôn viên trường (168 Nguyễn Văn Cừ nối dài, hơn 2.000 chỗ, phòng quạt và máy lạnh).
+     * Viện Dược liệu / Trung tâm phần mềm / Khu thể thao: Trong khuôn viên trường.
+     * DNC Resort: TP. Phú Quốc, Tỉnh Kiên Giang.
+     * TUYỆT ĐỐI KHÔNG lan man giới thiệu chương trình đào tạo hay học phí khi người dùng chỉ hỏi địa chỉ.
+   - HỌC PHÍ / BAO NHIÊU TIỀN: Chỉ trả lời số tiền học phí cụ thể của ngành hoặc dịch vụ đó, cam kết ổn định toàn khóa.
+   - THỜI GIAN ĐÀO TẠO / MẤY NĂM: Chỉ trả lời số năm học và loại văn bằng (Y khoa 6 năm, Dược 5 năm, Kỹ sư 4 - 4.5 năm, Cử nhân 3.5 - 4 năm).
+   - MÃ NGÀNH: Chỉ trả lời mã ngành chính xác.
+   - TỔ HỢP XÉT TUYỂN: Chỉ trả lời danh sách tổ hợp môn.
+   - SỐ ĐIỆN THOẠI / HOTLINE / LIÊN HỆ: Trả lời đúng số điện thoại, email, website.
+
+2. NẾU KHÔNG BIẾT RÕ HOẶC KHÔNG CÓ THÔNG TIN:
+   - Thành thật nói rõ mình chưa có thông tin chính xác về vấn đề đó. Tuyệt đối KHÔNG tự bịa đặt hoặc phỏng đoán bừa bãi.
+   - Hướng dẫn người dùng liên hệ các kênh chính thức: Hotline Tuyển sinh DNC: 0939 257 838 - 02923 798 222, hoặc gửi yêu cầu vào mục "Hỗ trợ" trên Cổng HTSV.
+
 PHONG CÁCH TRÌNH BÀY & NÓI CHUYỆN:
 - Nói chuyện tự nhiên, ấm áp, thông minh và thấu hiểu y như một con người thực thụ (xưng "mình" - "bạn").
 - Hỏi đúng chủ đề gì thì trả lời thẳng vào chủ đề đó, không lan man, không chèn tiêu đề cứng nhắc.
-- Khi gặp câu hỏi chưa rõ hoặc không có dữ liệu, hãy thành thật trả lời mình chưa có thông tin chính xác thay vì phỏng đoán hay bịa đặt.
 - Tuyệt đối KHÔNG sử dụng các biểu tượng emoji cảm xúc hay emoji đồ họa (như robot, mũ cử nhân, máy tính, ngôi sao, v.v.). Trình bày bằng văn bản Markdown trang nhã, dễ đọc.`;
 
 export const QUICK_SUGGESTIONS: QuickSuggestion[] = [
@@ -629,7 +648,7 @@ Bạn đang muốn tìm hiểu về ngành Bác sĩ Y khoa, Dược học hay ng
   // --- 7. NGÀNH CÔNG NGHỆ KỸ THUẬT Ô TÔ ---
   {
     id: 'auto',
-    keywords: ['ô tô', 'kỹ thuật ô tô', 'công nghệ ô tô', 'ô tô điện', 'cơ khí động lực', 'showroom ô tô', 'học ô tô'],
+    keywords: ['ngành ô tô', 'kỹ thuật ô tô', 'công nghệ ô tô', 'ô tô điện', 'cơ khí động lực', 'học ô tô', 'ngành công nghệ ô tô'],
     response: `Chào bạn! Ngành Công nghệ Kỹ thuật Ô tô tại DNC cực kỳ xịn sò luôn nha:
 
 * **Chương trình:** Đào tạo Kỹ sư Ô tô với 2 định hướng: Ô tô truyền thống và Ô tô điện thông minh.
@@ -969,8 +988,15 @@ Bạn thấy cơ sở vật chất ở DNC xịn sò không nè!`,
       'dnc thành lập năm nào',
       'chủ tịch trường dnc',
       'hiệu trưởng dnc',
+      'hiệu trưởng',
+      'hieu truong',
+      'thầy hiệu trưởng',
+      'hiệu trưởng là ai',
+      'chủ tịch trường',
+      'chu tich truong',
       'võ tòng xuân',
-      'nguyễn tiến dũng dnc',
+      'nguyễn tiến dũng',
+      'nguyễn văn quang',
       'thành lập trường dnc'
     ],
     response: `Dạ về lịch sử và ban lãnh đạo của Trường Đại học Nam Cần Thơ (DNC) thì rất đáng tự hào nè:
@@ -1448,14 +1474,15 @@ export function getMockResponse(question: string): string {
     if (lhRule) return lhRule.response;
   }
 
-  // 19. Phản hồi thông minh, tự nhiên như con người (ChatGPT / Gemini style):
-  return `Chào bạn nha! Mình đã lắng nghe câu hỏi của bạn rồi nè.
+  // 19. Khi không có thông tin chắc chắn -> Thành thật thông báo chưa rõ và hướng dẫn kênh chính thức:
+  return `Dạ hiện tại mình chưa có thông tin chính xác về câu hỏi này của bạn.
 
-Về vấn đề này, để bạn có được thông tin chuẩn xác và hỗ trợ kịp thời nhất:
-* Nếu là thắc mắc về **học vụ, điểm số, lịch thi hay thủ tục một cửa**: Bạn có thể vào mục **"Hỗ trợ"** trên Cổng HTSV để tạo yêu cầu gửi trực tiếp đến thầy cô Phòng Đào tạo / Công tác Sinh viên nha.
-* Nếu là câu hỏi về **quy chế, học phí, học bổng hoặc tuyển sinh DNC**: Bạn có thể gọi nhanh đến Hotline Tuyển sinh & Tư vấn: \`0939 257 838\` - \`02923 798 222\` hoặc gửi tin nhắn cho mình với từ khóa cụ thể hơn (ví dụ: *học phí ngành CNTT*, *học bổng kỳ này*, *chi phí KTX*...) để mình cung cấp số liệu chi tiết nhé!
+Để đảm bảo bạn nhận được thông tin chuẩn xác và không bị sai lệch, bạn vui lòng liên hệ trực tiếp với các kênh hỗ trợ của nhà trường nhé:
+* **Hotline Tuyển sinh & Tư vấn DNC:** \`0939 257 838\` - \`02923 798 222\`
+* **Email:** \`phongtuyensinh@nctu.edu.vn\`
+* **Cổng HTSV:** Bạn có thể vào mục **"Hỗ trợ"** trên menu để gửi yêu cầu một cửa đến thầy cô Phòng Đào tạo / Công tác Sinh viên nha.
 
-Bạn có thể chia sẻ rõ hơn hoặc cần mình giải đáp thêm khía cạnh nào nữa không nè?`;
+Bạn có muốn hỏi thêm về các ngành đào tạo, học phí, điểm chuẩn hay thông tin khác về trường không nè?`;
 }
 
 /**
