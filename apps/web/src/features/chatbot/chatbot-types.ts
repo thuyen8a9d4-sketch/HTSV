@@ -21,9 +21,18 @@ export interface ChatbotSettings {
   temperature: number;
 }
 
+export type SuggestionIconType =
+  | 'school'
+  | 'graduation'
+  | 'tuition'
+  | 'tech'
+  | 'medical'
+  | 'building';
+
 export interface QuickSuggestion {
   id: string;
   label: string;
   prompt: string;
   category: 'forum' | 'academic' | 'service' | 'general';
+  iconType?: SuggestionIconType;
 }

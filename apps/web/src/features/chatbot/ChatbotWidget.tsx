@@ -1,17 +1,60 @@
 import { useEffect, useRef, useState } from 'react';
-import { Bot, ChatBubble, Close, Copy, RotateCcw, Send, Sparkles } from '../../components/Icons';
-import type { ChatMessage } from './chatbot-types';
+import { BotAvatar, botAvatarTypes } from 'bot-avatars';
+import type { BotAvatarType } from 'bot-avatars';
+import {
+  Banknote,
+  Building,
+  ChatBubble,
+  Close,
+  Copy,
+  GraduationCap,
+  HeartPulse,
+  HelpCircle,
+  Laptop,
+  RotateCcw,
+  School,
+  Send,
+} from '../../components/Icons';
+import { useTheme } from '../../lib/theme';
+import type { ChatMessage, QuickSuggestion } from './chatbot-types';
 import { getEffectiveApiKey, sendChatMessage } from './chatbot-service';
 import { QUICK_SUGGESTIONS, generateFollowUpSuggestions } from './chatbot-knowledge';
 import { ChatMarkdown } from './ChatMarkdown';
 import './chatbot.css';
 
-const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v1';
+const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v2';
+
+function cleanEmojis(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '')
+    .replace(/[ ]{2,}/g, ' ');
+}
+
+function SuggestionIcon({ type }: { type?: QuickSuggestion['iconType'] }) {
+  const iconClass = 'h-3.5 w-3.5 shrink-0';
+  switch (type) {
+    case 'school':
+      return <School className={`${iconClass} text-indigo-500`} />;
+    case 'graduation':
+      return <GraduationCap className={`${iconClass} text-blue-500`} />;
+    case 'tuition':
+      return <Banknote className={`${iconClass} text-amber-500`} />;
+    case 'tech':
+      return <Laptop className={`${iconClass} text-sky-500`} />;
+    case 'medical':
+      return <HeartPulse className={`${iconClass} text-rose-500`} />;
+    case 'building':
+      return <Building className={`${iconClass} text-emerald-500`} />;
+    default:
+      return <ChatBubble className={`${iconClass} text-slate-400`} />;
+  }
+}
 
 const INITIAL_BOT_MESSAGE: ChatMessage = {
   id: 'msg-welcome',
   role: 'assistant',
-  content: `Xin chào! Tôi là **Trợ lý AI HTSV - DNC** ✨\n\nTôi sẵn sàng hỗ trợ bạn như một AI đa năng thông minh (tương tự **ChatGPT** & **Gemini**):\n* 🎓 **Đại học Nam Cần Thơ (DNC):** 86 ngành đào tạo, 4 phương thức xét tuyển, học phí ổn định, Ký túc xá & Bệnh viện DNC...\n* 🏛️ **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, tra cứu lịch học & học phí, Confession...\n* 💻 **Lập trình & CNTT:** Giải thích công nghệ, viết code, sửa lỗi, lộ trình Web, Python, AI...\n* 📚 **Học tập & Nghiên cứu:** Viết luận, giải bài tập, phương pháp học đại học...\n\nBạn có thể gõ câu hỏi bất kỳ hoặc chọn gợi ý bên dưới nhé!`,
+  content: `Xin chào bạn! Tôi là **Tư vấn & Hỗ trợ Sinh viên DNC**.\n\nTôi sẵn sàng đồng hành và giải đáp các thông tin học vụ, đời sống cho bạn:\n* **Đại học Nam Cần Thơ (DNC):** 86 ngành đào tạo, 4 phương thức xét tuyển, học phí ổn định, Ký túc xá & Bệnh viện DNC...\n* **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, tra cứu lịch học & học phí, Confession...\n* **Học tập & CNTT:** Giải thích công nghệ, hỗ trợ code, phương pháp học tập đại học...\n* **Quy chế & Chế độ chính sách:** Học bổng, rèn luyện, vay vốn ngân hàng, BHYT sinh viên...\n\nBạn có thể gửi câu hỏi hoặc chọn các chủ đề gợi ý bên dưới nhé!`,
   timestamp: 0,
   isMock: true,
   followUps: [
@@ -47,10 +90,21 @@ function createMessage(
 
 function getInitialMessages(): ChatMessage[] {
   try {
+    localStorage.removeItem('htsv_chatbot_history_v1');
     const saved = localStorage.getItem(STORAGE_CHAT_HISTORY);
     if (saved) {
       const parsed = JSON.parse(saved) as ChatMessage[];
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((m) => {
+          if (m.id === 'msg-welcome') {
+            return { ...INITIAL_BOT_MESSAGE, timestamp: m.timestamp };
+          }
+          return {
+            ...m,
+            content: cleanEmojis(m.content),
+          };
+        });
+      }
     }
   } catch {
     // ignore parse error
@@ -59,7 +113,9 @@ function getInitialMessages(): ChatMessage[] {
 }
 
 export function ChatbotWidget() {
+  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const [avatarType, setAvatarType] = useState<BotAvatarType>('clover');
   const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialMessages());
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -117,6 +173,12 @@ export function ChatbotWidget() {
   }, [isOpen]);
 
   const hasApiKey = Boolean(getEffectiveApiKey());
+  const avatarState = isLoading || isStreaming ? 'working' : 'default';
+
+  const handleChangeAvatar = () => {
+    const otherSkins = botAvatarTypes.filter((type) => type !== avatarType);
+    setAvatarType(otherSkins[Math.floor(Math.random() * otherSkins.length)] ?? 'clover');
+  };
 
   const handleSendMessage = async (userText: string) => {
     const text = userText.trim();
@@ -190,7 +252,7 @@ export function ChatbotWidget() {
       const errorMsg = err instanceof Error ? err.message : 'Đã có lỗi xảy ra khi kết nối tới trợ lý AI.';
       const errorMessage = createMessage(
         'assistant',
-        `⚠️ **Lỗi:** ${errorMsg}\n\nVui lòng thử lại sau giây lát hoặc liên hệ ban quản trị.`,
+        `**Lỗi:** ${errorMsg}\n\nVui lòng thử lại sau giây lát hoặc liên hệ ban quản trị.`,
         { status: 'error' }
       );
       setMessages((prev) => [...prev, errorMessage]);
@@ -228,7 +290,8 @@ export function ChatbotWidget() {
 
   // Render markdown with rich styling like ChatGPT/Gemini
   const renderMessageContent = (content: string, isUser: boolean) => {
-    return <ChatMarkdown content={content} isUser={isUser} />;
+    const text = isUser ? content : cleanEmojis(content);
+    return <ChatMarkdown content={text} isUser={isUser} />;
   };
 
   return (
@@ -242,10 +305,10 @@ export function ChatbotWidget() {
           aria-expanded={false}
           aria-controls="htsv-chat-panel"
           className="htsv-chat-trigger"
-          aria-label="Mở Trợ lý Ảo HTSV"
+          aria-label="Mở Tư vấn Sinh viên HTSV"
         >
-          <ChatBubble className="h-6 w-6" />
-          <span className="htsv-chat-trigger-tooltip">Trợ lý Sinh viên HTSV</span>
+          <BotAvatar type={avatarType} state={avatarState} size="100%" theme={theme} aria-hidden="true" />
+          <span className="htsv-chat-trigger-tooltip">Tư vấn Sinh viên HTSV</span>
         </button>
       )}
 
@@ -262,19 +325,31 @@ export function ChatbotWidget() {
           {/* Header */}
           <div className="htsv-chat-header flex items-center justify-between gap-2 px-4 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
-              <div className="htsv-chat-avatar">
-                <Bot className="h-5 w-5" />
-              </div>
+              <button
+                type="button"
+                className="htsv-chat-avatar"
+                onClick={handleChangeAvatar}
+                title="Đổi skin ngẫu nhiên"
+                aria-label="Đổi skin chatbot ngẫu nhiên"
+              >
+                <BotAvatar
+                  type={avatarType}
+                  state={avatarState}
+                  size="100%"
+                  theme={theme}
+                  aria-hidden="true"
+                />
+              </button>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="htsv-chat-title text-sm font-bold">
-                    Trợ lý Sinh viên HTSV
+                    Tư vấn Sinh viên HTSV
                   </h3>
-                  <Sparkles className="htsv-chat-tag h-3.5 w-3.5 shrink-0" />
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs" title="Đang trực tuyến" aria-label="Đang trực tuyến" />
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="htsv-chat-subtitle text-[11px] font-medium">
-                    {hasApiKey ? 'AI Trực tuyến' : 'Cơ sở dữ liệu mẫu'}
+                    {hasApiKey ? 'Hỗ trợ trực tuyến 24/7' : 'Giải đáp thông tin sinh viên'}
                   </span>
                 </div>
               </div>
@@ -360,9 +435,9 @@ export function ChatbotWidget() {
                   {/* Follow-up Prompt Chips (chỉ hiển thị ở câu trả lời mới nhất khi đã gõ xong) */}
                   {!isUser && !msg.isStreaming && !isLoading && isLastMessage && msg.followUps && msg.followUps.length > 0 && (
                     <div className="htsv-followup-wrapper mt-2.5 flex flex-col gap-1.5 w-full max-w-[85%]">
-                      <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                        <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                        <span>Gợi ý câu hỏi tiếp theo:</span>
+                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                        <HelpCircle className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                        <span>Câu hỏi thường gặp liên quan:</span>
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {msg.followUps.map((chip, idx) => (
@@ -373,7 +448,7 @@ export function ChatbotWidget() {
                             onClick={() => handleSendMessage(chip)}
                             className="htsv-followup-chip"
                           >
-                            <span>💬</span>
+                            <ChatBubble className="h-3 w-3 shrink-0 text-emerald-600 dark:text-emerald-400" />
                             <span>{chip}</span>
                           </button>
                         ))}
@@ -392,7 +467,7 @@ export function ChatbotWidget() {
                   <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.15s]" />
                   <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500" />
                   <span className="htsv-chat-subtitle ml-2 text-xs">
-                    Trợ lý đang suy nghĩ...
+                    Đang tìm thông tin hỗ trợ...
                   </span>
                 </div>
               </div>
@@ -404,7 +479,7 @@ export function ChatbotWidget() {
           {messages.length <= 1 && !isLoading && !isStreaming && (
             <div className="htsv-chat-suggestions p-3">
               <p className="htsv-chat-subtitle mb-2 text-[11px] font-semibold">
-                Gợi ý câu hỏi phổ biến:
+                Chủ đề hỗ trợ nhanh:
               </p>
               <div className="flex flex-wrap gap-2">
                 {QUICK_SUGGESTIONS.map((q) => (
@@ -412,9 +487,10 @@ export function ChatbotWidget() {
                     key={q.id}
                     type="button"
                     onClick={() => handleSendMessage(q.prompt)}
-                    className="htsv-chat-chip rounded-xl px-3 py-1.5 text-left text-[11px] font-medium"
+                    className="htsv-chat-chip flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-left text-[11px] font-medium"
                   >
-                    {q.label}
+                    <SuggestionIcon type={q.iconType} />
+                    <span>{q.label}</span>
                   </button>
                 ))}
               </div>

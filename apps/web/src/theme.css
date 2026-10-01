@@ -380,7 +380,7 @@
       border-color: rgba(255, 255, 255, 0.08);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
     }
-    .glass-content, .glass-drawer, .student-post, .student-faq-list, .student-search-results, .table-scroll { background: #24282e; border-color: #40464f; }
+    .glass-drawer, .student-faq-list, .student-search-results, .table-scroll { background: #24282e; border-color: #40464f; }
     .glass-modal::backdrop { background: #00000080; }
     .glass-hover:hover, .student-service:hover { box-shadow: 0 10px 24px #0000001f, inset 0 1px 0 #ffffff26; border-color: #657180; }
     .form-input, .student-portal .form-input { background: #1c2025; color: var(--ink); border-color: #5a6471; }
@@ -420,7 +420,6 @@
     .student-text-link, .student-faq[open] summary, .search-result svg { color: #c0d1e9; }
     .student-search, .student-search-compact { background: #1d2229e8; border-color: #5c6878; box-shadow: inset 0 1px 0 #ffffff0c; }
     .student-search:focus-within { border-color: #b7c9e5; box-shadow: 0 0 0 3px #b7c9e51f; }
-    .student-service { background: linear-gradient(135deg, #30353deb, #23272ee0); border-color: #ffffff1f; box-shadow: var(--glass-shadow); }
     .student-service-icon { border-color: #ffffff17; box-shadow: inset 0 1px 0 #ffffff17; }
     .tone-blue { color: var(--accent-text); background: var(--accent-soft); }
     .tone-green { color: #b1dbc9; background: #21342e; }
@@ -434,7 +433,6 @@
     .student-footer-list li svg { color: #a9c3f0; }
     .student-footer-map { border-color: #3d444f; background: #1c2025; }
     .student-faq > p { color: #c0c9d5; }
-    .student-post:hover { border-color: #6a7a90; }
     .schedule-day { background: #24282e; border-color: #45505d; box-shadow: inset 0 1px 0 #ffffff12; }
     .schedule-date { background: #303640; border-color: #526070; }
     .schedule-today .schedule-date { background: #39495e; color: #e6eefb; }
@@ -501,7 +499,7 @@
     .theme-toggle { background: #e1e5e9; backdrop-filter: none; -webkit-backdrop-filter: none; }
     :root[data-theme="dark"] .theme-toggle { background: #30363e; }
     :root[data-theme="dark"] :is(.student-utilities-pill, .liquid-glass-btn) { background: #e2e8f0; color: #000; }
-    :root[data-theme="dark"] :is(.liquid-glass-card, .liquid-glass-header, .liquid-glass-navbar, .student-service, .student-search, .scroll-to-top) { background: #282d34; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    :root[data-theme="dark"] :is(.liquid-glass-header, .liquid-glass-navbar, .student-search, .scroll-to-top) { background: #282d34; backdrop-filter: none; -webkit-backdrop-filter: none; }
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .student-utilities-trigger, .student-utilities-pill, .liquid-glass-btn { background: #334155; }
@@ -509,7 +507,7 @@
     .theme-toggle { background: #e1e5e9; }
     :root[data-theme="dark"] .theme-toggle { background: #30363e; }
     :root[data-theme="dark"] :is(.student-utilities-pill, .liquid-glass-btn) { background: #e2e8f0; color: #000; }
-    :root[data-theme="dark"] :is(.liquid-glass-card, .liquid-glass-header, .liquid-glass-navbar, .student-service, .student-search, .scroll-to-top) { background: #282d34; }
+    :root[data-theme="dark"] :is(.liquid-glass-header, .liquid-glass-navbar, .student-search, .scroll-to-top) { background: #282d34; }
   }
 }
 

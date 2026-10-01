@@ -13,6 +13,7 @@
     "@hookform/resolvers": "^5.9.1",
     "@tanstack/react-query": "^5.102.3",
     "axios": "^1.19.0",
+    "bot-avatars": "^0.1.2",
     "framer-motion": "^13.1.1",
     "postprocessing": "^6.39.5",
     "react": "^19.2.8",

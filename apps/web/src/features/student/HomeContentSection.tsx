@@ -13,7 +13,7 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
     {
       id: 1,
       tag: 'Học bổng',
-      tagColor: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
+      tagColor: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-400/30',
       title: 'Thông báo xét cấp Học bổng Khuyến khích học tập & Tài năng DNC năm học 2025 - 2026',
       date: '30/09/2026',
       unit: 'Phòng Đào tạo & Quản lý Khoa học',
@@ -23,7 +23,7 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
     {
       id: 2,
       tag: 'Đào tạo & Khảo thí',
-      tagColor: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800',
+      tagColor: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-400/30',
       title: 'Kế hoạch thi kết thúc học phần & Quy chế phòng thi tín chỉ học kỳ mới',
       date: '28/09/2026',
       unit: 'Phòng Khảo thí & Đảm bảo Chất lượng',
@@ -33,7 +33,7 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
     {
       id: 3,
       tag: 'Sự kiện & Doanh nghiệp',
-      tagColor: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800',
+      tagColor: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-400/30',
       title: 'Ngày hội Việc làm & Kết nối Doanh nghiệp tại Showroom Ô tô Nam Cần Thơ DNC',
       date: '25/09/2026',
       unit: 'Trung tâm Hướng nghiệp & Việc làm',
@@ -43,7 +43,7 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
     {
       id: 4,
       tag: 'Đời sống KTX',
-      tagColor: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800',
+      tagColor: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/15 dark:text-purple-300 dark:border-purple-400/30',
       title: 'Thông báo tiếp nhận đăng ký lưu trú Ký túc xá sinh viên phòng máy lạnh tiêu chuẩn',
       date: '22/09/2026',
       unit: 'Ban Quản lý Ký túc xá DNC',
@@ -53,12 +53,12 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
   ];
 
   return (
-    <div id="home-content-section" className="relative z-10 w-full bg-slate-50/90 dark:bg-[#161a20] scroll-mt-20 pt-16 pb-24 md:pb-16 transition-colors duration-200 border-t border-slate-200/80 dark:border-slate-800">
+    <div id="home-content-section" className="relative z-10 w-full bg-slate-50/90 dark:bg-[#16181c] scroll-mt-20 pt-16 pb-24 md:pb-16 transition-colors duration-200 border-t border-slate-200/80 dark:border-white/10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-16">
         
         {/* ── Block 1: Thông báo mới nhất từ Nhà trường ── */}
         <section aria-labelledby="announcements-heading" className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800 pb-5">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200/80 dark:border-white/10 pb-5">
             <div>
               <div className="flex items-center gap-2 text-xs font-bold tracking-widest text-blue-700 dark:text-blue-400 uppercase">
                 <Bell className="h-4 w-4" />
@@ -83,26 +83,26 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
             {announcements.map((item) => (
               <article
                 key={item.id}
-                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-200 hover:border-blue-300 hover:shadow-md dark:border-slate-800 dark:bg-[#1f252e] dark:hover:border-blue-600/50"
+                className="liquid-glass-card glass-hover group relative flex flex-col justify-between p-6 transition-all duration-200"
               >
                 <div>
                   <div className="flex items-center justify-between gap-3 text-xs mb-3">
                     <span className={`rounded-full border px-2.5 py-0.5 font-medium ${item.tagColor}`}>
                       {item.tag}
                     </span>
-                    <time className="text-slate-400 dark:text-slate-500 font-mono">{item.date}</time>
+                    <time className="text-slate-500 font-mono">{item.date}</time>
                   </div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                     {item.title}
                   </h3>
-                  <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  <p className="mt-2.5 text-xs text-slate-500 font-medium">
                     Ban hành: {item.unit}
                   </p>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300 line-clamp-2">
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600 line-clamp-2">
                     {item.summary}
                   </p>
                 </div>
-                <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div className="mt-5 pt-4 border-t border-slate-100 dark:border-white/10 flex items-center justify-between">
                   <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:underline inline-flex items-center gap-1.5">
                     Chi tiết thông báo
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
@@ -114,13 +114,13 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
         </section>
 
         {/* ── Block 2: Tiêu điểm Diễn đàn Confession ── */}
-        <section aria-label="Tiêu điểm diễn đàn sinh viên" className="rounded-3xl border border-slate-200/80 bg-white/70 p-6 sm:p-8 backdrop-blur-sm shadow-sm dark:border-slate-800 dark:bg-[#1a2028]">
+        <section aria-label="Tiêu điểm diễn đàn sinh viên" className="rounded-3xl border border-slate-200/80 bg-white/70 p-6 sm:p-8 backdrop-blur-sm shadow-sm dark:border-white/10 dark:bg-[#1a2028]">
           <FeaturedPosts />
         </section>
 
         {/* ── Block 3: Phím tắt Dịch vụ Sinh viên Nhanh ── */}
         <section aria-labelledby="services-hub-heading" className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800 pb-5">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200/80 dark:border-white/10 pb-5">
             <div>
               <div className="flex items-center gap-2 text-xs font-bold tracking-widest text-blue-700 dark:text-blue-400 uppercase">
                 <Sparkles className="h-4 w-4" />
@@ -144,13 +144,13 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
             <button
               type="button"
               onClick={() => openRequest('Xin giấy xác nhận sinh viên')}
-              className="group flex flex-col items-start p-5 rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-[#1f252e] hover:border-blue-300 dark:hover:border-blue-600/50 hover:shadow-md transition-all text-left"
+              className="liquid-glass-card glass-hover group flex flex-col items-start p-5 transition-all text-left"
             >
-              <div className="p-3 rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform">
+              <div className="p-3 rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform">
                 <FileText className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Giấy tờ sinh viên</h3>
-              <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">Giấy tờ sinh viên</h3>
+              <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
                 Xin giấy xác nhận tạm hoãn NVQS, vay vốn ngân hàng chính sách, làm vé xe buýt.
               </p>
               <span className="mt-4 text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
@@ -162,13 +162,13 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
               href="https://qldt.nctu.edu.vn"
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-col items-start p-5 rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-[#1f252e] hover:border-blue-300 dark:hover:border-blue-600/50 hover:shadow-md transition-all text-left"
+              className="liquid-glass-card glass-hover group flex flex-col items-start p-5 transition-all text-left"
             >
-              <div className="p-3 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 mb-4 group-hover:scale-110 transition-transform">
+              <div className="p-3 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 mb-4 group-hover:scale-110 transition-transform">
                 <GraduationCap className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Cổng Đào tạo ERP</h3>
-              <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">Cổng Đào tạo ERP</h3>
+              <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
                 Tra cứu thời khóa biểu, lịch thi, điểm học phần và học phí chính thức tại qldt.nctu.edu.vn.
               </p>
               <span className="mt-4 text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:underline inline-flex items-center gap-1">
@@ -178,13 +178,13 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
 
             <Link
               to="/services"
-              className="group flex flex-col items-start p-5 rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-[#1f252e] hover:border-blue-300 dark:hover:border-blue-600/50 hover:shadow-md transition-all text-left"
+              className="liquid-glass-card glass-hover group flex flex-col items-start p-5 transition-all text-left"
             >
-              <div className="p-3 rounded-xl bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 mb-4 group-hover:scale-110 transition-transform">
+              <div className="p-3 rounded-xl bg-purple-50 text-purple-700 dark:bg-purple-500/15 dark:text-purple-300 mb-4 group-hover:scale-110 transition-transform">
                 <Home className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Ký túc xá & Đời sống</h3>
-              <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">Ký túc xá & Đời sống</h3>
+              <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
                 Nội quy KTX, đăng ký phòng ở máy lạnh, hỗ trợ tiện ích đời sống sinh viên.
               </p>
               <span className="mt-4 text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
@@ -195,13 +195,13 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
             <button
               type="button"
               onClick={() => openRequest('Hỗ trợ học vụ')}
-              className="group flex flex-col items-start p-5 rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-[#1f252e] hover:border-blue-300 dark:hover:border-blue-600/50 hover:shadow-md transition-all text-left"
+              className="liquid-glass-card glass-hover group flex flex-col items-start p-5 transition-all text-left"
             >
-              <div className="p-3 rounded-xl bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 mb-4 group-hover:scale-110 transition-transform">
+              <div className="p-3 rounded-xl bg-rose-50 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300 mb-4 group-hover:scale-110 transition-transform">
                 <Headset className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base">Hỗ trợ & Phản ánh</h3>
-              <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">Hỗ trợ & Phản ánh</h3>
+              <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
                 Giải đáp khúc mắc học đường, tư vấn học vụ và tiếp nhận ý kiến đóng góp.
               </p>
               <span className="mt-4 text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
@@ -212,7 +212,7 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
         </section>
 
         {/* ── Block 4: Chân trang Toàn diện & Pháp lý Đại học Nam Cần Thơ ── */}
-        <footer aria-label="Thông tin nhà trường và pháp lý" className="pt-12 border-t-2 border-slate-200/80 dark:border-slate-800">
+        <footer aria-label="Thông tin nhà trường và pháp lý" className="pt-12 border-t-2 border-slate-200/80 dark:border-white/10">
           <div className="grid gap-10 lg:grid-cols-4 sm:grid-cols-2">
             
             {/* Cột 1: Thông tin trường DNC */}
@@ -234,10 +234,10 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
                   </p>
                 </div>
               </div>
-              <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+              <p className="text-xs leading-relaxed text-slate-600">
                 Cổng Thông tin Hỗ trợ Sinh viên (HTSV) — Nền tảng số kết nối, hỗ trợ học vụ, tiện ích đời sống và diễn đàn giao lưu văn minh cho sinh viên DNC.
               </p>
-              <div className="text-xs font-medium text-slate-500 dark:text-slate-400 pt-2">
+              <div className="text-xs font-medium text-slate-500 pt-2">
                 <p>Khẩu hiệu hành động:</p>
                 <p className="text-blue-700 dark:text-blue-400 font-bold italic">
                   “Trí tuệ – Sáng tạo – Hội nhập – Phát triển”
@@ -250,25 +250,25 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
               <h4 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                 Trụ sở & Liên hệ
               </h4>
-              <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+              <ul className="space-y-2 text-xs text-slate-600">
                 <li className="flex items-start gap-2">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">📍 Địa chỉ:</span>
+                  <span className="font-semibold text-slate-700 shrink-0">📍 Địa chỉ:</span>
                   <span>Số 168, Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">📞 Tổng đài:</span>
+                  <span className="font-semibold text-slate-700 shrink-0">📞 Tổng đài:</span>
                   <span>(0292) 3 798 222 - (0292) 3 798 668</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">☎ Hotline HTSV:</span>
+                  <span className="font-semibold text-slate-700 shrink-0">☎ Hotline HTSV:</span>
                   <span className="font-bold text-blue-700 dark:text-blue-400">(0292) 3 798 168</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">✉ Email:</span>
+                  <span className="font-semibold text-slate-700 shrink-0">✉ Email:</span>
                   <span>dnc@nctu.edu.vn | htsv@nctu.edu.vn</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">🌐 Website:</span>
+                  <span className="font-semibold text-slate-700 shrink-0">🌐 Website:</span>
                   <a href="https://nctu.edu.vn" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">
                     https://nctu.edu.vn ↗
                   </a>
@@ -281,7 +281,7 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
               <h4 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                 Hệ sinh thái DNC
               </h4>
-              <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+              <ul className="space-y-2 text-xs text-slate-600">
                 <li>
                   <a href="https://qldt.nctu.edu.vn" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700 dark:hover:text-blue-400 transition-colors flex items-center gap-1.5">
                     <span>Cổng Đào tạo tín chỉ (qldt.nctu.edu.vn)</span>
@@ -309,7 +309,7 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
                 <Lock className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 <span>Chính sách & Bảo mật</span>
               </h4>
-              <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+              <ul className="space-y-2 text-xs text-slate-600">
                 <li>
                   <Link to="/faq#anonymous-safety" className="hover:text-blue-700 dark:hover:text-blue-400 transition-colors flex items-center gap-1.5">
                     <Shield className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
@@ -340,7 +340,7 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
           </div>
 
           {/* Dòng bản quyền đáy */}
-          <div className="mt-12 pt-6 border-t border-slate-200/60 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+          <div className="mt-12 pt-6 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
             <p>
               © 2026 Trường Đại học Nam Cần Thơ (Nam Can Tho University). Bản quyền thuộc về Cổng HTSV DNC.
             </p>

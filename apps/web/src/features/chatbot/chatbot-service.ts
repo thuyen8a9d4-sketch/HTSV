@@ -160,7 +160,7 @@ export async function sendChatMessage(
 
     const fallbackText = getMockResponse(prompt);
     const finalNotice = isRateLimit
-      ? `*(⚠️ Hệ thống vừa đạt ngưỡng giới hạn tạm thời từ Google AI, đã tự động kích hoạt bộ phản hồi nhanh để không làm gián đoạn trò chuyện)*\n\n${fallbackText}`
+      ? `*(Hệ thống vừa đạt ngưỡng giới hạn tạm thời từ máy chủ, đã kích hoạt bộ phản hồi nhanh để không làm gián đoạn trò chuyện)*\n\n${fallbackText}`
       : fallbackText;
 
     return {
