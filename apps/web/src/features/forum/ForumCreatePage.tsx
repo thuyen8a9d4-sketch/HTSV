@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GlassButton } from '../../components/GlassButton';
 import { GlassCard } from '../../components/GlassCard';
 import { ArrowLeft, FileText, Shield } from '../../components/Icons';
@@ -9,8 +9,12 @@ import { apiClient } from '../../lib/api-client';
 
 export function ForumCreatePage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [content, setContent] = useState('');
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const isAnonymous = searchParams.get('anonymous') === 'true';
+  const setIsAnonymous = (value: boolean) => {
+    setSearchParams((current) => { current.set('anonymous', String(value)); return current; }, { replace: true });
+  };
   const create = useMutation({
     mutationFn: () => apiClient.post('/forum/posts', { content, isAnonymous }),
     onSuccess: () => navigate('/forum'),

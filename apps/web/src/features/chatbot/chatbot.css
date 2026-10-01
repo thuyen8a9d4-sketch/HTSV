@@ -1,4 +1,4 @@
-﻿/* A single glass shell; opaque message surfaces preserve reading contrast. */
+/* A single glass shell; opaque message surfaces preserve reading contrast. */
 .chatbot-widget-container {
   --chat-glass: linear-gradient(135deg, #fffffff0, #edf5fcdf);
   --chat-solid: #f1f6fb;
@@ -24,13 +24,13 @@
 }
 .htsv-chat-window {
   position: fixed;
-  z-index: 45;
+  z-index: 55;
   right: 12px;
-  bottom: max(12px, env(safe-area-inset-bottom));
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
   width: calc(100% - 24px);
-  height: min(720px, calc(100dvh - 100px));
+  height: min(650px, calc(100dvh - 150px));
   overflow: hidden;
   border-radius: 26px;
   border: 1px solid var(--chat-specular);
@@ -40,7 +40,7 @@
   box-shadow: var(--chat-shadow);
   animation: chat-appear .22s var(--ease-out);
 }
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .htsv-chat-window { right: 32px; bottom: 32px; width: 420px; height: min(720px, calc(100dvh - 120px)); }
 }
 .htsv-chat-header, .htsv-chat-footer, .htsv-chat-suggestions { flex-shrink: 0; background: var(--chat-panel); }
@@ -71,9 +71,25 @@
 .htsv-chat-send-btn, .htsv-chat-trigger { background: var(--action-fill); color: #fff; border: 1px solid var(--action-border); box-shadow: var(--action-shadow); transition: transform .18s var(--ease-out), box-shadow .18s; }
 .htsv-chat-send-btn:hover:not(:disabled), .htsv-chat-trigger:hover { background: var(--action-hover); box-shadow: var(--action-hover-shadow); transform: translateY(-2px); }
 .htsv-chat-send-btn:disabled { opacity: .45; cursor: not-allowed; }
-.chatbot-widget-container :is(button, a):focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
-.htsv-chat-trigger { position: fixed; right: 24px; bottom: 24px; z-index: 40; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; }
-@media (min-width: 640px) { .htsv-chat-trigger { right: 32px; bottom: 32px; } }
+.htsv-chat-trigger {
+  position: fixed;
+  right: 16px;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+@media (min-width: 768px) {
+  .htsv-chat-trigger {
+    right: 32px;
+    bottom: 32px;
+    width: 56px;
+    height: 56px;
+  }
+}
 .htsv-chat-trigger-tooltip { position: absolute; right: calc(100% + 12px); white-space: nowrap; border-radius: 12px; padding: 8px 12px; font-size: 12px; color: var(--chat-ink); background: var(--chat-surface); border: 1px solid var(--chat-border); opacity: 0; pointer-events: none; }
 .htsv-chat-trigger:is(:hover, :focus-visible) .htsv-chat-trigger-tooltip { opacity: 1; }
 .htsv-chat-inline-code { color: var(--accent-text); background: var(--accent-soft); }

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GlassButton } from '../../components/GlassButton';
 import { httpErrorMessage } from '../../lib/http-error';
 import { FormField } from '../../components/FormField';
@@ -13,6 +13,9 @@ import type { LoginForm } from './schemas';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const next = searchParams.get('next');
+  const postDestination = next && ['/forum/new', '/forum/new?anonymous=true', '/forum/new?anonymous=false'].includes(next) ? next : null;
   const setSession = useAuthStore((s) => s.setSession);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -27,7 +30,7 @@ export function LoginPage() {
     try {
       const res = await apiClient.post('/auth/login', data);
       setSession(res.data.accessToken, res.data.user);
-      navigate(res.data.user.roles.includes('ADMIN') ? '/admin' : '/');
+      navigate(postDestination ?? (res.data.user.roles.includes('ADMIN') ? '/admin' : '/'));
     } catch (err: unknown) {
       setServerError(httpErrorMessage(err, 'Đăng nhập thất bại'));
     }
