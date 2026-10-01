@@ -9,7 +9,7 @@ import {
   Phone,
   Shield,
 } from '../components/Icons';
-import { primaryNav } from './portal-nav';
+import { studentNavigation as primaryNav } from '../features/student/student-navigation';
 
 const UNIVERSITY_ADDRESS = 'Số 168, Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ';
 const MAP_EMBED_SRC = `https://www.google.com/maps?q=${encodeURIComponent(UNIVERSITY_ADDRESS)}&output=embed`;
@@ -42,7 +42,13 @@ export function PortalFooter() {
       <div className="student-footer-grid">
         <div className="student-footer-col">
           <div className="student-footer-brand">
-            <img src="/dnc-logo.png" alt="DNC" className="student-footer-logo" width={36} height={27} />
+            <img
+              src={`${import.meta.env.BASE_URL}assets/logo-dnc-transparent.png`}
+              alt="DNC"
+              className="student-footer-logo"
+              width={36}
+              height={31}
+            />
             <div className="min-w-0">
               <p className="student-footer-title">ĐẠI HỌC NAM CẦN THƠ</p>
               <p className="student-footer-subtitle">NAM CAN THO UNIVERSITY · DNC</p>

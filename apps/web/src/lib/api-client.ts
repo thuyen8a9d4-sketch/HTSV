@@ -33,7 +33,14 @@ async function refreshAccessToken(): Promise<string | null> {
 }
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If response is HTML string (due to SPA fallback on static hosting when backend is not deployed), reject it
+    if (typeof response.data === 'string' && response.data.trim().toLowerCase().startsWith('<!doctype')) {
+      const error = new Error('API server returned HTML instead of JSON');
+      return Promise.reject(error);
+    }
+    return response;
+  },
   async (error) => {
     const original = error.config;
     if (error.response?.status === 401 && !original._retry) {

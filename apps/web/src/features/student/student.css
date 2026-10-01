@@ -32,6 +32,7 @@
   .student-search-compact { background: #f8fafcbf; box-shadow: inset 0 1px 0 white; }
   .student-search-compact input { min-height: 44px; font-size: 12px; }
   .student-search-results { position: absolute; top: calc(100% + 8px); left: 0; right: 0; padding: 8px; border-radius: 16px; border: 1px solid #dbe3ee; background: #fff; box-shadow: 0 15px 40px #0f172a21; max-height: min(400px, 55dvh); overflow: auto; }
+  .student-search-results-inline { position: static; margin-top: 4px; border: 0; border-top: 1px solid var(--color-slate-200); border-radius: 0 0 28px 28px; box-shadow: none; max-height: min(360px, 45dvh); }
   .search-result { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; min-height: 44px; padding: 10px 12px; border-radius: 9px; font-size: 12px; color: #334155; }
   .search-result svg { flex-shrink: 0; color: #2563eb; }
   .search-result:hover, .search-result:focus-visible { background: #eff6ff; }
@@ -63,13 +64,13 @@
   .student-faq > p { max-width: 900px; padding: 0 54px 22px; font-size: 13px; line-height: 1.9; color: #475569; }
   .student-post { display: block; min-width: 0; padding: 22px; background: white; border: 1px solid #e2e8f0; border-radius: 18px; transition: border-color .18s; }
   .student-post:hover { border-color: #93b5e4; }
-  .student-footer { max-width: 1600px; margin: 0 auto; padding: 36px 32px 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #475569; }
+  .student-footer { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; padding: 36px 32px 20px; border-top: 1px solid #e2e8f0; background: #f6f8fc; font-size: 12px; color: #475569; }
   .student-footer-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 0.9fr 1.1fr; gap: 24px; }
   .student-footer-map { position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px; border: 1px solid #e2e8f0; background: #eef2f7; }
   .student-footer-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
   .student-footer-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
   .student-footer-brand { display: flex; align-items: center; gap: 10px; }
-  .student-footer-logo { width: 36px; height: 27px; flex-shrink: 0; object-fit: contain; }
+  .student-footer-logo { width: 36px; height: 31px; flex-shrink: 0; object-fit: contain; }
   .student-footer-title { font-size: 13px; font-weight: 700; color: #1e293b; letter-spacing: -.01em; }
   .student-footer-subtitle { font-size: 10px; font-weight: 650; letter-spacing: .06em; color: #94a3b8; text-transform: uppercase; }
   .student-footer-text { line-height: 1.7; }
@@ -97,7 +98,7 @@
   }
   @media (max-width: 767px) {
     .student-header { height: 72px; padding: 0 16px; gap: 8px; }
-    .student-main { padding: 22px 16px 32px; }
+    .student-main { padding: 20px 16px calc(80px + env(safe-area-inset-bottom, 16px)); }
     .student-hero { padding: 24px 20px; border-radius: 20px; }
     .student-hero h1 { font-size: 27px; }
     .student-workspace { gap: 30px; }
@@ -106,7 +107,7 @@
     .student-service { padding: 16px 12px; }
     .student-faq summary { padding: 16px 12px; gap: 12px; }
     .student-faq > p { padding: 0 16px 20px; }
-    .student-footer { padding: 28px 16px 16px; }
+    .student-footer { padding: 24px 16px calc(84px + env(safe-area-inset-bottom, 16px)); }
     .student-footer-grid { grid-template-columns: 1fr; gap: 24px; }
   }
   @media (max-width: 1023px) and (min-width: 768px) {

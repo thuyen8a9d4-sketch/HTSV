@@ -193,3 +193,15 @@
 - Xác minh cuối: lint/build web PASS bằng pnpm; npm hệ thống thiếu `npm-cli.js`. Chrome kiểm tra 24 tổ hợp trang chủ/diễn đàn/đăng nhập/đăng ký, hai theme, màn hình 360/768/1280px; không tràn ngang hoặc lỗi JavaScript. Kiểm tra thêm màu nút modal, lưu theme và đồng bộ tab.
 - Các ảnh QA cũ trong tài liệu ghi nhận từng giai đoạn, không đại diện đầy đủ giao diện hiện tại. Script QA trong `apps/web/scripts` dùng đường dẫn runtime cục bộ và fixture; cần điều chỉnh đường dẫn khi chạy trên máy khác.
 - Phạm vi bàn giao: frontend và tài liệu liên quan; backend, API contract, database và dependencies được giữ nguyên.
+
+### ĐỒNG BỘ ĐIỀU HƯỚNG — HOÀN TẤT (30/09/2026)
+
+- [x] Dùng chung cấu hình `student-navigation.ts` cho menu desktop, mobile và tìm kiếm: Trang chủ, Diễn đàn, Tiện ích, Đời sống, Hỗ trợ, Hỏi đáp. Giữ thiết kế Liquid Glass và lựa chọn sáng/tối hiện có.
+- [x] Thay dấu cộng trên navbar bằng tìm kiếm. Hộp tìm kiếm hỗ trợ từ khóa có/không dấu, trang, dịch vụ, FAQ và KTX; có trạng thái không kết quả, điều hướng bàn phím, Escape và trả focus. Kết quả trong modal có vùng cuộn riêng.
+- [x] Đưa lựa chọn Đăng bài / Đăng bài ẩn danh vào nút cộng của diễn đàn. Giữ query `anonymous` qua luồng chuyển đến đăng nhập hiện có; không sửa xác thực backend.
+- [x] Tách Hỗ trợ thành ba lối vào: tạo yêu cầu mẫu, báo cáo mẫu, theo dõi yêu cầu. Hỏi đáp giữ trang riêng. Nêu rõ yêu cầu/báo cáo chỉ lưu trên trình duyệt, chưa gửi tới trường hoặc quản trị.
+- [x] Trang Đời sống thay nội dung giữ chỗ bằng thông tin định hướng KTX, danh sách điều cần hỏi và liên kết chính thức `https://nctu.edu.vn/ky-tuc-xa`, `https://nctu.edu.vn/trang-sinh-vien/tan-sinh-vien`; không giả lập đăng ký phòng thật.
+- [x] Chỉnh nội dung và đường dẫn gallery theo chức năng đang có; sửa hướng dẫn báo cáo trong FAQ cho đúng trạng thái mô phỏng. Giữ hình ảnh, hiệu ứng và nút tiện ích nổi hiện có.
+- [x] Lint web PASS; production build PASS (TypeScript + Vite). Build còn cảnh báo chunk JavaScript lớn hơn 500 kB, gói chính khoảng 1,35 MB; không thay dependency hoặc cấu hình build để che cảnh báo.
+- [x] Chrome QA dùng API fixture trong context riêng: 7 trang × 5 kích thước (360/768/1024/1280/1367px) × 2 theme, không tràn ngang/đè các cụm navbar hoặc lỗi JavaScript. Kiểm tra thêm menu tài khoản quản trị tại 360/768/1024/1280/1536px, tìm KTX bằng bàn phím, đóng và trả focus, không kết quả, chuyển từ tìm kiếm sang form, lưu/theo dõi yêu cầu mẫu, chọn loại báo cáo, hai chế độ đăng bài và FAQ deep link từ tiện ích nổi. Đã xem ảnh tìm kiếm sáng/tối trên mobile/desktop và Hỗ trợ tối; chưa xác minh Safari/iOS hoặc xử lý backend thật.
+- Phạm vi lần cập nhật này: frontend và tài liệu bàn giao. Các thay đổi dependency/lockfile có sẵn trong working tree không thuộc lần triển khai này. Chưa commit/push.

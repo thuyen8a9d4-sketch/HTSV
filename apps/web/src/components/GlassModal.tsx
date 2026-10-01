@@ -21,7 +21,7 @@ export function GlassModal({ open, onClose, title, drawer = false, children }: {
   }, [open]);
   return <dialog ref={ref} aria-labelledby={titleId} onKeyDown={(e) => {
     if (e.key !== 'Tab') return;
-    const controls = [...e.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]')].filter((el) => el.getClientRects().length > 0);
+    const controls = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]')).filter((el) => el.getClientRects().length > 0);
     const first = controls[0];
     const last = controls.at(-1);
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }

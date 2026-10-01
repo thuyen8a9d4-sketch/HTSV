@@ -13,6 +13,24 @@ export function getEffectiveApiKey(): string {
   return envKey.trim();
 }
 
+// Cache câu trả lời để tiết kiệm Quota/Token cho các câu hỏi trùng lặp hoặc gợi ý nhanh
+const RESPONSE_CACHE = new Map<string, string>();
+const MAX_CACHE_SIZE = 50;
+
+function getCachedResponse(prompt: string): string | undefined {
+  const key = prompt.trim().toLowerCase();
+  return RESPONSE_CACHE.get(key);
+}
+
+function setCachedResponse(prompt: string, answer: string): void {
+  const key = prompt.trim().toLowerCase();
+  if (RESPONSE_CACHE.size >= MAX_CACHE_SIZE) {
+    const firstKey = RESPONSE_CACHE.keys().next().value;
+    if (firstKey) RESPONSE_CACHE.delete(firstKey);
+  }
+  RESPONSE_CACHE.set(key, answer);
+}
+
 /**
  * Call Google Gemini REST API directly with automatic fallback
  */
@@ -22,22 +40,26 @@ async function callGeminiApi(
   messages: ChatMessage[],
   temperature: number
 ): Promise<string> {
-  let cleanModel = model.trim() || 'gemini-2.5-flash';
-  if (cleanModel === 'gemini-1.5-flash') {
-    cleanModel = 'gemini-2.5-flash';
-  }
+  const primaryModel = model.trim() || 'gemini-2.5-flash-lite';
 
   const makeRequest = async (targetModel: string) => {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
-    // Convert previous history to Gemini format (user vs model)
-    const historyContents = messages.slice(-10).map((msg) => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }],
-    }));
+    // Tối ưu hóa Context Window để tiết kiệm tối đa Token/Quota:
+    // Lấy 6 tin nhắn gần nhất thay vì toàn bộ lịch sử, cắt ngắn các phản hồi dài trước đó
+    const trimmedHistory = messages.slice(-6).map((msg) => {
+      let content = msg.content;
+      if (msg.role !== 'user' && content.length > 800) {
+        content = content.slice(0, 800) + '...';
+      }
+      return {
+        role: msg.role === 'user' ? 'user' : 'model',
+        parts: [{ text: content }],
+      };
+    });
 
     const payload = {
-      contents: historyContents,
+      contents: trimmedHistory,
       systemInstruction: {
         parts: [{ text: HTSV_SYSTEM_PROMPT }],
       },
@@ -53,17 +75,25 @@ async function callGeminiApi(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(25000), // 25-second timeout ensures completion
     });
   };
 
-  let response = await makeRequest(cleanModel);
-
-  // If model not found (e.g. older 1.5 model), auto-retry with gemini-2.5-flash or gemini-flash-latest
-  if (!response.ok && cleanModel !== 'gemini-2.5-flash') {
+  let response: Response;
+  try {
+    response = await makeRequest(primaryModel);
+  } catch (firstErr) {
+    console.warn(`Primary model ${primaryModel} failed, trying fallback model gemini-2.5-flash:`, firstErr);
     response = await makeRequest('gemini-2.5-flash');
   }
-  if (!response.ok && cleanModel !== 'gemini-flash-latest') {
-    response = await makeRequest('gemini-flash-latest');
+
+  // If primary model is busy (503/429/timeout), try fallback
+  if (!response.ok && primaryModel !== 'gemini-2.5-flash') {
+    try {
+      response = await makeRequest('gemini-2.5-flash');
+    } catch {
+      // ignore
+    }
   }
 
   if (!response.ok) {
@@ -73,7 +103,9 @@ async function callGeminiApi(
       throw new Error('API Key Google Gemini không hợp lệ. Vui lòng kiểm tra lại khóa của bạn.');
     }
     if (response.status === 429) {
-      throw new Error('Đã đạt giới hạn yêu cầu (Rate Limit). Vui lòng thử lại sau vài giây.');
+      const err = new Error('RATE_LIMIT_EXCEEDED');
+      err.name = 'RateLimitError';
+      throw err;
     }
     throw new Error(errorMsg);
   }
@@ -94,19 +126,46 @@ export async function sendChatMessage(
   history: ChatMessage[]
 ): Promise<{ text: string; isMock: boolean }> {
   const apiKey = getEffectiveApiKey();
+  const lastUserMessage = history.filter((m) => m.role === 'user').pop();
+  const prompt = lastUserMessage?.content || '';
 
-  // If no API key is set in .env.local, use local mock assistant
+  // 1. Kiểm tra Cache trước: nếu câu hỏi này đã từng được trả lời, trả về ngay lập tức (tiết kiệm 100% quota)
+  const cachedAnswer = getCachedResponse(prompt);
+  if (cachedAnswer) {
+    return { text: cachedAnswer, isMock: false };
+  }
+
+  // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ
   if (!apiKey) {
-    await new Promise((resolve) => setTimeout(resolve, 600)); // Natural typing delay
-    const lastUserMessage = history.filter((m) => m.role === 'user').pop();
-    const prompt = lastUserMessage?.content || '';
+    await new Promise((resolve) => setTimeout(resolve, 500));
     return {
       text: getMockResponse(prompt),
       isMock: true,
     };
   }
 
-  // Use Gemini with gemini-2.5-flash
-  const text = await callGeminiApi(apiKey, 'gemini-2.5-flash', history, 0.7);
-  return { text, isMock: false };
+  // 3. Gọi Gemini API trực tuyến
+  try {
+    const text = await callGeminiApi(apiKey, 'gemini-2.5-flash-lite', history, 0.7);
+    // Lưu vào Cache để các lần hỏi sau không tốn thêm token
+    setCachedResponse(prompt, text);
+    return { text, isMock: false };
+  } catch (err: unknown) {
+    console.warn('Gemini API call failed, falling back to smart local knowledge base:', err);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    
+    // Nếu gặp lỗi giới hạn Quota (429 Rate Limit), chuyển mượt sang bộ dữ liệu nội bộ
+    const isRateLimit = (err instanceof Error && err.message === 'RATE_LIMIT_EXCEEDED') ||
+      (typeof err === 'object' && err !== null && 'name' in err && (err as { name: string }).name === 'RateLimitError');
+
+    const fallbackText = getMockResponse(prompt);
+    const finalNotice = isRateLimit
+      ? `*(⚠️ Hệ thống vừa đạt ngưỡng giới hạn tạm thời từ Google AI, đã tự động kích hoạt bộ phản hồi nhanh để không làm gián đoạn trò chuyện)*\n\n${fallbackText}`
+      : fallbackText;
+
+    return {
+      text: finalNotice,
+      isMock: true,
+    };
+  }
 }

@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar } from '../components/Avatar';
 import { GlassButton } from '../components/GlassButton';
 import { GlassModal } from '../components/GlassModal';
 import { ScrollToTop } from '../components/ScrollToTop';
 import { ThemeToggle } from '../components/ThemeToggle';
-import { GraduationCap, Logout, Menu, Plus, Shield } from '../components/Icons';
+import { NavbarActionMenu } from '../components/NavbarActionMenu';
+import { Bell, Search, User, Logout, Menu, Plus, Shield } from '../components/Icons';
+import { StudentSearch } from '../features/student/StudentSearch';
+import { studentNavigation as primaryNav } from '../features/student/student-navigation';
 import { StudentIcon } from '../features/student/StudentIcon';
 import { SubmitRequestModal } from '../features/student/SubmitRequestModal';
 import { requestOwner, useStudentStore } from '../features/student/student-store';
@@ -13,13 +16,16 @@ import type { StudentPortalContext, StudentService } from '../features/student/s
 import { apiClient } from '../lib/api-client';
 import { useAuthStore } from '../lib/auth-store';
 import { PortalFooter } from './PortalFooter';
-import { primaryNav } from './portal-nav';
 
 export function PortalLayout() {
   const user = useAuthStore((s) => s.user);
   const clearSession = useAuthStore((s) => s.clearSession);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
+  const [actionMenu, setActionMenu] = useState<'auth' | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [requestType, setRequestType] = useState<string | null>(null);
   const [service, setService] = useState<StudentService | null>(null);
@@ -52,7 +58,7 @@ export function PortalLayout() {
     navigate('/login');
   };
 
-  const openRequest = (type = 'Báo cáo vi phạm nội dung') => {
+  const openRequest = (type = 'Hỗ trợ học vụ') => {
     setService(null);
     setRequestType(type);
   };
@@ -74,7 +80,7 @@ export function PortalLayout() {
       <a href="#main-content" className="skip-link">Đến nội dung chính</a>
 
       {/* Liquid Glass Navigation Bar */}
-      <header className="liquid-glass-nav-container">
+      <header className={`liquid-glass-nav-container ${isHome ? 'is-home-header' : ''}`}>
         <div className="liquid-glass-navbar">
           {/* Left: Brand & Mobile Toggle */}
           <div className="flex items-center gap-1 sm:gap-3">
@@ -87,17 +93,11 @@ export function PortalLayout() {
             >
               <Menu className="h-5 w-5" />
             </GlassButton>
-            <Link to="/" className="focus-ring flex items-center gap-2.5 rounded-xl" aria-label="HTSV — Trang chủ">
-              <span className="brand-mark">
-                <GraduationCap className="h-5 w-5" />
-              </span>
-              <span className="hidden min-w-0 sm:block lg:hidden 2xl:block">
-                <span className="block text-lg font-bold tracking-tight leading-tight">
-                  HTSV<span className="text-blue-600">.</span>
-                </span>
-                <span className="hidden text-[9px] font-semibold tracking-wider text-slate-500 sm:block uppercase">
-                  Cộng đồng & Hỗ trợ sinh viên
-                </span>
+            <Link to="/" className="portal-wordmark focus-ring" aria-label="HTSV — Trang chủ">
+              <img src={`${import.meta.env.BASE_URL}assets/logo-dnc-transparent.png`} alt="Đại học Nam Cần Thơ" width={118} height={103} className="portal-wordmark-logo" />
+              <span className="portal-wordmark-copy">
+                <span className="portal-wordmark-name">HTSV</span>
+                <span className="portal-wordmark-caption">Cổng sinh viên</span>
               </span>
             </Link>
           </div>
@@ -126,28 +126,25 @@ export function PortalLayout() {
             )}
           </nav>
 
-          {/* Right: Actions, Post CTA, Notifications, Profile */}
+          {/* Right: Theme, Search, Notifications, Profile */}
           <div className="flex shrink-0 items-center gap-1 sm:gap-3">
             <ThemeToggle />
-            <Link
-              to={user ? '/forum/new' : '/login'}
-              className="btn-nav-action-icon"
-              title="Đăng bài mới"
-              aria-label="Đăng bài mới"
-            >
-              <Plus className="h-5 w-5" />
-            </Link>
+            <button type="button" className="btn-nav-action-icon" aria-label="Tìm kiếm" title="Tìm kiếm"
+              aria-haspopup="dialog" aria-expanded={searchOpen}
+              onClick={() => { setActionMenu(null); setSearchOpen(true); }}>
+              <Search className="h-5 w-5" />
+            </button>
 
             <Link
               to="/requests"
-              className="student-header-icon relative"
-              aria-label={readyCount ? `${readyCount} hồ sơ cần xem` : 'Yêu cầu & phản ánh'}
-              title="Theo dõi yêu cầu & phản ánh"
+              className="student-header-icon notification-bell focus-ring"
+              aria-label={readyCount ? `Thông báo: ${readyCount} hồ sơ mẫu đã hoàn tất` : 'Thông báo: chưa có hồ sơ mẫu hoàn tất'}
+              title={readyCount ? `${readyCount} hồ sơ mẫu đã hoàn tất — xem yêu cầu` : 'Thông báo — xem yêu cầu'}
             >
-              <StudentIcon name="clipboard" className="h-5 w-5" />
+              <Bell className="h-5 w-5" />
               {readyCount > 0 && (
-                <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white shadow-xs">
-                  {Math.min(readyCount, 9)}
+                <span className="notification-badge" aria-hidden="true">
+                  {readyCount > 99 ? '99+' : readyCount}
                 </span>
               )}
             </Link>
@@ -219,11 +216,14 @@ export function PortalLayout() {
                 </div>
               </details>
             ) : (
-              <div className="flex items-center gap-1.5">
-                <Link to="/login" className="btn-nav-login">
-                  Đăng nhập
-                </Link>
-              </div>
+              <NavbarActionMenu label="Đăng nhập" className="btn-nav-login"
+                open={actionMenu === 'auth'} onOpenChange={(open) => setActionMenu(open ? 'auth' : null)}
+                items={[
+                  { label: 'Đăng nhập', to: '/login', icon: <User className="h-5 w-5" /> },
+                  { label: 'Đăng ký', to: '/register', icon: <Plus className="h-5 w-5" /> },
+                ]}>
+                Đăng nhập
+              </NavbarActionMenu>
             )}
           </div>
         </div>
@@ -256,17 +256,6 @@ export function PortalLayout() {
           )}
         </nav>
 
-        <div className="mt-6 border-t border-slate-200/80 pt-4">
-          <Link
-            to={user ? '/forum/new' : '/login'}
-            onClick={() => setMenuOpen(false)}
-            className="btn-nav-action w-full justify-center text-sm"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Đăng Confession mới</span>
-          </Link>
-        </div>
-
         {!user && (
           <div className="mt-4 flex flex-col gap-2">
             <Link
@@ -282,15 +271,39 @@ export function PortalLayout() {
 
       {/* Main Content Area */}
       <div className="min-w-0 w-full">
-        <main id="main-content" tabIndex={-1} className="student-main">
+        <main id="main-content" tabIndex={-1} className={isHome ? 'min-h-screen' : 'student-main'}>
           <Outlet context={context} />
         </main>
-        <PortalFooter />
+        {!isHome && <PortalFooter />}
+
+        {/* ── Mobile Bottom Navigation ── */}
+        <nav className="bottom-nav md:hidden" aria-label="Điều hướng nhanh">
+          {[
+            { to: '/', label: 'Trang chủ', icon: 'home' as const, end: true },
+            { to: '/forum', label: 'Diễn đàn', icon: 'people' as const, end: false },
+            { to: '/services', label: 'Tiện ích', icon: 'clipboard' as const, end: false },
+            { to: '/support', label: 'Hồ sơ', icon: 'headset' as const, end: false },
+          ].map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}
+            >
+              <StudentIcon name={item.icon} className="h-5 w-5" />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
       </div>
 
       <ScrollToTop />
 
       {/* Modal Actions */}
+      <GlassModal open={searchOpen} onClose={() => setSearchOpen(false)} title="Tìm kiếm">
+        {searchOpen && <StudentSearch inlineResults autoFocus onSelect={() => setSearchOpen(false)} onService={openService} />}
+        <p className="mt-4 text-xs text-slate-600">Tìm trang, tiện ích và câu hỏi thường gặp trên HTSV.</p>
+      </GlassModal>
       {requestType !== null && (
         <SubmitRequestModal
           key={`${user?.id ?? 'guest'}-${requestType}`}
