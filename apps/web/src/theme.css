@@ -214,7 +214,12 @@
     .tone-green { color: #b1dbc9; background: #21342e; }
     .tone-amber { color: #dfc99e; background: #352f25; }
     .tone-rose { color: #e0adb9; background: #3b292e; }
-    .student-faq, .student-footer { border-color: #3d444f; }
+    .student-faq, .student-footer, .student-footer-bottom { border-color: #3d444f; }
+    .student-footer-title, .student-footer-heading { color: #e5ebf4; }
+    .student-footer-subtitle { color: #7e8a9b; }
+    .student-footer-bottom { color: #8792a1; }
+    .student-footer-list li svg { color: #a9c3f0; }
+    .student-footer-map { border-color: #3d444f; background: #1c2025; }
     .student-faq > p { color: #c0c9d5; }
     .student-post:hover { border-color: #6a7a90; }
     .schedule-day { background: #24282e; border-color: #45505d; box-shadow: inset 0 1px 0 #ffffff12; }

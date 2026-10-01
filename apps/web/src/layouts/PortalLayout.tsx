@@ -12,13 +12,8 @@ import { requestOwner, useStudentStore } from '../features/student/student-store
 import type { StudentPortalContext, StudentService } from '../features/student/student-types';
 import { apiClient } from '../lib/api-client';
 import { useAuthStore } from '../lib/auth-store';
-
-const primaryNav = [
-  { label: 'Trang chủ', path: '/', icon: 'home' as const, end: true },
-  { label: 'Diễn đàn Confession', path: '/forum', icon: 'people' as const, end: false },
-  { label: 'Hỗ trợ & Báo cáo', path: '/support', icon: 'headset' as const, end: false },
-  { label: 'Hỏi đáp & Quy chế', path: '/faq', icon: 'bulb' as const, end: false },
-];
+import { PortalFooter } from './PortalFooter';
+import { primaryNav } from './portal-nav';
 
 export function PortalLayout() {
   const user = useAuthStore((s) => s.user);
@@ -290,13 +285,7 @@ export function PortalLayout() {
         <main id="main-content" tabIndex={-1} className="student-main">
           <Outlet context={context} />
         </main>
-        <footer className="student-footer">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-800">HTSV.</span>
-            <span>Cổng hỗ trợ & Diễn đàn Confession Sinh viên</span>
-          </div>
-          <span>Bảo mật danh tính · Phát triển vì cộng đồng sinh viên</span>
-        </footer>
+        <PortalFooter />
       </div>
 
       <ScrollToTop />

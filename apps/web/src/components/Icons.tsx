@@ -38,4 +38,8 @@ export function Bot(props: IconProps) { return <Svg {...props}><rect x="3" y="11
 export function Minimize(props: IconProps) { return <Svg {...props}><path d="M4 14h6v6m10-10h-6V4" /></Svg>; }
 export function RotateCcw(props: IconProps) { return <Svg {...props}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></Svg>; }
 export function Copy(props: IconProps) { return <Svg {...props}><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></Svg>; }
+export function MapPin(props: IconProps) { return <Svg {...props}><path d="M12 22s7-7.4 7-12.5A7 7 0 0 0 5 9.5C5 14.6 12 22 12 22Z" /><circle cx="12" cy="9.5" r="2.5" /></Svg>; }
+export function Phone(props: IconProps) { return <Svg {...props}><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 5 5L14 13l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" /></Svg>; }
+export function Globe(props: IconProps) { return <Svg {...props}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18Z" /></Svg>; }
+export function ExternalLink(props: IconProps) { return <Svg {...props}><path d="M14 4h6v6M20 4 10 14M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6" /></Svg>; }
 
