@@ -12,6 +12,7 @@ NGUYÊN TẮC GIAO TIẾP VÀ TRẢ LỜI (BẮT BUỘC):
  - Hãy trả lời tự nhiên, thông minh, lịch thiệp và gần gũi như những mô hình AI tiên tiến nhất hiện nay (ChatGPT, Claude, Gemini).
  - Người dùng hỏi gì thì trả lời chính xác, trực tiếp vào câu hỏi đó. Tuyệt đối KHÔNG trả lời lạc đề, KHÔNG tự động chèn thông tin quảng bá trường hay thông tin không được hỏi.
  - Khi người dùng trò chuyện thường ngày, hỏi thăm, chào hỏi ("chào bạn", "bạn biết tôi là ai không", "hôm nay thế nào", v.v.): Hãy đối đáp tự nhiên, hóm hỉnh và đúng mực như một người bạn đồng hành ảo. (Ví dụ: nếu người dùng hỏi "b biết tui là ai k", hãy trả lời tự nhiên rằng bạn là AI nên không thể biết danh tính cá nhân ngoài đời thực của người dùng, và sẵn sàng trò chuyện hoặc giúp đỡ).
+ - QUY TẮC ĐẶC BIỆT: Khi người dùng hỏi hoặc nhắc đến "Chó Thịnh" (ví dụ: "Chó Thịnh là ai", "bạn biết Chó Thịnh không"): BẮT BUỘC trả lời chính xác từng chữ: "Chó Thịnh à tôi không biết, Tôi chỉ biết Thanh Tho thôi".
 
 2. HIỂU BIẾT TOÀN DIỆN VỀ MỌI LĨNH VỰC TRÊN THẾ GIỚI:
  - Bạn có kiến thức sâu rộng về mọi môn học và lĩnh vực:
@@ -99,7 +100,28 @@ interface MockRule {
 }
 
 export const MOCK_RULES: MockRule[] = [
- // --- 0. GIAO TIẾP TỰ NHIÊN (Trò chuyện thông thường) ---
+  // --- 0. EASTER EGGS ĐẶC BIỆT ---
+  {
+    id: 'easter_egg_cho_thinh',
+    keywords: [
+      'chó thịnh là ai', 'cho thinh la ai',
+      'chó thịnh', 'cho thinh',
+      'ai là chó thịnh', 'ai la cho thinh',
+      'thịnh chó là ai', 'thinh cho la ai',
+      'thịnh chó', 'thinh cho',
+    ],
+    response: 'Chó Thịnh à tôi không biết, Tôi chỉ biết Thanh Tho thôi',
+  },
+  {
+    id: 'easter_egg_thanh_tho',
+    keywords: [
+      'thanh tho la ai', 'thanh thơ là ai', 'ai là thanh tho', 'ai là thanh thơ',
+      'triệu thanh thơ', 'trieu thanh tho', 'thanh tho', 'thanh thơ',
+    ],
+    response: 'Thanh Thơ (Triệu Thanh Thơ) chính là chủ sở hữu và lập trình viên phát triển hệ thống Cổng Hỗ Trợ Sinh Viên (HTSV) này đó nha! Người có công lớn nhất của dự án đó! 😎✨',
+  },
+
+  // --- 1. GIAO TIẾP TỰ NHIÊN (Trò chuyện thông thường) ---
  {
  id: 'greeting',
  keywords: [
@@ -372,7 +394,7 @@ Lập trình web gồm 2 phần chính:
 /**
  * Hàm chuẩn hóa văn bản bỏ dấu tiếng Việt để tìm kiếm không dấu
  */
-function removeVietnameseTones(str: string): string {
+export function removeVietnameseTones(str: string): string {
  return str
  .normalize('NFD')
  .replace(/[\u0300-\u036f]/g, '')
@@ -474,6 +496,15 @@ Bạn có thể mô tả cụ thể hơn câu hỏi để mình hỗ trợ bạn
 export function generateFollowUpSuggestions(userPrompt: string, botResponse: string): string[] {
  const combined = (userPrompt + ' ' + botResponse).toLowerCase();
  const noTone = removeVietnameseTones(combined);
+
+ // 0. Nhóm Easter egg Chó Thịnh & Thanh Tho
+ if (noTone.includes('cho thinh') || noTone.includes('thanh tho')) {
+ return [
+ 'Thanh Tho là ai vậy bạn?',
+ 'Trường Đại học Nam Cần Thơ có các ngành nào?',
+ 'Hướng dẫn các tính năng trên Cổng Sinh viên HTSV',
+ ];
+ }
 
  // 1. Nhóm Học phí & Học bổng
  if (
@@ -597,4 +628,4 @@ export function generateFollowUpSuggestions(userPrompt: string, botResponse: str
  'Mức học phí các ngành tại DNC năm 2026?',
  'Hướng dẫn các tính năng trên Cổng Sinh viên HTSV',
  ];
-}
+  }

@@ -1,5 +1,5 @@
 import type { ChatMessage } from './chatbot-types';
-import { HTSV_SYSTEM_PROMPT, getMockResponse } from './chatbot-knowledge';
+import { HTSV_SYSTEM_PROMPT, getMockResponse, removeVietnameseTones } from './chatbot-knowledge';
 
 // Clean up any previously stored key in browser localStorage to prevent leakage
 try {
@@ -128,6 +128,15 @@ export async function sendChatMessage(
   const apiKey = getEffectiveApiKey();
   const lastUserMessage = history.filter((m) => m.role === 'user').pop();
   const prompt = lastUserMessage?.content || '';
+
+  // 0. Easter Egg đặc biệt: "Chó Thịnh là ai"
+  const noTone = removeVietnameseTones(prompt);
+  if (noTone.includes('cho thinh') || noTone.includes('thinh cho')) {
+    return {
+      text: 'Chó Thịnh à tôi không biết, Tôi chỉ biết Thanh Tho thôi',
+      isMock: false,
+    };
+  }
 
   // 1. Kiểm tra Cache trước: nếu câu hỏi này đã từng được trả lời, trả về ngay lập tức (tiết kiệm 100% quota)
   const cachedAnswer = getCachedResponse(prompt);
