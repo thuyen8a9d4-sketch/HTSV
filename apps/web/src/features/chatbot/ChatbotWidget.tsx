@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { BotAvatar, botAvatarTypes } from './bot-avatars';
-import type { BotAvatarType } from './bot-avatars';
 import {
   Banknote,
+  Bot,
   Building,
   ChatBubble,
   Close,
@@ -14,8 +13,8 @@ import {
   RotateCcw,
   School,
   Send,
+  Sparkles,
 } from '../../components/Icons';
-import { useTheme } from '../../lib/theme';
 import type { ChatMessage, QuickSuggestion } from './chatbot-types';
 import { getEffectiveApiKey, sendChatMessage } from './chatbot-service';
 import { QUICK_SUGGESTIONS, generateFollowUpSuggestions } from './chatbot-knowledge';
@@ -113,9 +112,7 @@ function getInitialMessages(): ChatMessage[] {
 }
 
 export function ChatbotWidget() {
-  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const [avatarType, setAvatarType] = useState<BotAvatarType>('clover');
   const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialMessages());
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -173,12 +170,6 @@ export function ChatbotWidget() {
   }, [isOpen]);
 
   const hasApiKey = Boolean(getEffectiveApiKey());
-  const avatarState = isLoading || isStreaming ? 'working' : 'default';
-
-  const handleChangeAvatar = () => {
-    const otherSkins = botAvatarTypes.filter((type) => type !== avatarType);
-    setAvatarType(otherSkins[Math.floor(Math.random() * otherSkins.length)] ?? 'clover');
-  };
 
   const handleSendMessage = async (userText: string) => {
     const text = userText.trim();
@@ -305,10 +296,10 @@ export function ChatbotWidget() {
           aria-expanded={false}
           aria-controls="htsv-chat-panel"
           className="htsv-chat-trigger"
-          aria-label="Mở Tư vấn Sinh viên HTSV"
+          aria-label="Mở Trợ lý Ảo HTSV"
         >
-          <BotAvatar type={avatarType} state={avatarState} size="100%" theme={theme} aria-hidden="true" />
-          <span className="htsv-chat-trigger-tooltip">Tư vấn Sinh viên HTSV</span>
+          <ChatBubble className="h-6 w-6" />
+          <span className="htsv-chat-trigger-tooltip">Trợ lý Sinh viên HTSV</span>
         </button>
       )}
 
@@ -325,31 +316,19 @@ export function ChatbotWidget() {
           {/* Header */}
           <div className="htsv-chat-header flex items-center justify-between gap-2 px-4 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
-              <button
-                type="button"
-                className="htsv-chat-avatar"
-                onClick={handleChangeAvatar}
-                title="Đổi skin ngẫu nhiên"
-                aria-label="Đổi skin chatbot ngẫu nhiên"
-              >
-                <BotAvatar
-                  type={avatarType}
-                  state={avatarState}
-                  size="100%"
-                  theme={theme}
-                  aria-hidden="true"
-                />
-              </button>
+              <div className="htsv-chat-avatar">
+                <Bot className="h-5 w-5" />
+              </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="htsv-chat-title text-sm font-bold">
-                    Tư vấn Sinh viên HTSV
+                    Trợ lý Sinh viên HTSV
                   </h3>
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs" title="Đang trực tuyến" aria-label="Đang trực tuyến" />
+                  <Sparkles className="htsv-chat-tag h-3.5 w-3.5 shrink-0" />
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="htsv-chat-subtitle text-[11px] font-medium">
-                    {hasApiKey ? 'Hỗ trợ trực tuyến 24/7' : 'Giải đáp thông tin sinh viên'}
+                    {hasApiKey ? 'AI Trực tuyến' : 'Cơ sở dữ liệu mẫu'}
                   </span>
                 </div>
               </div>
