@@ -78,26 +78,26 @@
   z-index: 45;
   display: grid;
   place-items: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
   padding: 0;
   background: transparent;
   border: 0;
-  box-shadow: 0 8px 24px -4px rgba(99, 102, 241, 0.4), 0 0 16px rgba(6, 182, 212, 0.35);
+  box-shadow: 0 8px 24px -4px rgba(56, 189, 248, 0.45), 0 0 16px rgba(244, 114, 182, 0.35);
   transition: transform .2s var(--ease-out), box-shadow .2s;
   cursor: pointer;
 }
 .htsv-chat-trigger:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 12px 30px -4px rgba(99, 102, 241, 0.55), 0 0 22px rgba(6, 182, 212, 0.5);
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 12px 30px -4px rgba(56, 189, 248, 0.6), 0 0 22px rgba(244, 114, 182, 0.5);
 }
 @media (min-width: 768px) {
   .htsv-chat-trigger {
     right: 32px;
     bottom: 32px;
-    width: 56px;
-    height: 56px;
+    width: 58px;
+    height: 58px;
   }
 }
 .htsv-chat-trigger-tooltip { position: absolute; right: calc(100% + 12px); white-space: nowrap; border-radius: 12px; padding: 8px 12px; font-size: 12px; color: var(--chat-ink); background: var(--chat-surface); border: 1px solid var(--chat-border); opacity: 0; pointer-events: none; }
