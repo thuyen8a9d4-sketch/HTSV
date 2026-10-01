@@ -1607,35 +1607,35 @@ export function formatSubjectGroups(raw: string): string {
 export function findMajorByQuery(noTone: string): KnowledgeItem | null {
   const majorItems = DNC_KNOWLEDGE_BASE.filter((item) => item.category === 'nganh_hoc');
 
-  // Ưu tiên các ngành phổ biến / tên viết tắt trước
-  if (noTone.includes('o to') || noTone.includes('dong luc')) {
+  // Ưu tiên các ngành phổ biến với từ khóa rõ ràng, tránh bắt nhầm từ con (như 'ai' trong 'tai'/'dai')
+  if (/\b(o to|dong luc)\b/.test(noTone) && (noTone.includes('nganh') || noTone.includes('hoc') || noTone.includes('ky thuat')) && !noTone.includes('showroom')) {
     return majorItems.find((m) => m.id === 'dnc-major-cong_nghe_ky_thuat_o_to') || null;
   }
-  if (noTone.includes('y khoa') || noTone.includes('bac si da khoa') || noTone.includes('y da khoa')) {
+  if (/\b(y khoa|y da khoa|bac si da khoa)\b/.test(noTone)) {
     return majorItems.find((m) => m.id === 'dnc-major-y_khoa') || null;
   }
   if (noTone.includes('rang ham mat')) {
     return majorItems.find((m) => m.id === 'dnc-major-rang_-_ham_-_mat') || null;
   }
-  if (noTone.includes('duoc') || noTone.includes('duoc si')) {
+  if (noTone.includes('duoc hoc') || noTone.includes('duoc si') || noTone.includes('nganh duoc') || noTone.includes('khoa duoc') || /\b(hoc duoc)\b/.test(noTone)) {
     return majorItems.find((m) => m.id === 'dnc-major-duoc_hoc') || null;
   }
-  if (noTone.includes('xet nghiem y hoc') || noTone.includes('xet nghiem')) {
+  if (noTone.includes('xet nghiem y hoc') || noTone.includes('ky thuat xet nghiem')) {
     return majorItems.find((m) => m.id.includes('xet_nghiem')) || null;
   }
-  if (noTone.includes('hinh anh y hoc')) {
+  if (noTone.includes('hinh anh y hoc') || noTone.includes('ky thuat hinh anh')) {
     return majorItems.find((m) => m.id.includes('hinh_anh')) || null;
   }
-  if (noTone.includes('dieu duong')) {
+  if (noTone.includes('dieu duong') && (noTone.includes('nganh') || noTone.includes('hoc'))) {
     return majorItems.find((m) => m.id.includes('dieu_duong')) || null;
   }
-  if (noTone.includes('cntt') || noTone.includes('cong nghe thong tin')) {
+  if (/\b(cntt|cong nghe thong tin)\b/.test(noTone)) {
     return majorItems.find((m) => m.id === 'dnc-major-cong_nghe_thong_tin') || null;
   }
-  if (noTone.includes('tri tue nhan tao') || noTone.includes('ai')) {
-    return majorItems.find((m) => m.id.includes('tri_tue_nhan_tao')) || majorItems.find((m) => m.id === 'dnc-major-cong_nghe_thong_tin') || null;
+  if (noTone.includes('tri tue nhan tao') || /\b(nganh ai|hoc ai|cong nghe ai)\b/.test(noTone)) {
+    return majorItems.find((m) => m.id.includes('tri_tue_nhan_tao')) || null;
   }
-  if (noTone.includes('phan mem')) {
+  if (noTone.includes('ky thuat phan mem') || noTone.includes('nganh phan mem')) {
     return majorItems.find((m) => m.id.includes('phan_mem')) || null;
   }
   if (noTone.includes('khoa hoc may tinh')) {
@@ -1644,40 +1644,42 @@ export function findMajorByQuery(noTone: string): KnowledgeItem | null {
   if (noTone.includes('kinh te so')) {
     return majorItems.find((m) => m.id.includes('kinh_te_so')) || null;
   }
-  if (noTone.includes('marketing')) {
+  if (noTone.includes('marketing') && (noTone.includes('nganh') || noTone.includes('hoc'))) {
     return majorItems.find((m) => m.id.includes('marketing')) || null;
   }
-  if (noTone.includes('logistics')) {
+  if (noTone.includes('logistics') && (noTone.includes('nganh') || noTone.includes('hoc'))) {
     return majorItems.find((m) => m.id.includes('logistics')) || null;
   }
   if (noTone.includes('luat kinh te')) {
     return majorItems.find((m) => m.id.includes('luat_kinh_te')) || null;
   }
-  if (noTone.includes('luat')) {
-    return majorItems.find((m) => m.id.includes('luat_hoc')) || majorItems.find((m) => m.id.includes('luat')) || null;
+  if (noTone.includes('nganh luat') || noTone.includes('luat hoc') || noTone.includes('khoa luat')) {
+    return majorItems.find((m) => m.id.includes('luat_hoc')) || null;
   }
   if (noTone.includes('ngon ngu anh')) {
     return majorItems.find((m) => m.id.includes('ngon_ngu_anh')) || null;
   }
-  if (noTone.includes('quan tri kinh doanh') || noTone.includes('qtkd')) {
+  if (noTone.includes('quan tri kinh doanh') || /\b(qtkd)\b/.test(noTone)) {
     return majorItems.find((m) => m.id.includes('quan_tri_kinh_doanh')) || null;
   }
-  if (noTone.includes('du lich')) {
+  if (noTone.includes('quan tri du lich') || noTone.includes('nganh du lich')) {
     return majorItems.find((m) => m.id.includes('du_lich')) || null;
   }
-  if (noTone.includes('kien truc')) {
+  if (noTone.includes('nganh kien truc') || noTone.includes('hoc kien truc')) {
     return majorItems.find((m) => m.id.includes('kien_truc')) || null;
   }
-  if (noTone.includes('xay dung')) {
+  if (noTone.includes('nganh xay dung') || noTone.includes('ky thuat xay dung')) {
     return majorItems.find((m) => m.id.includes('xay_dung')) || null;
   }
 
-  // Quét qua toàn bộ danh sách 86 ngành theo độ dài từ khóa
-  for (const item of majorItems) {
-    for (const kw of item.keywords) {
-      const kwNoTone = removeTones(kw);
-      if (kwNoTone.length >= 5 && noTone.includes(kwNoTone)) {
-        return item;
+  // Quét qua toàn bộ danh sách 86 ngành CHỈ KHI câu hỏi có chữ 'ngành' hoặc 'học ngành'
+  if (noTone.includes('nganh ') || noTone.includes('chuyen nganh ') || noTone.startsWith('nganh') || noTone.includes('hoc nganh ')) {
+    for (const item of majorItems) {
+      for (const kw of item.keywords) {
+        const kwNoTone = removeTones(kw);
+        if (kwNoTone.length >= 6 && noTone.includes(kwNoTone)) {
+          return item;
+        }
       }
     }
   }
@@ -1926,13 +1928,53 @@ export function searchDncKnowledge(query: string): string | null {
     if (clubItem) return clubItem.answer;
   }
 
-  // 9. Tìm kiếm tổng quan ngành học (khi người dùng chỉ hỏi về tên ngành hoặc hỏi giới thiệu)
-  const major = findMajorByQuery(noTone);
-  if (major && (noTone.includes('nganh') || noTone.includes('hoc') || noTone.includes('gioi thieu') || noTone.includes('tim hieu'))) {
-    let clean = major.answer;
-    const match = clean.match(/\*\*Tổ hợp xét tuyển:\*\*\s*(\[\{.+?\}\])/);
-    if (match) clean = clean.replace(match[0], `**Tổ hợp xét tuyển:**\n${formatSubjectGroups(match[1])}`);
-    return clean;
+  // 9. Câu hỏi về Cơ sở thực hành tại Bệnh viện Đại học Nam Cần Thơ
+  if (
+    noTone.includes('benh vien') &&
+    (noTone.includes('thuc hanh') || noTone.includes('co so') || noTone.includes('lam sang') || noTone.includes('ra sao') || noTone.includes('the nao') || noTone.includes('co gi') || noTone.includes('dao tao'))
+  ) {
+    return `### 🏥 **Cơ sở thực hành tại Bệnh viện Đại học Nam Cần Thơ**
+
+Bệnh viện Đại học Nam Cần Thơ là cơ sở thực hành lâm sàng trực tiếp cho toàn bộ sinh viên khối ngành Sức khỏe (Y khoa, Dược học, Răng - Hàm - Mặt, Điều dưỡng, Kỹ thuật xét nghiệm y học, Kỹ thuật hình ảnh y học...):
+
+* **Quy mô đạt chuẩn quốc tế:** Bệnh viện đa khoa quốc tế với quy mô giai đoạn 1 là **300 giường bệnh** đạt chứng nhận tiêu chuẩn chất lượng AACI Hoa Kỳ. Trường đã khởi công xây dựng giai đoạn 2 (Bệnh viện Quốc tế 1.500 tỷ đồng) nâng quy mô lên 1.000 giường theo mô hình Trung tâm Y học học thuật (Academic Medical Center).
+* **Vị trí thuận tiện:** Tọa lạc ngay bên trong khuôn viên Trường Đại học Nam Cần Thơ (Số 168, Đường Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ).
+* **Trang thiết bị tiên tiến:** Hệ thống phòng mổ vô trùng áp lực âm, máy chụp cộng hưởng từ MRI, CT-Scanner đa lát cắt, máy siêu âm màu 4D, hệ thống xét nghiệm tự động hóa.
+* **Quyền lợi sinh viên:** Sinh viên được thực tập lâm sàng thực tế, tiếp xúc bệnh nhân và theo học trực tiếp cùng các Giáo sư, Tiến sĩ, Bác sĩ chuyên khoa giàu kinh nghiệm; đồng thời sinh viên được đăng ký khám chữa bệnh BHYT ban đầu đúng tuyến ngay tại bệnh viện.
+* **Hotline hỗ trợ & cấp cứu:** \`02923 686 868\`.`;
+  }
+
+  // 10. Câu hỏi về Showroom Ô tô Nam Cần Thơ DNC có gì đặc biệt / thực hành
+  if (
+    noTone.includes('showroom') &&
+    (noTone.includes('co gi') || noTone.includes('thuc hanh') || noTone.includes('dac biet') || noTone.includes('ra sao') || noTone.includes('the nao'))
+  ) {
+    return `### 🚗 **Showroom Ô tô Nam Cần Thơ DNC & Xưởng bảo dưỡng thực hành**
+
+Showroom Ô tô Nam Cần Thơ DNC là mô hình doanh nghiệp trong trường đại học tiên phong của trường DNC:
+* **Vị trí:** Tọa lạc ngay trong khuôn viên Trường Đại học Nam Cần Thơ (Số 168, Đường Nguyễn Văn Cừ nối dài, TP. Cần Thơ).
+* **Quy mô:** Khu trưng bày và kinh doanh các dòng xe ô tô hiện đại, kết hợp xưởng bảo hành, bảo dưỡng, sửa chữa cơ khí - điện ô tô quy mô lớn.
+* **Thực hành sinh viên:** Sinh viên ngành Công nghệ Kỹ thuật Ô tô được cầm đồ nghề thực hành trực tiếp trên các dòng xe hiện đại (cả xe động cơ truyền thống và ô tô điện thông minh) ngay từ những năm học đầu tiên.`;
+  }
+
+  // 11. Tìm kiếm tổng quan ngành học (CHỈ KHI người dùng thực sự hỏi về ngành học cụ thể)
+  const isAskingAboutMajor =
+    noTone.includes('nganh ') ||
+    noTone.startsWith('nganh') ||
+    noTone.includes('chuyen nganh') ||
+    noTone.includes('hoc nganh') ||
+    noTone.includes('thong tin ve nganh') ||
+    noTone.includes('tim hieu nganh') ||
+    noTone.includes('gioi thieu nganh');
+
+  if (isAskingAboutMajor) {
+    const major = findMajorByQuery(noTone);
+    if (major) {
+      let clean = major.answer;
+      const match = clean.match(/\*\*Tổ hợp xét tuyển:\*\*\s*(\[\{.+?\}\])/);
+      if (match) clean = clean.replace(match[0], `**Tổ hợp xét tuyển:**\n${formatSubjectGroups(match[1])}`);
+      return clean;
+    }
   }
 
   return null;
