@@ -315,7 +315,7 @@ export function ChatbotWidget() {
           {/* Header */}
           <div className="htsv-chat-header flex items-center justify-between gap-2 px-4 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
-              <AiAvatar size={40} />
+              <AiAvatar size={46} />
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="htsv-chat-title text-sm font-bold">
