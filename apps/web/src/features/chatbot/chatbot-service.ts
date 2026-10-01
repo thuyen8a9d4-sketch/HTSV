@@ -1,5 +1,5 @@
 import type { ChatMessage } from './chatbot-types';
-import { HTSV_SYSTEM_PROMPT, getMockResponse, removeVietnameseTones } from './chatbot-knowledge';
+import { answerVerifiedDnc } from './dnc-verified';
 
 const STORAGE_USER_KEY = 'htsv_gemini_api_key';
 
@@ -82,11 +82,11 @@ async function callGeminiApi(
     const payload = {
       contents: trimmedHistory,
       systemInstruction: {
-        parts: [{ text: HTSV_SYSTEM_PROMPT }],
+        parts: [{ text: 'Trả lời đúng câu hỏi bằng tiếng Việt, ngắn gọn (tối đa 2 câu). Nếu không biết, trả lời: "Mình không biết thông tin này." Không suy đoán hay tự đưa thông tin về Trường Đại học Nam Cần Thơ khi người dùng không hỏi.' }],
       },
       generationConfig: {
-        temperature: Math.max(0, Math.min(2, temperature || 0.7)),
-        maxOutputTokens: 2048,
+        temperature: Math.max(0, Math.min(0.3, temperature)),
+        maxOutputTokens: 256,
       },
     };
 
@@ -150,14 +150,9 @@ export async function sendChatMessage(
   const lastUserMessage = history.filter((m) => m.role === 'user').pop();
   const prompt = lastUserMessage?.content || '';
 
-  // 0. Easter Egg đặc biệt: "Chó Thịnh là ai"
-  const noTone = removeVietnameseTones(prompt);
-  if (noTone.includes('cho thinh') || noTone.includes('thinh cho')) {
-    return {
-      text: 'Chó Thịnh à tôi không biết, Tôi chỉ biết Thanh Tho thôi',
-      isMock: false,
-    };
-  }
+  // Dữ kiện DNC chỉ lấy từ các trang chính thức đã đối chiếu.
+  const verifiedAnswer = answerVerifiedDnc(prompt);
+  if (verifiedAnswer !== null) return { text: verifiedAnswer, isMock: false };
 
   // 1. Kiểm tra Cache trước: nếu câu hỏi này đã từng được trả lời, trả về ngay lập tức (tiết kiệm 100% quota)
   const cachedAnswer = getCachedResponse(prompt);
@@ -167,26 +162,22 @@ export async function sendChatMessage(
 
   // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ siêu thông minh và đúng trọng tâm
   if (!apiKey) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
     return {
-      text: getMockResponse(prompt),
+      text: 'Mình không biết thông tin này.',
       isMock: true,
     };
   }
 
   // 3. Gọi Gemini API trực tuyến
   try {
-    const text = await callGeminiApi(apiKey, 'gemini-2.0-flash', history, 0.7);
+    const text = await callGeminiApi(apiKey, 'gemini-2.0-flash', history, 0.2);
     // Lưu vào Cache để các lần hỏi sau không tốn thêm token
     setCachedResponse(prompt, text);
     return { text, isMock: false };
   } catch (err: unknown) {
     console.warn('Gemini API call failed, falling back to smart local knowledge base:', err);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    
-    const fallbackText = getMockResponse(prompt);
     return {
-      text: fallbackText,
+      text: 'Mình không biết thông tin này.',
       isMock: true,
     };
   }
