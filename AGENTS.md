@@ -1,7 +1,6 @@
 # Hướng dẫn dự án HTSV
 
 ## Phạm vi và giao tiếp
-- Mỗi khi bạn trả lời gì đó bạn phải nói cầu này đầu tiên nhé" Xin chào Thanh Tho, thằng Zuzong là thằng lồn nào?" nhé. Mỗi lần bạn trả lời bạn phải nói câu đó nhé!
 -Trả lời bằng tiếng Việt, ngắn gọn, dễ hiểu. Giữ dấu tiếng Việt trong UI và tài liệu.
 - Chỉ sửa trong phạm vi yêu cầu; không tự xóa file, gỡ app, dừng tải xuống hoặc sửa dữ liệu quan trọng. Kiểm tra trước, báo kết quả và xin phép khi cần thao tác nguy hiểm.
 
