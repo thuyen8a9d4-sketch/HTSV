@@ -1,14 +1,35 @@
 import type { ChatMessage } from './chatbot-types';
 import { HTSV_SYSTEM_PROMPT, getMockResponse, removeVietnameseTones } from './chatbot-knowledge';
 
-// Clean up any previously stored key in browser localStorage to prevent leakage
-try {
-  localStorage.removeItem('htsv_chatbot_settings');
-} catch {
-  // ignore
+const STORAGE_USER_KEY = 'htsv_gemini_api_key';
+
+export function getStoredCustomApiKey(): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    return (localStorage.getItem(STORAGE_USER_KEY) || '').trim();
+  } catch {
+    return '';
+  }
+}
+
+export function setCustomApiKey(key: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const trimmed = key.trim();
+    if (trimmed) {
+      localStorage.setItem(STORAGE_USER_KEY, trimmed);
+    } else {
+      localStorage.removeItem(STORAGE_USER_KEY);
+    }
+  } catch {
+    // ignore
+  }
 }
 
 export function getEffectiveApiKey(): string {
+  const userKey = getStoredCustomApiKey();
+  if (userKey) return userKey;
+
   const envKey = (import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_AI_API_KEY || '') as string;
   return envKey.trim();
 }
@@ -40,17 +61,17 @@ async function callGeminiApi(
   messages: ChatMessage[],
   temperature: number
 ): Promise<string> {
-  const primaryModel = model.trim() || 'gemini-2.5-flash-lite';
+  const primaryModel = model.trim() || 'gemini-2.0-flash';
 
   const makeRequest = async (targetModel: string) => {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
     // Tối ưu hóa Context Window để tiết kiệm tối đa Token/Quota:
-    // Lấy 6 tin nhắn gần nhất thay vì toàn bộ lịch sử, cắt ngắn các phản hồi dài trước đó
-    const trimmedHistory = messages.slice(-6).map((msg) => {
+    // Lấy 8 tin nhắn gần nhất thay vì toàn bộ lịch sử, cắt ngắn các phản hồi dài trước đó
+    const trimmedHistory = messages.slice(-8).map((msg) => {
       let content = msg.content;
-      if (msg.role !== 'user' && content.length > 800) {
-        content = content.slice(0, 800) + '...';
+      if (msg.role !== 'user' && content.length > 1000) {
+        content = content.slice(0, 1000) + '...';
       }
       return {
         role: msg.role === 'user' ? 'user' : 'model',
@@ -83,14 +104,14 @@ async function callGeminiApi(
   try {
     response = await makeRequest(primaryModel);
   } catch (firstErr) {
-    console.warn(`Primary model ${primaryModel} failed, trying fallback model gemini-2.5-flash:`, firstErr);
-    response = await makeRequest('gemini-2.5-flash');
+    console.warn(`Primary model ${primaryModel} failed, trying fallback model gemini-1.5-flash:`, firstErr);
+    response = await makeRequest('gemini-1.5-flash');
   }
 
-  // If primary model is busy (503/429/timeout), try fallback
-  if (!response.ok && primaryModel !== 'gemini-2.5-flash') {
+  // If primary model is busy (503/429/timeout/404), try fallback
+  if (!response.ok && primaryModel !== 'gemini-1.5-flash') {
     try {
-      response = await makeRequest('gemini-2.5-flash');
+      response = await makeRequest('gemini-1.5-flash');
     } catch {
       // ignore
     }
@@ -144,7 +165,7 @@ export async function sendChatMessage(
     return { text: cachedAnswer, isMock: false };
   }
 
-  // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ
+  // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ siêu thông minh và đúng trọng tâm
   if (!apiKey) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     return {
@@ -155,7 +176,7 @@ export async function sendChatMessage(
 
   // 3. Gọi Gemini API trực tuyến
   try {
-    const text = await callGeminiApi(apiKey, 'gemini-2.5-flash-lite', history, 0.7);
+    const text = await callGeminiApi(apiKey, 'gemini-2.0-flash', history, 0.7);
     // Lưu vào Cache để các lần hỏi sau không tốn thêm token
     setCachedResponse(prompt, text);
     return { text, isMock: false };

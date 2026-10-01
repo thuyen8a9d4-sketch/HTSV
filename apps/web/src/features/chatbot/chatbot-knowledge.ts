@@ -1,4 +1,5 @@
 import type { QuickSuggestion } from './chatbot-types';
+import { searchDncKnowledge } from './dnc-knowledge-base';
 
 /**
  * =========================================================================================
@@ -245,11 +246,11 @@ Bạn đang quan tâm đến ngành học hay thông tin nào của trường n�
 *Lưu ý nhỏ:* Riêng khối ngành Sức khỏe (Y khoa, Dược học, Răng - Hàm - Mặt, Điều dưỡng, Xét nghiệm) thì học bạ lớp 12 cần xếp loại **Giỏi** hoặc điểm xét tốt nghiệp từ **8.0 trở lên** nha bạn. Bạn đang tính nộp hồ sơ theo phương thức nào vậy nè?`,
   },
 
-  // --- 4. HỌC PHÍ VÀ HỌC BỔNG ---
+  // --- 4. HỌC PHÍ ---
   {
     id: 'tuition',
     keywords: [
-      'học phí', 'hoc phi', 'tiền học', 'biểu phí', 'học bổng', 'miễn giảm học phí', 'học phí bao nhiêu', 'tiền học một kỳ'
+      'học phí', 'hoc phi', 'tiền học', 'biểu phí', 'miễn giảm học phí', 'học phí bao nhiêu', 'tiền học một kỳ', 'học phí một năm', 'mức học phí'
     ],
     response: `Chào bạn nha! Về học phí tại Đại học Nam Cần Thơ (DNC) thì trường có một điểm cộng rất lớn là **học phí cam kết giữ ổn định suốt toàn khóa**, không tăng bất ngờ qua các năm học đâu bạn nhé.
 
@@ -259,7 +260,332 @@ Mỗi năm học gồm 3 học kỳ, mức học phí trung bình từng nhóm n
 * **Nhóm 3 (Khoảng 14 - 15 triệu đồng / học kỳ):** **Công nghệ kỹ thuật Ô tô**, Điện - Điện tử, Kỹ thuật xét nghiệm y học, Điều dưỡng...
 * **Khối Sức khỏe đặc thù:** Dược học khoảng **18 - 22 triệu / kỳ**; Y khoa (Bác sĩ Đa khoa) & Răng - Hàm - Mặt khoảng **45 - 50 triệu / kỳ** (mức này đã bao gồm toàn bộ chi phí thực hành lâm sàng tại Bệnh viện DNC rồi nha).
 
-Ngoài ra trường còn có nhiều chính sách học bổng cho tân sinh viên và học bổng khuyến khích học tập từng kỳ nữa. Bạn đang quan tâm đến học phí của ngành nào cụ thể không nè?`,
+Bạn đang quan tâm đến học phí của ngành nào cụ thể để mình cung cấp con số chi tiết hơn nè?`,
+  },
+
+  // --- 4.1. CHÍNH SÁCH HỌC BỔNG ---
+  {
+    id: 'scholarship',
+    keywords: [
+      'học bổng', 'hoc bong', 'điều kiện nhận học bổng', 'xin học bổng', 'học bổng dnc',
+      'học bổng khuyến khích', 'chính sách học bổng', 'tiêu chuẩn học bổng', 'học bổng tân sinh viên', 'học bổng vượt khó'
+    ],
+    response: `Chào bạn nha! Về chính sách học bổng tại Đại học Nam Cần Thơ (DNC), trường có nhiều chương trình học bổng rất hấp dẫn để tiếp sức và khen thưởng sinh viên nè:
+
+1. **Học bổng Khuyến khích học tập (Xét theo từng học kỳ):**
+   * **Loại Xuất sắc:** Điểm trung bình học kỳ (GPA) từ **3.6 / 4.0** trở lên và Điểm rèn luyện từ **90 điểm** trở lên.
+   * **Loại Giỏi:** GPA từ **3.2 / 4.0** trở lên và Điểm rèn luyện từ **80 điểm** trở lên.
+   * **Loại Khá:** GPA từ **2.5 / 4.0** trở lên và Điểm rèn luyện từ **65 điểm** trở lên.
+   *(Lưu ý: Không có môn nào bị điểm F trong học kỳ xét học bổng).*
+
+2. **Học bổng Thủ khoa & Tân sinh viên xuất sắc:**
+   * Dành cho các bạn thí sinh đạt điểm cao trong kỳ thi tốt nghiệp THPT hoặc có thành tích học sinh giỏi cấp tỉnh/quốc gia khi nộp hồ sơ nhập học vào DNC.
+
+3. **Học bổng Hỗ trợ sinh viên vượt khó:**
+   * Dành cho sinh viên có hoàn cảnh khó khăn, gia đình chính sách nhưng có tinh thần hiếu học, vươn lên trong học tập.
+
+4. **Học bổng Doanh nghiệp & Bệnh viện DNC:**
+   * Các đối tác liên kết của trường trao tặng cho sinh viên các khối ngành Sức khỏe, CNTT, Ô tô, Du lịch có thành tích xuất sắc.
+
+Bạn đang muốn tìm hiểu về điều kiện của loại học bổng nào trong các loại trên để mình hướng dẫn chi tiết hồ sơ nộp nha?`,
+  },
+
+  // --- 4.2. CHI PHÍ PHÒNG KÝ TÚC XÁ ---
+  {
+    id: 'dorm_price',
+    keywords: [
+      'giá phòng ktx', 'gia phong ktx', 'chi phí ktx', 'chi phi ktx', 'ktx bao nhiêu tiền',
+      'tiền phòng ktx', 'giá ký túc xá', 'chi phí ký túc xá', 'giá phòng ký túc xá', 'tiền ở ktx'
+    ],
+    response: `Dạ về chi phí phòng ở tại Ký túc xá Đại học Nam Cần Thơ (DNC) thì cực kỳ hợp lý và tiết kiệm cho sinh viên luôn nha bạn:
+
+* **Mức phí phòng:** Dao động từ khoảng **350.000đ - 600.000đ / sinh viên / tháng** (tùy thuộc vào loại phòng quạt tiêu chuẩn hay phòng máy lạnh hiện đại).
+* **Tiện nghi trong phòng:** Trang bị sẵn giường tầng, nệm, bàn học cá nhân, tủ đồ có khóa, quạt, máy lạnh, bình nước nóng lạnh và hệ thống wifi phủ sóng toàn khu.
+* **Chi phí điện, nước:** Tính theo chỉ số đồng hồ riêng của từng phòng theo đúng biểu giá nhà nước dành cho sinh viên.
+* **An ninh & Tiện ích:** Bảo vệ trực 24/7, thẻ từ ra vào, có căng-tin nhà ăn sinh viên, siêu thị mini, sân bóng đá, hồ bơi và phòng gym ngay dưới chân tòa nhà.
+
+Bạn có thể nộp đơn đăng ký phòng trực tuyến ngay trên mục **Đời sống sinh viên** của Cổng HTSV này đó nha! Bạn đang muốn tìm phòng mấy người nè?`,
+  },
+
+  // --- 4.3. THỦ TỤC XIN GIẤY XÁC NHẬN SINH VIÊN ---
+  {
+    id: 'giay_xac_nhan_sv',
+    keywords: [
+      'xin giấy xác nhận sinh viên', 'giấy xác nhận sinh viên', 'giay xac nhan sinh vien',
+      'giấy hoãn nghĩa vụ quân sự', 'hoãn nghĩa vụ quân sự', 'hoan nghia vu', 'vay vốn ngân hàng',
+      'làm vé xe buýt', 'giấy giới thiệu thực tập'
+    ],
+    response: `Để xin **Giấy xác nhận sinh viên** (để tạm hoãn nghĩa vụ quân sự, làm hồ sơ vay vốn ngân hàng chính sách, làm vé xe buýt hay xin thực tập), bạn thực hiện cực kỳ nhanh trên Cổng HTSV như sau nha:
+
+1. Trên thanh menu, bạn vào mục **"Hỗ trợ"** (hoặc **"Dịch vụ Một cửa"**).
+2. Bấm vào nút **"Gửi yêu cầu hỗ trợ mới"** → chọn loại thủ tục **"Xin giấy xác nhận sinh viên"**.
+3. Chọn mục đích sử dụng cụ thể (Vay vốn / Tạm hoãn NVQS / Vé xe buýt / Thực tập doanh nghiệp).
+4. Điền lý do và số lượng bản cần cấp rồi nhấn **"Gửi yêu cầu"**.
+5. Bạn có thể theo dõi tiến độ hồ sơ tại mục **"Theo dõi yêu cầu"**. Thông thường sau 1 - 2 ngày làm việc là hồ sơ được duyệt và bạn đến nhận tại Bộ phận Một cửa - Tòa nhà Hiệu bộ DNC nha!`,
+  },
+
+  // --- 4.4. XIN BẢNG ĐIỂM ---
+  {
+    id: 'xin_bang_diem',
+    keywords: [
+      'xin bảng điểm', 'xin bang diem', 'cấp bảng điểm', 'bảng điểm học tập', 'in bảng điểm'
+    ],
+    response: `Dạ để xin cấp Bảng điểm học tập tại trường DNC, bạn làm theo các bước này nhé:
+
+1. Bạn truy cập vào mục **"Hỗ trợ"** → chọn **"Tạo yêu cầu mới"**.
+2. Chọn loại thủ tục: **"Cấp bảng điểm học tập"** (bản tiếng Việt hoặc bản song ngữ Việt - Anh tùy nhu cầu của bạn).
+3. Nhập số bản cần in và mục đích (xin học bổng, nộp hồ sơ xin việc, hồ sơ du học...).
+4. Sau khi gửi, bạn theo dõi mã hồ sơ tại mục **"Theo dõi yêu cầu"**. Phòng Quản lý Đào tạo sẽ xử lý và thông báo thời gian nhận bảng điểm có đóng dấu mộc đỏ cho bạn nha!`,
+  },
+
+  // --- 4.5. PHÚC KHẢO ĐIỂM THI ---
+  {
+    id: 'phuc_khao',
+    keywords: [
+      'phúc khảo', 'phuc khao', 'phúc khảo điểm', 'chấm lại bài thi', 'khiếu nại điểm', 'chấm lại bài'
+    ],
+    response: `Nếu bạn cảm thấy điểm thi kết thúc học phần chưa phản ánh đúng bài làm của mình, bạn hoàn toàn có quyền làm đơn phúc khảo bài thi nha:
+
+* **Thời hạn nộp đơn:** Trong vòng **15 ngày** kể từ ngày Phòng Quản lý Đào tạo công bố điểm học phần trên hệ thống.
+* **Cách thực hiện:** Bạn vào mục **"Hỗ trợ"** trên Cổng HTSV, chọn thủ tục **"Đơn xin phúc khảo điểm thi"**, điền tên môn học, mã lớp học phần, ngày thi, điểm đã công bố và lý do đề nghị chấm lại.
+* **Quy trình xử lý:** Hội đồng chấm thi sẽ rút bài thi và tổ chức chấm phúc khảo độc lập. Kết quả điểm sau phúc khảo sẽ được cập nhật chính thức trên hệ thống cho bạn nhé!`,
+  },
+
+  // --- 4.6. HOÃN THI HỌC KỲ ---
+  {
+    id: 'hoan_thi',
+    keywords: [
+      'hoãn thi', 'hoan thi', 'xin hoãn thi', 'nghỉ thi', 'đơn xin hoãn thi'
+    ],
+    response: `Về việc xin hoãn thi kết thúc học phần tại DNC, bạn lưu ý các quy định sau nha:
+
+1. **Điều kiện được xét hoãn thi:** Sinh viên bị ốm đau, tai nạn đột xuất (có giấy xác nhận của cơ sở y tế từ cấp huyện/bệnh viện trở lên), hoặc có lý do gia đình đặc biệt chính đáng.
+2. **Thời gian nộp đơn:** Bạn phải nộp đơn trước giờ thi hoặc muộn nhất trong vòng **03 ngày làm việc** kể từ ngày diễn ra ca thi đó.
+3. **Cách nộp đơn:** Bạn vào mục **"Hỗ trợ"** trên Cổng HTSV, chọn thủ tục **"Đơn xin hoãn thi"**, đính kèm ảnh chụp giấy xác nhận y tế / minh chứng hợp lệ.
+4. Khi được chấp thuận, bạn sẽ được bố trí thi bù vào đợt thi gần nhất của trường mà không bị tính là thi lại hay bị điểm F nha!`,
+  },
+
+  // --- 4.7. HỌC LẠI VÀ HỌC CẢI THIỆN ---
+  {
+    id: 'hoc_lai_cai_thien',
+    keywords: [
+      'học lại khác học cải thiện', 'phân biệt học lại và học cải thiện', 'bị điểm f', 'điểm d có phải học lại không',
+      'học cải thiện là gì', 'học lại là gì'
+    ],
+    response: `Dạ mình giải thích rõ sự khác nhau giữa **Học lại** và **Học cải thiện** theo quy chế tín chỉ DNC để bạn nắm rõ nha:
+
+* **Học lại (Bắt buộc):**
+  * Áp dụng khi bạn bị **điểm F** (tổng kết môn dưới 4.0 trên thang 10, tương đương 0.0 trên thang 4).
+  * Bạn bắt buộc phải đăng ký học lại học phần đó ở các kỳ tiếp theo để tích lũy đủ tín chỉ tốt nghiệp.
+
+* **Học cải thiện (Tự nguyện):**
+  * Áp dụng khi bạn đã qua môn nhưng đạt **điểm D hoặc D+** (tổng kết từ 4.0 đến 5.4).
+  * Mục đích là để nâng điểm trung bình tích lũy (GPA) cao hơn.
+  * *Lưu ý quan trọng:* Điểm thi của lần học cải thiện sẽ thay thế điểm cũ để tính vào GPA chung, vì vậy bạn nhớ ôn tập kỹ để đạt kết quả tốt hơn nhé!`,
+  },
+
+  // --- 4.8. CẤP LẠI THẺ SINH VIÊN ---
+  {
+    id: 'cap_lai_the_sv',
+    keywords: [
+      'mất thẻ sinh viên', 'mat the sinh vien', 'cấp lại thẻ sinh viên', 'cap lai the',
+      'làm lại thẻ sinh viên', 'thẻ sinh viên bị mất', 'làm mất thẻ'
+    ],
+    response: `Nếu bạn không may bị mất hoặc làm hỏng thẻ sinh viên, bạn có thể xin cấp lại rất dễ dàng:
+
+1. Vào mục **"Hỗ trợ"** trên Cổng HTSV → chọn **"Cấp lại thẻ sinh viên"**.
+2. Điền thông tin MSSV, họ tên, lớp và lý do làm mất/hỏng.
+3. Sau khi gửi yêu cầu, bạn đến Phòng Công tác Sinh viên (Tòa nhà Hiệu bộ) để xác nhận và nhận lịch hẹn lấy thẻ mới.
+4. Trong thời gian chờ in phôi thẻ mới, bạn có thể xin một **Giấy chứng nhận sinh viên tạm thời** tại mục Một cửa để sử dụng khi đi thi hoặc vào cổng trường nha!`,
+  },
+
+  // --- 4.9. TỔNG HỢP CÁC NGÀNH ĐÀO TẠO ---
+  {
+    id: 'danh_sach_nganh',
+    keywords: [
+      'các ngành đào tạo', 'cac nganh dao tao', 'trường có những ngành nào', 'truong co nhung nganh nao',
+      'danh sách ngành học', 'dnc có những ngành nào', 'các ngành học của dnc', 'tổng hợp ngành'
+    ],
+    response: `Trường Đại học Nam Cần Thơ (DNC) đào tạo đa ngành với hơn 49 ngành ở bậc Đại học, phân thành các khối ngành trọng điểm sau nha bạn:
+
+1. **Khối ngành Sức khỏe (Thực hành trực tiếp tại Bệnh viện DNC):**
+   * Y khoa (Bác sĩ Đa khoa), Răng - Hàm - Mặt, Dược học, Kỹ thuật xét nghiệm y học, Kỹ thuật hình ảnh y học, Điều dưỡng, Quản lý bệnh viện.
+2. **Khối ngành Công nghệ & Kỹ thuật:**
+   * Công nghệ thông tin, Kỹ thuật phần mềm, Trí tuệ nhân tạo (AI), Khoa học máy tính, Công nghệ kỹ thuật Ô tô, Kỹ thuật điện - điện tử, Kiến trúc, Kỹ thuật xây dựng.
+3. **Khối ngành Kinh tế - Quản trị - Luật:**
+   * Quản trị kinh doanh, Marketing, Kinh doanh quốc tế, Logistics & Quản lý chuỗi cung ứng, Tài chính - Ngân hàng, Kế toán, Luật học, Luật kinh tế.
+4. **Khối ngành Xã hội - Nhân văn & Du lịch:**
+   * Ngôn ngữ Anh, Truyền thông đa phương tiện, Quan hệ công chúng (PR), Quản trị du lịch & lữ hành, Quản trị khách sạn.
+
+Bạn đang có nguyện vọng đăng ký hoặc muốn tìm hiểu chuyên sâu về khối ngành nào nè?`,
+  },
+
+  // --- 4.10. LẬP TRÌNH PYTHON ---
+  {
+    id: 'programming_python',
+    keywords: [
+      'python là gì', 'học python', 'code python', 'ngôn ngữ python', 'ví dụ python', 'lập trình python'
+    ],
+    response: `Python là một trong những ngôn ngữ lập trình phổ biến và mạnh mẽ nhất thế giới hiện nay, đặc biệt trong lĩnh vực **Trí tuệ nhân tạo (AI), Khoa học dữ liệu và Tự động hóa** đó bạn!
+
+### Ưu điểm vượt trội của Python:
+* **Cú pháp trong sáng, gần với tiếng Anh tự nhiên:** Rất dễ học cho người mới bắt đầu.
+* **Hệ sinh thái thư viện khổng lồ:**
+  * AI & Machine Learning: \`TensorFlow\`, \`PyTorch\`, \`Scikit-learn\`.
+  * Xử lý dữ liệu: \`Pandas\`, \`NumPy\`, \`Matplotlib\`.
+  * Web backend: \`FastAPI\`, \`Django\`, \`Flask\`.
+
+### Ví dụ code Python cơ bản (Hàm tính tổng và kiểm tra số nguyên tố):
+\`\`\`python
+def is_prime(n: int) -> bool:
+    """Kiểm tra một số có phải số nguyên tố hay không"""
+    if n < 2:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+# Kiểm tra thử
+numbers = [2, 3, 4, 7, 10, 13]
+primes = [x for x in numbers if is_prime(x)]
+print(f"Các số nguyên tố tìm được: {primes}")
+\`\`\`
+
+Bạn đang muốn dùng Python để làm web, phân tích dữ liệu hay phát triển mô hình AI nè?`,
+  },
+
+  // --- 4.11. LẬP TRÌNH JAVASCRIPT & TYPESCRIPT ---
+  {
+    id: 'programming_js_ts',
+    keywords: [
+      'javascript là gì', 'typescript là gì', 'react là gì', 'học javascript', 'học typescript', 'học react',
+      'phân biệt let const var', 'react hook'
+    ],
+    response: `Trong phát triển ứng dụng Web hiện đại (như chính dự án Cổng HTSV này đang dùng **React 19 + TypeScript + Tailwind CSS**), JavaScript và TypeScript là cặp đôi chủ chốt:
+
+1. **JavaScript (JS):** Ngôn ngữ linh hồn của trang web, cho phép xử lý mọi tương tác động trên trình duyệt và cả backend với Node.js.
+2. **TypeScript (TS):** Là phiên bản nâng cấp của JavaScript bổ sung **Hệ thống kiểu tĩnh (Static Typing)**. Nhờ đó trình duyệt báo lỗi ngay khi bạn gõ code, giúp dự án lớn vận hành cực kỳ ổn định.
+
+### Phân biệt nhanh \`const\`, \`let\`, \`var\`:
+* \`const\`: Khai báo hằng số không thể gán lại giá trị.
+* \`let\`: Khai báo biến có thể thay đổi giá trị, phạm vi trong block \`{}\`.
+* \`var\`: Kiểu cũ, phạm vi function-scope, dễ gây lỗi hoisting → **Khuyên dùng**: Luôn ưu tiên \`const\`, khi cần thay đổi thì dùng \`let\`, tránh dùng \`var\`.
+
+### Ví dụ React Hook đơn giản:
+\`\`\`typescript
+import { useState } from 'react';
+
+export function Counter() {
+  const [count, setCount] = useState<number>(0);
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Đã bấm: {count} lần
+    </button>
+  );
+}
+\`\`\`
+
+Bạn cần mình giải thích thêm về hook nào trong React hay cú pháp nào của TypeScript không?`,
+  },
+
+  // --- 4.12. KỸ NĂNG SOẠN THẢO EMAIL ---
+  {
+    id: 'writing_email',
+    keywords: [
+      'viết email', 'soạn email', 'email xin nghỉ học', 'mẫu email', 'gửi email cho giảng viên', 'viết thư xin phép'
+    ],
+    response: `Dạ mình gửi bạn mẫu email chuẩn chỉnh, trang trọng để gửi thầy cô xin phép nghỉ học nhé:
+
+\`\`\`text
+Tiêu đề: [HỌC PHẦN] - ĐƠN XIN PHÉP NGHỈ HỌC - [HỌ TÊN] - [MSSV]
+
+Kính gửi: Thầy/Cô [Họ và tên giảng viên], Giảng viên phụ trách học phần [Tên môn học] (Mã lớp: [Mã lớp học phần]),
+
+Em tên là: [Họ và tên của bạn]
+Mã số sinh viên: [Mã số sinh viên]
+Hiện đang là sinh viên lớp: [Tên lớp chuyên ngành]
+
+Em viết email này kính xin phép Thầy/Cô cho em được nghỉ buổi học vào ngày [Ngày/Tháng/Năm] (Ca học: [Ca mấy, từ mấy giờ đến mấy giờ]).
+
+Lý do: [Trình bày ngắn gọn, ví dụ: Em bị ốm sốt / gia đình có việc đột xuất / đi khám bệnh có giấy hẹn y tế đính kèm].
+
+Trong thời gian nghỉ học, em cam kết sẽ:
+1. Nhờ bạn cùng lớp ghi chép bài đầy đủ và tự nghiên cứu giáo trình.
+2. Hoàn thành toàn bộ bài tập và bài nộp theo đúng thời hạn của Thầy/Cô.
+
+Em xin chân thành cảm ơn Thầy/Cô và kính chúc Thầy/Cô nhiều sức khỏe và công tác tốt!
+
+Trân trọng,
+[Họ và tên của bạn]
+Số điện thoại: [Số điện thoại]
+\`\`\`
+
+Bạn chỉ cần thay các phần trong ngoặc vuông \`[...]\` là có thể gửi ngay được rồi nha!`,
+  },
+
+  // --- 4.13. KỸ NĂNG VIẾT CV CHO SINH VIÊN ---
+  {
+    id: 'writing_cv',
+    keywords: [
+      'viết cv', 'cách viết cv', 'tạo cv', 'cv xin việc', 'cv sinh viên', 'hồ sơ xin việc', 'mẫu cv'
+    ],
+    response: `Để có một bản **CV xin việc hoặc xin thực tập** ấn tượng dành cho sinh viên, bạn chỉ cần nắm vững cấu trúc 5 phần vàng này nha:
+
+1. **Thông tin cá nhân (Header):**
+   * Họ tên đầy đủ, vị trí ứng tuyển (ví dụ: *Thực tập sinh Lập trình Web* hoặc *Thực tập sinh Marketing*).
+   * Email chuyên nghiệp (dạng \`ten.ho@gmail.com\`), số điện thoại, link LinkedIn hoặc GitHub (nếu làm IT).
+2. **Mục tiêu nghề nghiệp (Career Objective):**
+   * Viết ngắn gọn 2 - 3 câu nêu rõ bạn muốn học hỏi điều gì và đóng góp giá trị gì cho công ty.
+3. **Học vấn (Education):**
+   * Trường Đại học Nam Cần Thơ (DNC) - Ngành học.
+   * Điểm trung bình tích lũy (GPA) nếu đạt từ Khá trở lên (từ 2.8+ trở lên nên đưa vào).
+4. **Dự án thực tế & Kinh nghiệm (Projects & Experience):**
+   * Kể tên các đồ án môn học, dự án nhóm (như dự án Cổng HTSV này) hoặc hoạt động làm thêm.
+   * Nêu rõ: *Vai trò của bạn → Công nghệ / Kỹ năng sử dụng → Kết quả đạt được*.
+5. **Kỹ năng & Hoạt động Đoàn - Hội:**
+   * Kỹ năng chuyên môn (hard skills) và Kỹ năng mềm (giao tiếp, làm việc nhóm, quản lý thời gian).
+   * Các chứng chỉ (Tin học, Tiếng Anh VSTEP / TOEIC) và hoạt động tình nguyện.
+
+*Mẹo hay:* Trình bày gọn gàng trong **đúng 1 trang A4**, xuất file PDF để không bị lỗi font nha bạn!`,
+  },
+
+  // --- 4.14. PHƯƠNG PHÁP HỌC TẬP HIỆU QUẢ ---
+  {
+    id: 'study_methods',
+    keywords: [
+      'phương pháp học', 'cách học giỏi', 'học hiệu quả', 'pomodoro', 'cách ôn thi', 'mẹo học bài', 'nhớ lâu'
+    ],
+    response: `Dạ đây là 3 phương pháp học tập khoa học hàng đầu được các thủ khoa đại học áp dụng mà mình gợi ý cho bạn nè:
+
+1. **Kỹ thuật Pomodoro (Tập trung cao độ):**
+   * Học tập trung 100% trong **25 phút** (tắt thông báo điện thoại, không lướt mạng xã hội).
+   * Nghỉ giải lao ngắn **5 phút** (uống nước, vươn vai).
+   * Sau 4 chu kỳ như vậy thì nghỉ dài **15 - 30 phút**. Cách này giúp não bộ không bao giờ bị quá tải hay kiệt sức!
+
+2. **Kỹ thuật Feynman (Học bằng cách giải thích lại):**
+   * Đọc và nắm một khái niệm khó, sau đó tự đóng vai người thầy và giải thích lại khái niệm đó bằng ngôn từ đơn giản nhất cho một người chưa biết gì. Chỗ nào bạn bị ngập ngừng chính là lỗ hổng kiến thức bạn cần đọc lại!
+
+3. **Chủ động hồi tưởng & Lặp lại ngắt quãng (Active Recall & Spaced Repetition):**
+   * Thay vì chỉ đọc thụ động, hãy gấp sách lại và tự viết ra giấy những gì mình vừa nhớ.
+   * Ôn lại kiến thức sau: 1 ngày → 3 ngày → 7 ngày → 30 ngày. Kiến thức sẽ được khắc sâu vĩnh viễn vào trí nhớ dài hạn!
+
+Bạn đang chuẩn bị ôn thi môn học nào, mình có thể chia sẻ thêm tài liệu cho bạn nha?`,
+  },
+
+  // --- 4.15. KỂ CHUYỆN CƯỜI SINH VIÊN ---
+  {
+    id: 'joke',
+    keywords: [
+      'kể chuyện cười', 'ke chuyen cuoi', 'nói chuyện vui', 'chuyện hài', 'kể chuyện vui', 'chuyện cười sinh viên'
+    ],
+    response: `Hihi mình kể cho bạn nghe một câu chuyện cười vui của sinh viên nè:
+
+Trong giờ thi môn Lập trình, giám thị thấy một bạn sinh viên ngồi chắp tay lẩm bẩm cầu nguyện:
+- Giám thị: *"Em đang cầu xin Phật độ để làm bài được điểm cao à?"*
+- Sinh viên: *"Dạ không ạ... Em đang cầu xin cho máy chủ của trường bị sập mạng để cả lớp được thi lại buổi khác ạ!"* 
+
+Mong là câu chuyện nhỏ này giúp bạn xua tan căng thẳng sau những giờ học bài nha! Cười lên cho ngày mới tràn đầy năng lượng nè!`,
   },
 
   // --- 5. NGÀNH CÔNG NGHỆ THÔNG TIN & TRÍ TUỆ NHÂN TẠO ---
@@ -712,24 +1038,184 @@ function containsKeyword(normalizedText: string, noToneText: string, keyword: st
   return normalizedText.includes(normKw) || noToneText.includes(noToneKw);
 }
 
+function tryEvaluateMath(text: string): string | null {
+  const clean = text.trim().toLowerCase();
+  // Support: "1 + 1", "5 * 10", "100 / 4", "2^3", "tính 25 * 4", "5 + 5 bằng mấy", "1+1=?", "10 - 4"
+  const mathPattern = /^(?:tính\s+|kết quả\s+|giải\s+)?([0-9.,]+)\s*([+\-*/^xX×÷])\s*([0-9.,]+)(?:\s*(?:bằng|=|\?)\s*(?:mấy|bao nhiêu|\?)?)?$/i;
+  const match = clean.match(mathPattern);
+  if (match) {
+    const num1 = parseFloat(match[1].replace(',', '.'));
+    const op = match[2];
+    const num2 = parseFloat(match[3].replace(',', '.'));
+    if (!isNaN(num1) && !isNaN(num2)) {
+      let res: number;
+      let opSymbol = op;
+      if (op === '+') { res = num1 + num2; opSymbol = '+'; }
+      else if (op === '-') { res = num1 - num2; opSymbol = '-'; }
+      else if (op === '*' || op.toLowerCase() === 'x' || op === '×') { res = num1 * num2; opSymbol = '×'; }
+      else if (op === '/' || op === '÷') {
+        if (num2 === 0) return 'Dạ trong toán học, phép chia cho số 0 là không xác định bạn nha!';
+        res = num1 / num2;
+        opSymbol = '÷';
+      } else if (op === '^') {
+        res = Math.pow(num1, num2);
+        opSymbol = '^';
+      } else {
+        return null;
+      }
+      const formattedRes = Number.isInteger(res) ? res.toString() : res.toFixed(4).replace(/\.?0+$/, '');
+      return `Kết quả phép tính của bạn là:\n\n$$\\mathbf{${num1} \\ ${opSymbol} \\ ${num2} = ${formattedRes}}$$\n\n* **Giải thích:** Phép tính giữa ${num1} và ${num2} cho ra kết quả chính xác là **${formattedRes}** nha! Bạn có câu hỏi hay bài toán nào cần mình hỗ trợ nữa không nè?`;
+    }
+  }
+  return null;
+}
+
 /**
  * Hàm tìm kiếm phản hồi ngoại tuyến thông minh (Smart Offline Engine)
  * Luôn trả lời đúng trọng tâm và tự nhiên theo câu hỏi của người dùng.
- * Nếu không biết, thành thật trả lời không biết và hướng dẫn liên hệ đúng kênh.
  */
 export function getMockResponse(question: string): string {
   const raw = question.trim();
   const normalized = raw.toLowerCase();
   const noTone = removeVietnameseTones(normalized);
 
-  // 1. Kiểm tra chính xác từ khóa trong MOCK_RULES
+  // 0. Phép tính toán học trực tiếp
+  const mathAnswer = tryEvaluateMath(raw);
+  if (mathAnswer) return mathAnswer;
+
+  // 1. Easter eggs đặc biệt
+  if (noTone.includes('cho thinh') || noTone.includes('thinh cho')) {
+    return 'Chó Thịnh à tôi không biết, Tôi chỉ biết Thanh Tho thôi';
+  }
+  if (noTone.includes('thanh tho')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'easter_egg_thanh_tho');
+    if (rule) return rule.response;
+  }
+
+  // 2. Ý định Học bổng (Phải ưu tiên TRƯỚC học phí để tránh nhầm lẫn)
+  if (noTone.includes('hoc bong') || noTone.includes('xin hoc bong') || noTone.includes('xet hoc bong') || noTone.includes('tieu chuan hoc bong')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'scholarship');
+    if (rule) return rule.response;
+  }
+
+  // 3. Ý định Giá phòng / Chi phí Ký túc xá (Ưu tiên TRƯỚC giới thiệu chung KTX)
+  if (
+    (noTone.includes('ktx') || noTone.includes('ky tuc xa')) &&
+    (noTone.includes('gia') || noTone.includes('chi phi') || noTone.includes('bao nhieu tien') || noTone.includes('tien phong') || noTone.includes('dong tien') || noTone.includes('phi'))
+  ) {
+    const rule = MOCK_RULES.find((r) => r.id === 'dorm_price');
+    if (rule) return rule.response;
+  }
+
+  // 4. Ý định Giấy xác nhận sinh viên / Hoãn NVQS / Vay vốn
+  if (
+    noTone.includes('giay xac nhan') ||
+    noTone.includes('xac nhan sinh vien') ||
+    noTone.includes('hoan nghia vu') ||
+    noTone.includes('nvqs') ||
+    (noTone.includes('vay von') && noTone.includes('ngan hang')) ||
+    noTone.includes('ve xe buyt')
+  ) {
+    const rule = MOCK_RULES.find((r) => r.id === 'giay_xac_nhan_sv');
+    if (rule) return rule.response;
+  }
+
+  // 5. Ý định Bảng điểm
+  if (noTone.includes('bang diem') && (noTone.includes('xin') || noTone.includes('cap') || noTone.includes('in') || noTone.includes('lay'))) {
+    const rule = MOCK_RULES.find((r) => r.id === 'xin_bang_diem');
+    if (rule) return rule.response;
+  }
+
+  // 6. Ý định Phúc khảo điểm thi
+  if (noTone.includes('phuc khao') || noTone.includes('cham lai bai') || noTone.includes('khieu nai diem')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'phuc_khao');
+    if (rule) return rule.response;
+  }
+
+  // 7. Ý định Hoãn thi
+  if (noTone.includes('hoan thi') || noTone.includes('xin hoan thi') || noTone.includes('nghi thi')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'hoan_thi');
+    if (rule) return rule.response;
+  }
+
+  // 8. Ý định Học lại vs Học cải thiện
+  if (noTone.includes('hoc lai') || noTone.includes('hoc cai thien') || noTone.includes('diem f') || noTone.includes('diem d')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'hoc_lai_cai_thien');
+    if (rule) return rule.response;
+  }
+
+  // 9. Ý định Mất thẻ / Cấp lại thẻ SV
+  if (noTone.includes('the sinh vien') && (noTone.includes('mat') || noTone.includes('cap lai') || noTone.includes('lam lai') || noTone.includes('hong'))) {
+    const rule = MOCK_RULES.find((r) => r.id === 'cap_lai_the_sv');
+    if (rule) return rule.response;
+  }
+
+  // 10. Ý định Danh sách tổng hợp các ngành đào tạo
+  if (
+    (noTone.includes('nganh dao tao') || noTone.includes('cac nganh') || noTone.includes('nhung nganh nao') || noTone.includes('danh sach nganh')) &&
+    !noTone.includes('cntt') && !noTone.includes('y khoa') && !noTone.includes('o to') && !noTone.includes('kinh te') && !noTone.includes('luat')
+  ) {
+    const rule = MOCK_RULES.find((r) => r.id === 'danh_sach_nganh');
+    if (rule) return rule.response;
+  }
+
+  // 11. Viết email
+  if (noTone.includes('viet email') || noTone.includes('soan email') || noTone.includes('email xin nghi') || noTone.includes('mau email') || noTone.includes('gui giang vien')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'writing_email');
+    if (rule) return rule.response;
+  }
+
+  // 12. Viết CV
+  if (noTone.includes('viet cv') || noTone.includes('tao cv') || noTone.includes('cv xin viec') || noTone.includes('mau cv')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'writing_cv');
+    if (rule) return rule.response;
+  }
+
+  // 13. Phương pháp học tập
+  if (noTone.includes('pomodoro') || noTone.includes('phuong phap hoc') || noTone.includes('cach hoc gioi') || noTone.includes('cach on thi') || noTone.includes('nho lau')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'study_methods');
+    if (rule) return rule.response;
+  }
+
+  // 14. Kể chuyện cười
+  if (noTone.includes('ke chuyen cuoi') || noTone.includes('chuyen cuoi') || noTone.includes('chuyen hai') || noTone.includes('vui vui')) {
+    const rule = MOCK_RULES.find((r) => r.id === 'joke');
+    if (rule) return rule.response;
+  }
+
+  // 15. Lập trình Python
+  if (noTone.includes('python') && (noTone.includes('code') || noTone.includes('la gi') || noTone.includes('hoc') || noTone.includes('vi du') || noTone.includes('ham'))) {
+    const rule = MOCK_RULES.find((r) => r.id === 'programming_python');
+    if (rule) return rule.response;
+  }
+
+  // 16. Lập trình JavaScript / TypeScript / React
+  if (
+    noTone.includes('javascript') ||
+    noTone.includes('typescript') ||
+    noTone.includes('react') ||
+    noTone.includes('let const var') ||
+    noTone.includes('hook')
+  ) {
+    const rule = MOCK_RULES.find((r) => r.id === 'programming_js_ts');
+    if (rule) return rule.response;
+  }
+
+  // 16.5. Tra cứu dữ liệu chuyên sâu từ website Đại học Nam Cần Thơ (nctu.edu.vn)
+  // Bao gồm tất cả các ngành đào tạo, mã ngành, khối xét tuyển, thời gian đào tạo, câu lạc bộ
+  const dncDeepData = searchDncKnowledge(raw);
+  if (dncDeepData) {
+    return dncDeepData;
+  }
+
+  // 17. Kiểm tra từ khóa chính xác trong MOCK_RULES
   for (const rule of MOCK_RULES) {
     if (rule.keywords.some((k) => containsKeyword(normalized, noTone, k))) {
       return rule.response;
     }
   }
 
-  // 2. Nhận diện ý định theo ngữ cảnh phong phú:
+  // 18. Nhận diện ý định theo ngữ cảnh phong phú
   // Ý định: Tính năng cổng HTSV / Web
   if (
     (noTone.includes('tinh nang') || noTone.includes('chuc nang')) &&
@@ -747,7 +1233,7 @@ export function getMockResponse(question: string): string {
   }
 
   // Ý định: Chào hỏi
-  if (noTone === 'hi' || noTone === 'hello' || noTone === 'chao' || noTone.startsWith('chao ban')) {
+  if (noTone === 'hi' || noTone === 'hello' || noTone === 'chao' || noTone.startsWith('chao ban') || noTone.startsWith('xin chao')) {
     return MOCK_RULES.find((r) => r.id === 'greeting')?.response || MOCK_RULES[2].response;
   }
 
@@ -962,13 +1448,14 @@ export function getMockResponse(question: string): string {
     if (lhRule) return lhRule.response;
   }
 
-  // 3. Phản hồi trung thực, tự nhiên như con người khi không biết / không có dữ liệu:
-  return `Dạ về câu này thì hiện tại mình chưa có thông tin chính xác nên không dám trả lời bừa cho bạn nè. Vì mình là trợ lý chuyên về học tập, thủ tục học vụ và thông tin Trường Đại học Nam Cần Thơ (DNC) á.
+  // 19. Phản hồi thông minh, tự nhiên như con người (ChatGPT / Gemini style):
+  return `Chào bạn nha! Mình đã lắng nghe câu hỏi của bạn rồi nè.
 
-Nếu bạn cần giải đáp về thủ tục học tập hay quy chế thi cử, bạn có thể liên hệ trực tiếp:
-* **Phòng Quản lý Đào tạo / Công tác Sinh viên DNC:** Số 168 Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ.
-* **Hotline / Zalo hỗ trợ:** \`0939 257 838\` - \`02923 798 222\`
-* Hoặc gửi yêu cầu qua mục **Dịch vụ Một cửa** trên Cổng HTSV để thầy cô hỗ trợ bạn nhanh nhất nha!`;
+Về vấn đề này, để bạn có được thông tin chuẩn xác và hỗ trợ kịp thời nhất:
+* Nếu là thắc mắc về **học vụ, điểm số, lịch thi hay thủ tục một cửa**: Bạn có thể vào mục **"Hỗ trợ"** trên Cổng HTSV để tạo yêu cầu gửi trực tiếp đến thầy cô Phòng Đào tạo / Công tác Sinh viên nha.
+* Nếu là câu hỏi về **quy chế, học phí, học bổng hoặc tuyển sinh DNC**: Bạn có thể gọi nhanh đến Hotline Tuyển sinh & Tư vấn: \`0939 257 838\` - \`02923 798 222\` hoặc gửi tin nhắn cho mình với từ khóa cụ thể hơn (ví dụ: *học phí ngành CNTT*, *học bổng kỳ này*, *chi phí KTX*...) để mình cung cấp số liệu chi tiết nhé!
+
+Bạn có thể chia sẻ rõ hơn hoặc cần mình giải đáp thêm khía cạnh nào nữa không nè?`;
 }
 
 /**
