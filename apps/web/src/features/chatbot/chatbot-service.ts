@@ -1,5 +1,5 @@
 import type { ChatMessage } from './chatbot-types';
-import { answerVerifiedDnc } from './dnc-verified';
+import { DNC_UNKNOWN, findDncEvidence, type DncLookup } from './dnc-sources';
 
 const STORAGE_USER_KEY = 'htsv_gemini_api_key';
 
@@ -53,25 +53,15 @@ function setCachedResponse(prompt: string, answer: string): void {
 }
 
 /**
- * Call Google Gemini REST API directly with automatic fallback
+ * Call Google Gemini REST API with only the evidence relevant to the question.
  */
-async function callGeminiApi(
-  apiKey: string,
-  model: string,
-  messages: ChatMessage[],
-  temperature: number
-): Promise<string> {
-  const primaryModel = model.trim() || 'gemini-2.0-flash';
+async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLookup | null): Promise<string> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${encodeURIComponent(apiKey)}`;
 
-  const makeRequest = async (targetModel: string) => {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
-
-    // Tối ưu hóa Context Window để tiết kiệm tối đa Token/Quota:
-    // Lấy 8 tin nhắn gần nhất thay vì toàn bộ lịch sử, cắt ngắn các phản hồi dài trước đó
-    const trimmedHistory = messages.slice(-8).map((msg) => {
+    const trimmedHistory = messages.filter((msg) => msg.role !== 'system').slice(-6).map((msg) => {
       let content = msg.content;
-      if (msg.role !== 'user' && content.length > 1000) {
-        content = content.slice(0, 1000) + '...';
+      if (msg.role !== 'user' && content.length > 500) {
+        content = content.slice(0, 500) + '...';
       }
       return {
         role: msg.role === 'user' ? 'user' : 'model',
@@ -79,43 +69,29 @@ async function callGeminiApi(
       };
     });
 
+    const instruction = dnc
+      ? `Bạn là trợ lý HTSV. Trả lời câu hỏi cuối bằng tiếng Việt tự nhiên, trực tiếp, tối đa 3 câu. Chỉ dùng dữ kiện DNC dưới đây; không tự thêm số liệu, chính sách, tên người hoặc địa chỉ. Nếu dữ kiện chưa đủ để trả lời đúng ý hỏi, chỉ nói: "${DNC_UNKNOWN}". Không nhắc chủ đề khác. Không tự viết liên kết nguồn.\nDữ kiện đã đối chiếu:\n${dnc.evidence.map(({ answer }) => `- ${answer}`).join('\n')}`
+      : 'Bạn là trợ lý HTSV. Trả lời câu hỏi cuối bằng tiếng Việt tự nhiên, đúng trọng tâm, ngắn gọn. Nếu không chắc thì nói "Mình không biết thông tin này." Không tự bịa dữ kiện về Trường Đại học Nam Cần Thơ.';
+
     const payload = {
       contents: trimmedHistory,
       systemInstruction: {
-        parts: [{ text: 'Trả lời đúng câu hỏi bằng tiếng Việt, ngắn gọn (tối đa 2 câu). Nếu không biết, trả lời: "Mình không biết thông tin này." Không suy đoán hay tự đưa thông tin về Trường Đại học Nam Cần Thơ khi người dùng không hỏi.' }],
+        parts: [{ text: instruction }],
       },
       generationConfig: {
-        temperature: Math.max(0, Math.min(0.3, temperature)),
-        maxOutputTokens: 256,
+        temperature: 0.2,
+        maxOutputTokens: 320,
       },
     };
 
-    return fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(25000), // 25-second timeout ensures completion
+      signal: AbortSignal.timeout(25000),
     });
-  };
-
-  let response: Response;
-  try {
-    response = await makeRequest(primaryModel);
-  } catch (firstErr) {
-    console.warn(`Primary model ${primaryModel} failed, trying fallback model gemini-1.5-flash:`, firstErr);
-    response = await makeRequest('gemini-1.5-flash');
-  }
-
-  // If primary model is busy (503/429/timeout/404), try fallback
-  if (!response.ok && primaryModel !== 'gemini-1.5-flash') {
-    try {
-      response = await makeRequest('gemini-1.5-flash');
-    } catch {
-      // ignore
-    }
-  }
 
   if (!response.ok) {
     const errorJson = await response.json().catch(() => null);
@@ -132,7 +108,7 @@ async function callGeminiApi(
   }
 
   const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  const text = data?.candidates?.[0]?.content?.parts?.filter((part: { text?: string }) => part.text).map((part: { text: string }) => part.text).join('\n');
   if (!text) {
     throw new Error('Không nhận được nội dung phản hồi từ mô hình AI.');
   }
@@ -149,13 +125,28 @@ export async function sendChatMessage(
   const apiKey = getEffectiveApiKey();
   const lastUserMessage = history.filter((m) => m.role === 'user').pop();
   const prompt = lastUserMessage?.content || '';
+  const previousUserMessage = history.filter((m) => m.role === 'user').at(-2)?.content || '';
+  const simplePrompt = prompt.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+  if (/^(xin chao|chao|hello|hi|hey)[!.? ]*$/.test(simplePrompt)) {
+    return { text: 'Chào bạn! Mình có thể giúp gì cho bạn?', isMock: false };
+  }
+  if (/^(cam on|thanks|thank you)( ban)?[!.? ]*$/.test(simplePrompt)) {
+    return { text: 'Không có gì! Bạn cứ hỏi tiếp nhé.', isMock: false };
+  }
+  if (/^(ban la ai|bot la ai)[?.! ]*$/.test(simplePrompt)) {
+    return { text: 'Mình là trợ lý của cổng HTSV, có thể giúp bạn tìm thông tin về Trường Đại học Nam Cần Thơ.', isMock: false };
+  }
+  const dnc = findDncEvidence(prompt, previousUserMessage);
 
-  // Dữ kiện DNC chỉ lấy từ các trang chính thức đã đối chiếu.
-  const verifiedAnswer = answerVerifiedDnc(prompt);
-  if (verifiedAnswer !== null) return { text: verifiedAnswer, isMock: false };
+  if (dnc && dnc.evidence.length === 0) return { text: DNC_UNKNOWN, isMock: false };
+  // Các con số, mã, địa chỉ và quy trình lấy nguyên văn từ nguồn để tránh mô hình tự điền chi tiết.
+  if (dnc && /\b(hoc phi|hoc bong|gia|bao nhieu|diem|ma nganh|ma truong|dia chi|o dau|hotline|so dien thoai|phuong thuc|xet tuyen|hoc ba|dang nhap|dang ky|dieu kien)\b/.test(simplePrompt)) {
+    return { text: dnc.fallback, isMock: false };
+  }
 
   // 1. Kiểm tra Cache trước: nếu câu hỏi này đã từng được trả lời, trả về ngay lập tức (tiết kiệm 100% quota)
-  const cachedAnswer = getCachedResponse(prompt);
+  const cacheKey = `${previousUserMessage}\n${prompt}`;
+  const cachedAnswer = getCachedResponse(cacheKey);
   if (cachedAnswer) {
     return { text: cachedAnswer, isMock: false };
   }
@@ -163,22 +154,27 @@ export async function sendChatMessage(
   // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ siêu thông minh và đúng trọng tâm
   if (!apiKey) {
     return {
-      text: 'Mình không biết thông tin này.',
-      isMock: true,
+      text: dnc?.fallback || 'Mình không biết thông tin này.',
+      isMock: !dnc,
     };
   }
 
   // 3. Gọi Gemini API trực tuyến
   try {
-    const text = await callGeminiApi(apiKey, 'gemini-2.0-flash', history, 0.2);
+    const text = await callGeminiApi(apiKey, history, dnc);
+    const answer = dnc
+      ? text.includes(DNC_UNKNOWN)
+        ? DNC_UNKNOWN
+        : `${text.trim()}\n\n${[...new Set(dnc.evidence.map((item) => item.source))].map((source) => `[Nguồn](${source})`).join(' · ')}`
+      : text.trim();
     // Lưu vào Cache để các lần hỏi sau không tốn thêm token
-    setCachedResponse(prompt, text);
-    return { text, isMock: false };
+    setCachedResponse(cacheKey, answer);
+    return { text: answer, isMock: false };
   } catch (err: unknown) {
-    console.warn('Gemini API call failed, falling back to smart local knowledge base:', err);
+    console.warn('Gemini API call failed:', err);
     return {
-      text: 'Mình không biết thông tin này.',
-      isMock: true,
+      text: dnc?.fallback || 'Mình không biết thông tin này.',
+      isMock: !dnc,
     };
   }
 }
