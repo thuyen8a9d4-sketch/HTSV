@@ -8,29 +8,38 @@ export function DepthGallery() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<DepthGalleryEngine | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [currentSlide, setCurrentSlide] = useState<GalleryPlaneItem>(galleryPlaneData[0]);
+  const currentSlide: GalleryPlaneItem = galleryPlaneData[activeIndex];
   const [isLoaded, setIsLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     let engine: DepthGalleryEngine | null = null;
+    let disposed = false;
+    const fail = (err: unknown) => {
+      if (disposed) return;
+      engine?.destroy();
+      setFailed(true);
+      setIsLoaded(true);
+      console.warn('DepthGalleryEngine failed to initialize:', err);
+    };
     try {
-      engine = new DepthGalleryEngine(canvas, (index, item) => {
+      engine = new DepthGalleryEngine(canvas, (index) => {
         setActiveIndex(index);
-        setCurrentSlide(item);
       });
       engineRef.current = engine;
 
       void engine.init().then(() => {
-        setIsLoaded(true);
-      });
+        if (!disposed) setIsLoaded(true);
+      }).catch(fail);
     } catch (err) {
-      console.warn('DepthGalleryEngine failed to initialize:', err);
+      fail(err);
     }
 
     return () => {
+      disposed = true;
       if (engine) {
         engine.destroy();
         if (engineRef.current === engine) {
@@ -43,7 +52,7 @@ export function DepthGallery() {
   return (
     <section
       aria-label="Phòng trưng bày chiều sâu 3D HTSV"
-      className="relative h-screen min-h-[100dvh] w-full overflow-hidden z-0 bg-slate-950"
+      className="relative h-[100dvh] min-h-[100dvh] w-full overflow-hidden z-0 bg-slate-950"
     >
       {/* 3D WebGL Canvas filling 100% of viewport */}
       <canvas
@@ -51,6 +60,7 @@ export function DepthGallery() {
         className="absolute inset-0 h-full w-full touch-none"
         aria-hidden="true"
       />
+      {failed && <img src={currentSlide.textureSrc} alt="" className="absolute inset-0 h-full w-full object-cover opacity-60" />}
 
       {/* Subtle Initial Loading Indicator */}
       {!isLoaded && (
@@ -71,7 +81,7 @@ export function DepthGallery() {
 
       {/* Editorial Typographic Block with Slide-Specific Dynamic Coordinates & Mobile Optimization */}
       <div
-        className="pointer-events-none absolute z-20 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] max-md:!top-auto max-md:!bottom-[calc(88px+env(safe-area-inset-bottom,0px))] max-md:!left-4 max-md:!right-4 max-md:!transform-none"
+        className="pointer-events-none absolute z-20 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] max-md:!top-auto max-md:!bottom-[calc(118px+env(safe-area-inset-bottom,0px))] max-md:!left-4 max-md:!right-4 max-md:!transform-none"
         style={{
           top: currentSlide.layout.top,
           left: currentSlide.layout.left ?? 'auto',
@@ -89,7 +99,7 @@ export function DepthGallery() {
         >
           {/* Index & Theme Indicator */}
           <div
-            className={`flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3 max-md:!flex-row ${
+            className={`flex items-center gap-2 sm:gap-3 mb-1 sm:mb-3 max-md:!flex-row ${
               currentSlide.layout.alignment === 'right' ? 'flex-row-reverse' : ''
             }`}
           >
@@ -107,42 +117,42 @@ export function DepthGallery() {
 
           {/* Big Bold Headline: Strictly Non-Wrapping Single Line */}
           <h1 
-            className="whitespace-nowrap text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-white uppercase leading-[1.08] select-none"
+            className="max-md:whitespace-normal whitespace-nowrap text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-white uppercase leading-[1.08] select-none"
             style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6), 0 4px 24px rgba(0,0,0,0.4), 0 8px 48px rgba(0,0,0,0.25)' }}
           >
             {currentSlide.label.word}
           </h1>
 
           {/* Elegant Subtitle with Clear Spacing: Zero Overlap */}
-          <p className="mt-2.5 sm:mt-4 font-mono text-[11px] sm:text-xs md:text-sm lg:text-base font-semibold tracking-wider text-sky-100 drop-shadow-md whitespace-nowrap">
+          <p className="mt-1 sm:mt-4 font-mono text-[11px] sm:text-xs md:text-sm lg:text-base font-semibold tracking-wider text-sky-100 drop-shadow-md max-md:whitespace-normal whitespace-nowrap">
             {currentSlide.label.subword}
           </p>
 
           {/* Direct Action Link with Thick Frosted Liquid Glass */}
-          <div className="pointer-events-auto mt-4 sm:mt-7">
+          <div className="pointer-events-auto mt-2.5 sm:mt-7">
             <Link
               to={currentSlide.action.path}
-              className="liquid-glass-btn group transition-all duration-300 hover:scale-105 active:scale-95"
+              className="liquid-glass-btn group px-3.5 py-1.5 sm:px-5 sm:py-2.5 text-xs sm:text-sm transition-all duration-300 hover:scale-105 active:scale-95"
             >
               <span>Khám phá {currentSlide.label.word}</span>
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Scroll Down Hint to Announcements & News (Desktop only to prevent clutter above mobile bottom nav) */}
-      <div className="pointer-events-auto absolute bottom-6 left-1/2 -translate-x-1/2 z-20 hidden md:flex flex-col items-center">
+      {/* Scroll Down Hint to Announcements & News (Always accessible on both mobile and desktop) */}
+      <div className="pointer-events-auto absolute bottom-[calc(72px+env(safe-area-inset-bottom,0px))] md:bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
         <button
           type="button"
           onClick={() => {
-            document.getElementById('home-content-section')?.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('home-content-section')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
           }}
-          className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-slate-900/70 px-4 py-2 text-xs font-semibold text-slate-200 backdrop-blur-md transition-all hover:bg-white hover:text-blue-900 hover:border-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="group inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-800 backdrop-blur-md shadow-md transition-all hover:bg-white hover:text-blue-700 hover:border-blue-300 hover:shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap dark:border-white/20 dark:bg-slate-900/85 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white dark:hover:border-white/40 dark:shadow-xl"
           title="Cuộn xuống xem thông báo, tin tức và dịch vụ"
         >
           <span>Xem thông báo & tin tức mới</span>
-          <ArrowDown className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-y-0.5" />
+          <ArrowDown className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-y-0.5 text-slate-500 group-hover:text-blue-600 dark:text-slate-300 dark:group-hover:text-blue-400" />
         </button>
       </div>
     </section>

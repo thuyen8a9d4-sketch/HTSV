@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { BotAvatar, botAvatarTypes } from 'bot-avatars';
+import type { BotAvatarType } from 'bot-avatars';
 import {
   Banknote,
   Building,
@@ -13,11 +15,11 @@ import {
   School,
   Send,
 } from '../../components/Icons';
+import { useTheme } from '../../lib/theme';
 import type { ChatMessage, QuickSuggestion } from './chatbot-types';
 import { getEffectiveApiKey, sendChatMessage } from './chatbot-service';
 import { QUICK_SUGGESTIONS, generateFollowUpSuggestions } from './chatbot-knowledge';
 import { ChatMarkdown } from './ChatMarkdown';
-import { AiAvatar } from './AiAvatar';
 import './chatbot.css';
 
 const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v2';
@@ -92,7 +94,11 @@ function getInitialMessages(): ChatMessage[] {
     const saved = localStorage.getItem(STORAGE_CHAT_HISTORY);
     if (saved) {
       const parsed = JSON.parse(saved) as ChatMessage[];
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed.every((m) =>
+        m && typeof m.id === 'string' && typeof m.content === 'string' &&
+        ['user', 'assistant', 'system'].includes(m.role) && Number.isFinite(m.timestamp) &&
+        (m.followUps === undefined || (Array.isArray(m.followUps) && m.followUps.every((item) => typeof item === 'string')))
+      )) {
         return parsed.map((m) => {
           if (m.id === 'msg-welcome') {
             return { ...INITIAL_BOT_MESSAGE, timestamp: m.timestamp };
@@ -111,7 +117,9 @@ function getInitialMessages(): ChatMessage[] {
 }
 
 export function ChatbotWidget() {
+  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const [avatarType, setAvatarType] = useState<BotAvatarType>('clover');
   const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialMessages());
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -122,10 +130,14 @@ export function ChatbotWidget() {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const streamIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const requestVersion = useRef(0);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Clean up streaming timer on unmount
   useEffect(() => {
     return () => {
+      requestVersion.current += 1;
+      if (copyTimer.current) clearTimeout(copyTimer.current);
       if (streamIntervalRef.current) {
         clearInterval(streamIntervalRef.current);
       }
@@ -147,14 +159,14 @@ export function ChatbotWidget() {
       const list = messageListRef.current;
       list?.scrollTo({
         top: messages.length === 1 ? 0 : list.scrollHeight,
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        behavior: isStreaming || window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
       });
-      // focus input when opening on non-touch devices
-      if (window.innerWidth >= 640 && !isStreaming) {
-        inputRef.current?.focus();
-      }
     }
   }, [isOpen, messages, isLoading, isStreaming]);
+
+  useEffect(() => {
+    if (isOpen && window.matchMedia('(pointer: fine)').matches) inputRef.current?.focus();
+  }, [isOpen]);
 
   // Handle escape to close
   useEffect(() => {
@@ -169,6 +181,12 @@ export function ChatbotWidget() {
   }, [isOpen]);
 
   const hasApiKey = Boolean(getEffectiveApiKey());
+  const avatarState = isLoading || isStreaming ? 'working' : 'default';
+
+  const handleChangeAvatar = () => {
+    const otherSkins = botAvatarTypes.filter((type) => type !== avatarType);
+    setAvatarType(otherSkins[Math.floor(Math.random() * otherSkins.length)] ?? 'clover');
+  };
 
   const handleSendMessage = async (userText: string) => {
     const text = userText.trim();
@@ -186,12 +204,19 @@ export function ChatbotWidget() {
     setMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
+    const version = ++requestVersion.current;
 
     try {
       const response = await sendChatMessage(updatedMessages);
+      if (version !== requestVersion.current) return;
       const fullText = response.text;
       const followUps = generateFollowUpSuggestions(text, fullText);
       setIsLoading(false);
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setMessages((prev) => [...prev, createMessage('assistant', fullText, { status: 'success', isMock: response.isMock, followUps })]);
+        return;
+      }
 
       // Start streaming typewriter animation
       const newBotMessage = createMessage('assistant', '', {
@@ -237,6 +262,7 @@ export function ChatbotWidget() {
         }
       }, 16);
     } catch (err) {
+      if (version !== requestVersion.current) return;
       setIsLoading(false);
       setIsStreaming(false);
       const errorMsg = err instanceof Error ? err.message : 'Đã có lỗi xảy ra khi kết nối tới trợ lý AI.';
@@ -250,6 +276,7 @@ export function ChatbotWidget() {
   };
 
   const handleClearHistory = () => {
+    requestVersion.current += 1;
     if (streamIntervalRef.current) {
       clearInterval(streamIntervalRef.current);
       streamIntervalRef.current = null;
@@ -265,14 +292,16 @@ export function ChatbotWidget() {
   };
 
   const handleCopyText = (content: string, id: string) => {
-    navigator.clipboard.writeText(content).then(() => {
+    if (!navigator.clipboard) return;
+    void navigator.clipboard.writeText(content).then(() => {
       setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+      copyTimer.current = setTimeout(() => setCopiedId(null), 2000);
+    }).catch(() => { setCopiedId(null); });
   };
 
   const handleKeyDownInput = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSendMessage(input);
     }
@@ -295,10 +324,10 @@ export function ChatbotWidget() {
           aria-expanded={false}
           aria-controls="htsv-chat-panel"
           className="htsv-chat-trigger"
-          aria-label="Mở Trợ lý AI HTSV"
+          aria-label="Mở Tư vấn Sinh viên HTSV"
         >
-          <AiAvatar size="100%" isAnimated />
-          <span className="htsv-chat-trigger-tooltip">Trợ lý AI HTSV</span>
+          <BotAvatar type={avatarType} state={avatarState} size="100%" theme={theme} aria-hidden="true" />
+          <span className="htsv-chat-trigger-tooltip">Tư vấn Sinh viên HTSV</span>
         </button>
       )}
 
@@ -315,20 +344,31 @@ export function ChatbotWidget() {
           {/* Header */}
           <div className="htsv-chat-header flex items-center justify-between gap-2 px-4 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
-              <AiAvatar size={40} />
+              <button
+                type="button"
+                className="htsv-chat-avatar"
+                onClick={handleChangeAvatar}
+                title="Đổi skin ngẫu nhiên"
+                aria-label="Đổi skin chatbot ngẫu nhiên"
+              >
+                <BotAvatar
+                  type={avatarType}
+                  state={avatarState}
+                  size="100%"
+                  theme={theme}
+                  aria-hidden="true"
+                />
+              </button>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="htsv-chat-title text-sm font-bold">
-                    Trợ lý AI Sinh viên
+                    Tư vấn Sinh viên HTSV
                   </h3>
-                  <span className="inline-flex items-center rounded-full bg-indigo-500/15 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-                    AI
-                  </span>
                   <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs" title="Đang trực tuyến" aria-label="Đang trực tuyến" />
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="htsv-chat-subtitle text-[11px] font-medium">
-                    {hasApiKey ? 'Powered by Gemini AI • 24/7' : 'Trí tuệ nhân tạo sinh viên'}
+                    {hasApiKey ? 'Hỗ trợ trực tuyến 24/7' : 'Giải đáp thông tin sinh viên'}
                   </span>
                 </div>
               </div>

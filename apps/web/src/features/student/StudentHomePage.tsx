@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, useLocation, useOutletContext } from 'react-router-dom';
 import { GlassModal } from '../../components/GlassModal';
 import { ChatBubble, GridSquares, Plus } from '../../components/Icons';
-import { DepthGallery } from './depth-gallery';
+const DepthGallery = lazy(() => import('./depth-gallery').then((m) => ({ default: m.DepthGallery })));
 import { RequestTracker } from './RequestTracker';
 import { studentFaqs, studentServices } from './student-mock-data';
 import { StudentIcon } from './StudentIcon';
@@ -79,7 +79,7 @@ export function StudentHomePage({ view = 'home' }: { view?: StudentView }) {
     return (
       <div className="relative min-h-screen w-full">
         {/* Full-Screen 3D Depth Gallery with Zero Annotations */}
-        <DepthGallery />
+        <Suspense fallback={<div className="h-[100dvh] bg-slate-950" aria-label="Đang tải trang chủ" />}><DepthGallery /></Suspense>
 
         {/* Extended Content: DNC Announcements, Featured Forum Posts, Quick Services, Comprehensive Footer */}
         <HomeContentSection

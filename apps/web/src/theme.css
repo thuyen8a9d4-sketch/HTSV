@@ -67,7 +67,17 @@
   --color-indigo-700: #c1c7e8;
 }
 
+/* Unlayered so utility font sizes cannot trigger iOS focus zoom. */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px; }
+}
+
 @layer components {
+  .student-workspace { min-width: 0; overflow-wrap: anywhere; }
+  @media (max-width: 767px) {
+    .student-header-icon, .btn-nav-action-icon { min-width: 44px; min-height: 44px; }
+    .forum-page article { overflow-wrap: anywhere; }
+  }
   .portal-wordmark { display: flex; flex: none; align-items: center; gap: 10px; min-height: 44px; border-radius: 6px; color: var(--ink); }
   .portal-wordmark-logo { display: block; width: 46px; height: 40px; object-fit: contain; border-radius: 3px; }
   .portal-wordmark-copy { display: none; }

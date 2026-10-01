@@ -163,17 +163,9 @@ export async function sendChatMessage(
     console.warn('Gemini API call failed, falling back to smart local knowledge base:', err);
     await new Promise((resolve) => setTimeout(resolve, 300));
     
-    // Nếu gặp lỗi giới hạn Quota (429 Rate Limit), chuyển mượt sang bộ dữ liệu nội bộ
-    const isRateLimit = (err instanceof Error && err.message === 'RATE_LIMIT_EXCEEDED') ||
-      (typeof err === 'object' && err !== null && 'name' in err && (err as { name: string }).name === 'RateLimitError');
-
     const fallbackText = getMockResponse(prompt);
-    const finalNotice = isRateLimit
-      ? `*(Hệ thống vừa đạt ngưỡng giới hạn tạm thời từ máy chủ, đã kích hoạt bộ phản hồi nhanh để không làm gián đoạn trò chuyện)*\n\n${fallbackText}`
-      : fallbackText;
-
     return {
-      text: finalNotice,
+      text: fallbackText,
       isMock: true,
     };
   }

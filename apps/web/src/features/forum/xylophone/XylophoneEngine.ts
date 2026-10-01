@@ -48,6 +48,22 @@ export class XylophoneEngine {
 
   private readonly boundUpdate = this.update.bind(this);
   private readonly boundResize = this.resize.bind(this);
+  private readonly onVisibilityChange = () => {
+    window.cancelAnimationFrame(this.rafId);
+    if (!document.hidden && !this.isContextLost && !this.isDestroyed) {
+      this.dateTime = performance.now();
+      this.update();
+    }
+  };
+  private readonly onContextLost = (event: Event) => {
+    event.preventDefault();
+    this.isContextLost = true;
+    window.cancelAnimationFrame(this.rafId);
+  };
+  private readonly onContextRestored = () => {
+    this.isContextLost = false;
+    this.onVisibilityChange();
+  };
 
   private createGlassNormalMaterial() {
     const u = this.xylophone.uniforms;
@@ -122,13 +138,9 @@ export class XylophoneEngine {
     this.resize();
     window.addEventListener('resize', this.boundResize);
 
-    canvas.addEventListener('webglcontextlost', (event) => {
-      event.preventDefault();
-      this.isContextLost = true;
-    });
-    canvas.addEventListener('webglcontextrestored', () => {
-      this.isContextLost = false;
-    });
+    canvas.addEventListener('webglcontextlost', this.onContextLost);
+    canvas.addEventListener('webglcontextrestored', this.onContextRestored);
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
 
     this.setTheme(initialDark);
 
@@ -163,9 +175,8 @@ export class XylophoneEngine {
   }
 
   private update() {
-    if (this.isDestroyed) return;
+    if (this.isDestroyed || document.hidden || this.isContextLost) return;
     this.rafId = window.requestAnimationFrame(this.boundUpdate);
-    if (this.isContextLost) return;
 
     const now = performance.now();
     const delta = Math.min((now - this.dateTime) / 1e3, MAX_DELTA);
@@ -184,9 +195,13 @@ export class XylophoneEngine {
   }
 
   destroy() {
+    if (this.isDestroyed) return;
     this.isDestroyed = true;
     window.cancelAnimationFrame(this.rafId);
     window.removeEventListener('resize', this.boundResize);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    this.gl.domElement.removeEventListener('webglcontextlost', this.onContextLost);
+    this.gl.domElement.removeEventListener('webglcontextrestored', this.onContextRestored);
     Input.destroy();
 
     for (const pass of [this.frostBackdropPass, this.renderPass, this.glassBufferPass, this.ssaoPass, this.aaPass]) {

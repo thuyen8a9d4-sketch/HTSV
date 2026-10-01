@@ -1,0 +1,1119 @@
+{
+  "results": [
+    {
+      "width": 360,
+      "route": "/",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/schedule",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/services",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/requests",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/faq",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/support",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/tuition",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/dorm",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/announcements",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/forum",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/forum/1",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/forum/new",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/login",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/register",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/verify-otp?email=test@example.test",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/forgot-password",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/reset-password?email=test@example.test",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/admin",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/admin/forum",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/admin/reports",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/admin/users",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/admin/roles",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 360,
+      "route": "/admin/permissions",
+      "viewport": 360,
+      "document": 360,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/schedule",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/services",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/requests",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/faq",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/support",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/tuition",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/dorm",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/announcements",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/forum",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/forum/1",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/forum/new",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/login",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/register",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/verify-otp?email=test@example.test",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/forgot-password",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/reset-password?email=test@example.test",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/admin",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/admin/forum",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/admin/reports",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/admin/users",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/admin/roles",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 768,
+      "route": "/admin/permissions",
+      "viewport": 768,
+      "document": 768,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/schedule",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/services",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/requests",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/faq",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/support",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/tuition",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/dorm",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/announcements",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/forum",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/forum/1",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/forum/new",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/login",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/register",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/verify-otp?email=test@example.test",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/forgot-password",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/reset-password?email=test@example.test",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/admin",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/admin/forum",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/admin/reports",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/admin/users",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/admin/roles",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    },
+    {
+      "width": 1280,
+      "route": "/admin/permissions",
+      "viewport": 1280,
+      "document": 1280,
+      "unnamed": []
+    }
+  ],
+  "checks": [
+    "Mobile drawer Escape returns focus and restores scroll",
+    "Request validation, save and persistence",
+    "Forum search, empty result, mobile input size",
+    "Long unbroken forum text does not overflow",
+    "Forum error state and recovery",
+    "Forum invalid state and recovery",
+    "Forum empty state and recovery",
+    "Chat corrupt history, reset pending answer, landscape and Escape",
+    "Gallery stops GPU draws offscreen and resumes when visible",
+    "Dark theme and reduced motion layout",
+    "Service page does not download WebGL bundles",
+    "Guest protected route preserves next URL"
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts/1",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/dashboard",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/reports",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/users",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/admin/roles",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/roles",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/permissions",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts/1",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/dashboard",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/reports",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/users",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/admin/roles",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/roles",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/permissions",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts/1",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/dashboard",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/reports",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/users",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/admin/roles",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/roles",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/admin/permissions",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/forum/posts",
+      "method": "GET",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    },
+    {
+      "url": "/auth/refresh",
+      "method": "POST",
+      "body": null
+    }
+  ]
+}

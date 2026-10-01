@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar } from '../components/Avatar';
 import { GlassButton } from '../components/GlassButton';
@@ -58,22 +59,22 @@ export function PortalLayout() {
     navigate('/login');
   };
 
-  const openRequest = (type = 'Hỗ trợ học vụ') => {
+  const openRequest = useCallback((type = 'Hỗ trợ học vụ') => {
     setService(null);
     setRequestType(type);
-  };
+  }, []);
 
-  const openService = (item: StudentService) => {
+  const openService = useCallback((item: StudentService) => {
     if (item.path) navigate(item.path);
     else if (item.requestType) openRequest(item.requestType);
     else setService(item);
-  };
+  }, [navigate, openRequest]);
 
   const closeProfileMenu = () => {
     if (profileMenu.current) profileMenu.current.open = false;
   };
 
-  const context: StudentPortalContext = { openRequest, openService };
+  const context = useMemo<StudentPortalContext>(() => ({ openRequest, openService }), [openRequest, openService]);
 
   return (
     <div className="student-portal min-h-screen ambient-canvas">
@@ -272,7 +273,7 @@ export function PortalLayout() {
       {/* Main Content Area */}
       <div className="min-w-0 w-full">
         <main id="main-content" tabIndex={-1} className={isHome ? 'min-h-screen' : 'student-main'}>
-          <Outlet context={context} />
+          <Suspense fallback={<LoadingSkeleton count={2} />}><Outlet context={context} /></Suspense>
         </main>
         {!isHome && <PortalFooter />}
 

@@ -53,6 +53,7 @@ function buildGradientTexture(): Texture {
 }
 
 export class Xylophone {
+  private disposed = false;
   readonly group = new Group();
 
   readonly uniforms = {
@@ -179,6 +180,7 @@ export class Xylophone {
       }
     }
 
+    if (this.disposed) { modelGeometry.dispose(); return; }
     this.build(modelGeometry);
   }
 
@@ -224,6 +226,7 @@ export class Xylophone {
   }
 
   dispose() {
+    this.disposed = true;
     this.instances?.geometry.dispose();
     this.material?.dispose();
     this.uniforms.u_tGradient.value?.dispose();
