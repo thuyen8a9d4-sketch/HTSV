@@ -27,8 +27,31 @@ export const DNC_KNOWLEDGE_BASE: KnowledgeItem[] = [
 * **Cơ sở trực thuộc nổi bật:** 
   * 🏥 **Bệnh viện Đại học Nam Cần Thơ** (quy mô 300 giường bệnh đạt chuẩn quốc tế)
   * 🚗 **Showroom Ô tô Nam Cần Thơ DNC**
+  * 🌴 **Khu thực hành Du lịch Sinh thái – Resort DNC** (diện tích >25.000 m² chuẩn Châu Âu)
   * 🧪 **Viện Nghiên cứu và Phát triển Dược liệu**
   * 🏢 **Khu phức hợp Ký túc xá, Thư viện điện tử, Sân vận động đa năng**`
+  },
+  {
+    id: 'dnc-resort',
+    category: 'gioi_thieu',
+    keywords: ['resort', 'dnc resort', 'khu sinh thai', 'du lich sinh thai', 'bungalow', 'khu resort', 'nghi duong', 'khach san resort'],
+    question: 'Thông tin về Khu thực hành Du lịch Sinh thái – Resort DNC (DNC Resort)?',
+    answer: `### 🌴 **Khu thực hành Du lịch Sinh thái – Resort DNC (DNC Resort)**
+
+Khu thực hành Du lịch Sinh thái – Resort DNC là công trình tiêu biểu theo mô hình *"Doanh nghiệp trong Trường Đại học"* của Trường Đại học Nam Cần Thơ, được khánh thành vào ngày **25/01/2024**:
+
+* **Vị trí:** Tọa lạc ngay **bên trong khuôn viên Trường Đại học Nam Cần Thơ** (Số 168, Đường Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ).
+* **Quy mô & Thiết kế:** 
+  * Diện tích trên **25.000 m² (hơn 2,5 ha)** mang phong cách kiến trúc Châu Âu sang trọng, hòa hợp với thiên nhiên sinh thái ven sông.
+  * Hệ thống các căn bungalow tiện nghi cao cấp (hiện có 10 căn giai đoạn 1 và đang mở rộng lên 20 căn) phục vụ nhu cầu lưu trú, nghỉ dưỡng.
+* **Tiện ích tích hợp:**
+  * Hồ bơi ngoài trời hiện đại.
+  * Cụm sân thể thao đa năng chuẩn thi đấu: Tennis, Pickleball, bóng chuyền, bóng rổ.
+  * Cửa hàng tiện lợi, quầy giải khát và dịch vụ ẩm thực.
+* **Mục đích hoạt động:**
+  * **Cơ sở thực hành cho sinh viên:** Nơi rèn luyện kỹ năng nghề nghiệp thực tế, trải nghiệm quy trình vận hành khách sạn - resort chuyên nghiệp cho sinh viên ngành Quản trị Dịch vụ Du lịch & Lữ hành, Quản trị Khách sạn, Quản trị Nhà hàng & Dịch vụ ăn uống.
+  * **Phục vụ lưu trú & Du lịch:** Nơi đón tiếp, lưu trú cho chuyên gia, giảng viên trong & ngoài nước, khách mời và du khách đến tham quan, công tác.
+  * **Du lịch sức khỏe (Medical Tourism):** Kết hợp chặt chẽ giữa Resort DNC, **Bệnh viện Đại học Nam Cần Thơ** và **DNC Travel** nhằm cung cấp dịch vụ nghỉ dưỡng kết hợp thăm khám sức khỏe toàn diện.`
   },
   {
     id: 'dnc-phuong-thuc-xet-tuyen',
@@ -1718,9 +1741,9 @@ export function resolveDncAddress(noTone: string): string {
     return `Cơ sở này nằm ngay bên trong khuôn viên Trường Đại học Nam Cần Thơ, địa chỉ: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**.`;
   }
 
-  // 5. Kiểm tra câu hỏi về Resort
-  if (noTone.includes('resort')) {
-    return `Dạ Trường Đại học Nam Cần Thơ (DNC) không có khu nghỉ dưỡng nào tên là DNC Resort nha bạn! Trường chỉ có Công ty Du lịch DNC (DNC Travel) và liên kết với các doanh nghiệp, khách sạn để sinh viên thực tập thôi nè.`;
+  // 5. Kiểm tra câu hỏi về Resort / Khu sinh thái
+  if (noTone.includes('resort') || noTone.includes('khu sinh thai') || noTone.includes('du lich sinh thai')) {
+    return `Khu thực hành Du lịch Sinh thái – Resort DNC (DNC Resort) nằm ngay **bên trong khuôn viên Trường Đại học Nam Cần Thơ**, địa chỉ: **Số 168, Đường Nguyễn Văn Cừ nối dài, Phường An Bình, Quận Ninh Kiều, TP. Cần Thơ**. Công trình có quy mô hơn 25.000 m² với các căn bungalow phong cách Châu Âu, hồ bơi ngoài trời và cụm sân thể thao đa năng.`;
   }
 
   // 6. Phòng Đào tạo / CTSV / Văn phòng một cửa
@@ -1957,7 +1980,17 @@ Showroom Ô tô Nam Cần Thơ DNC là mô hình doanh nghiệp trong trường 
 * **Thực hành sinh viên:** Sinh viên ngành Công nghệ Kỹ thuật Ô tô được cầm đồ nghề thực hành trực tiếp trên các dòng xe hiện đại (cả xe động cơ truyền thống và ô tô điện thông minh) ngay từ những năm học đầu tiên.`;
   }
 
-  // 11. Tìm kiếm tổng quan ngành học (CHỈ KHI người dùng thực sự hỏi về ngành học cụ thể)
+  // 11. Câu hỏi về Khu thực hành Du lịch Sinh thái – Resort DNC
+  if (
+    noTone.includes('resort') ||
+    noTone.includes('khu sinh thai') ||
+    (noTone.includes('du lich') && (noTone.includes('sinh thai') || noTone.includes('bungalow')))
+  ) {
+    const resortItem = DNC_KNOWLEDGE_BASE.find((item) => item.id === 'dnc-resort');
+    if (resortItem) return resortItem.answer;
+  }
+
+  // 12. Tìm kiếm tổng quan ngành học (CHỈ KHI người dùng thực sự hỏi về ngành học cụ thể)
   const isAskingAboutMajor =
     noTone.includes('nganh ') ||
     noTone.startsWith('nganh') ||
