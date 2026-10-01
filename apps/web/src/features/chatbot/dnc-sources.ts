@@ -14,6 +14,7 @@ const SOURCES = {
   overview: 'https://www.nctu.edu.vn/',
   dorm: 'https://www.nctu.edu.vn/ky-tuc-xa',
   hospitalContact: 'https://www.benhviendhnct.com.vn/lien-he',
+  hospitalAbout: 'https://benhviendhnct.com.vn/eng/about-us',
 } as const;
 
 export const DNC_UNKNOWN = 'Mình chưa tìm được thông tin này trên website chính thức của Trường Đại học Nam Cần Thơ.';
@@ -90,6 +91,18 @@ function findMajor(query: string): Major | undefined {
 export function findDncEvidence(question: string, previousUserQuestion = ''): DncLookup | null {
   const query = normalize(question.trim());
   const previous = normalize(previousUserQuestion);
+  const hospital = contains(query, ['benh vien']) && !contains(query, ['quan ly benh vien']) ||
+    !contains(query, ['truong', 'ky tuc xa', 'ktx', 'showroom', 'hoc phi', 'nganh']) &&
+    contains(previous, ['benh vien']) && contains(query, ['no', 'do', 'o dau', 'dia chi', 'lien he', 'so dien thoai', 'them', 'con']);
+  if (hospital) {
+    if (contains(query, ['dia chi', 'o dau', 'toa lac', 'vi tri'])) return result([{ answer: 'Bệnh viện Đại học Nam Cần Thơ ở số 168 đường song hành Quốc lộ 1A, khu dân cư Hồng Loan, phường Cái Răng, TP. Cần Thơ.', source: SOURCES.hospitalContact }]);
+    if (contains(query, ['hotline', 'so dien thoai', 'lien he', 'cap cuu'])) return result([{ answer: 'Bệnh viện Đại học Nam Cần Thơ: số hành chính 02923 886 168; cấp cứu 02923 686 115.', source: SOURCES.hospitalContact }]);
+    if (contains(query, ['giuong'])) return result([{ answer: 'Bệnh viện Đại học Nam Cần Thơ có quy mô 300 giường.', source: SOURCES.hospitalAbout }]);
+    if (/\b(gia|phi)\b/.test(query) || contains(query, ['bao nhieu tien', 'lich kham', 'bac si', 'chuyen khoa', 'gio mo cua'])) return result([]);
+    return result([
+      { answer: 'Bệnh viện Đại học Nam Cần Thơ khám chữa bệnh và là nơi thực hành cho sinh viên khối ngành Sức khỏe. Bệnh viện có quy mô 300 giường và khai trương ngày 08/06/2022.', source: SOURCES.hospitalAbout },
+    ]);
+  }
   const campusTopic = contains(query, ['hoc phi', 'hoc bong', 'xet tuyen', 'tuyen sinh', 'hoc ba', 'ky tuc xa', 'ktx', 'ma nganh', 'ma truong', 'diem san', 'diem chuan', 'nganh hoc', 'cong thong tin sinh vien']) || (contains(query, ['truong']) && contains(query, ['o dau', 'dia chi', 'gioi thieu']));
   const hasDnc = contains(query, ['nam can tho', 'dnc', 'nctu', 'mydnc']) ||
     (contains(previous, ['nam can tho', 'dnc', 'nctu', 'mydnc']) &&
@@ -183,7 +196,7 @@ export function findDncEvidence(question: string, previousUserQuestion = ''): Dn
   if (contains(query, ['truong thanh vien'])) {
     add('Năm 2026, DNC công bố bốn trường thành viên: Khoa học Sức khỏe, Luật – Kinh tế, Công nghệ số và Trí tuệ nhân tạo, Công nghệ – Kỹ thuật.', SOURCES.history);
   }
-  if (contains(query, ['gioi thieu', 'truong nao', 'dnc la gi', 've truong'])) {
+  if (contains(query, ['gioi thieu', 'truong nao', 'dnc la gi', 've truong']) && !contains(query, ['ky tuc xa', 'ktx', 'mydnc', 'thu vien', 'showroom', 'resort'])) {
     add('DNC là Trường Đại học Nam Cần Thơ, thành lập năm 2013, trụ sở tại 168 Nguyễn Văn Cừ (nối dài), Phường An Bình, TP. Cần Thơ.', SOURCES.history);
   }
   if (contains(query, ['truong tu', 'tu thuc', 'cong lap', 'ngoai cong lap'])) {

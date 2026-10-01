@@ -11,10 +11,12 @@ interface ChatMarkdownProps {
  */
 function renderInline(text: string, isUser = false) {
   // Regex to match **bold** or `code`
-  const regex = /(\*\*.*?\*\*|`[^`]+?`)/g;
+  const regex = /(\[[^\]]+\]\(https:\/\/[^\s)]+\)|\*\*.*?\*\*|`[^`]+?`)/g;
   const parts = text.split(regex);
 
   return parts.map((part, index) => {
+    const link = part.match(/^\[([^\]]+)\]\((https:\/\/[^\s)]+)\)$/);
+    if (link) return <a key={index} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline underline-offset-2">{link[1]}</a>;
     if (part.startsWith('**') && part.endsWith('**')) {
       return (
         <strong

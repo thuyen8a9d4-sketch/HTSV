@@ -54,7 +54,7 @@ function SuggestionIcon({ type }: { type?: QuickSuggestion['iconType'] }) {
 const INITIAL_BOT_MESSAGE: ChatMessage = {
   id: 'msg-welcome',
   role: 'assistant',
-  content: `Xin chào bạn! Tôi là **Tư vấn & Hỗ trợ Sinh viên DNC**.\n\nTôi sẵn sàng đồng hành và giải đáp các thông tin học vụ, đời sống cho bạn:\n* **Đại học Nam Cần Thơ (DNC):** 86 ngành đào tạo, 4 phương thức xét tuyển, học phí ổn định, Ký túc xá & Bệnh viện DNC...\n* **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, tra cứu lịch học & học phí, Confession...\n* **Học tập & CNTT:** Giải thích công nghệ, hỗ trợ code, phương pháp học tập đại học...\n* **Quy chế & Chế độ chính sách:** Học bổng, rèn luyện, vay vốn ngân hàng, BHYT sinh viên...\n\nBạn có thể gửi câu hỏi hoặc chọn các chủ đề gợi ý bên dưới nhé!`,
+  content: 'Chào bạn! Mình có thể giúp tra cứu thông tin về Trường Đại học Nam Cần Thơ từ website chính thức. Bạn muốn hỏi về tuyển sinh, học phí, ký túc xá, bệnh viện hay MyDNC?',
   timestamp: 0,
   isMock: true,
   followUps: [

@@ -58,7 +58,8 @@ function setCachedResponse(prompt: string, answer: string): void {
 async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLookup | null): Promise<string> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${encodeURIComponent(apiKey)}`;
 
-    const trimmedHistory = messages.filter((msg) => msg.role !== 'system').slice(-6).map((msg) => {
+    const relevantMessages = dnc ? messages.filter((msg) => msg.role === 'user').slice(-2) : messages.filter((msg) => msg.role !== 'system').slice(-6);
+    const trimmedHistory = relevantMessages.map((msg) => {
       let content = msg.content;
       if (msg.role !== 'user' && content.length > 500) {
         content = content.slice(0, 500) + '...';
@@ -139,8 +140,8 @@ export async function sendChatMessage(
   const dnc = findDncEvidence(prompt, previousUserMessage);
 
   if (dnc && dnc.evidence.length === 0) return { text: DNC_UNKNOWN, isMock: false };
-  // Các con số, mã, địa chỉ và quy trình lấy nguyên văn từ nguồn để tránh mô hình tự điền chi tiết.
-  if (dnc && /\b(hoc phi|hoc bong|gia|bao nhieu|diem|ma nganh|ma truong|dia chi|o dau|hotline|so dien thoai|phuong thuc|xet tuyen|hoc ba|dang nhap|dang ky|dieu kien)\b/.test(simplePrompt)) {
+  // Trả lời nội dung về trường trực tiếp từ dữ kiện đã kiểm chứng, không để mô hình thêm thông tin không có nguồn.
+  if (dnc) {
     return { text: dnc.fallback, isMock: false };
   }
 
@@ -154,27 +155,23 @@ export async function sendChatMessage(
   // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ siêu thông minh và đúng trọng tâm
   if (!apiKey) {
     return {
-      text: dnc?.fallback || 'Mình không biết thông tin này.',
-      isMock: !dnc,
+      text: 'Mình không biết thông tin này.',
+      isMock: true,
     };
   }
 
   // 3. Gọi Gemini API trực tuyến
   try {
-    const text = await callGeminiApi(apiKey, history, dnc);
-    const answer = dnc
-      ? text.includes(DNC_UNKNOWN)
-        ? DNC_UNKNOWN
-        : `${text.trim()}\n\n${[...new Set(dnc.evidence.map((item) => item.source))].map((source) => `[Nguồn](${source})`).join(' · ')}`
-      : text.trim();
+    const text = await callGeminiApi(apiKey, history, null);
+    const answer = text.trim();
     // Lưu vào Cache để các lần hỏi sau không tốn thêm token
     setCachedResponse(cacheKey, answer);
     return { text: answer, isMock: false };
   } catch (err: unknown) {
     console.warn('Gemini API call failed:', err);
     return {
-      text: dnc?.fallback || 'Mình không biết thông tin này.',
-      isMock: !dnc,
+      text: 'Mình không biết thông tin này.',
+      isMock: true,
     };
   }
 }
