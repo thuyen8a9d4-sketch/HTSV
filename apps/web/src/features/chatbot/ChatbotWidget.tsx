@@ -54,7 +54,7 @@ function SuggestionIcon({ type }: { type?: QuickSuggestion['iconType'] }) {
 const INITIAL_BOT_MESSAGE: ChatMessage = {
   id: 'msg-welcome',
   role: 'assistant',
-  content: 'Dạ chào bạn! Mình có thể giúp tra cứu thông tin về Trường Đại học Nam Cần Thơ từ website chính thức. Bạn muốn hỏi về tuyển sinh, học phí, ký túc xá, bệnh viện hay MyDNC? Cứ hỏi mình nha.',
+  content: 'Dạaaaa, em chào bạn nhaaaa! Em giúp bạn tra thông tin về Trường Đại học Nam Cần Thơ từ website chính thức nèee. Bạn muốn hỏi về tuyển sinh, học phí, ký túc xá, bệnh viện hay MyDNC? Cứ nhắn em nhaaaa.',
   timestamp: 0,
   isMock: true,
   followUps: [

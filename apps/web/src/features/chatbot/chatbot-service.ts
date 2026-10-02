@@ -72,7 +72,7 @@ async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLo
 
     const instruction = dnc
       ? `Bạn là trợ lý HTSV. Trả lời câu hỏi cuối bằng tiếng Việt tự nhiên, trực tiếp, tối đa 3 câu. Chỉ dùng dữ kiện DNC dưới đây; không tự thêm số liệu, chính sách, tên người hoặc địa chỉ. Nếu dữ kiện chưa đủ để trả lời đúng ý hỏi, chỉ nói: "${DNC_UNKNOWN}". Không nhắc chủ đề khác. Không tự viết liên kết nguồn.\nDữ kiện đã đối chiếu:\n${dnc.evidence.map(({ answer }) => `- ${answer}`).join('\n')}`
-      : 'Bạn là trợ lý HTSV. Trả lời ngắn gọn, rõ ý bằng giọng Nam Bộ nhẹ nhàng, lễ phép; dùng “dạ”, “nha” tự nhiên khi hợp ngữ cảnh, không lạm dụng từ địa phương. Nếu không chắc, nói rõ mình chưa có đủ thông tin để khẳng định. Không tự bịa dữ kiện về Trường Đại học Nam Cần Thơ.';
+      : 'Bạn là trợ lý HTSV, xưng em với người dùng. Trả lời ngắn gọn, rõ ý bằng giọng miền Tây vui vẻ, nhõng nhẽo: mở bằng “Dạaaaa,” và thỉnh thoảng kéo chữ cuối như “nhaaaa”, “nèee”, “ạaaaa”. Giữ nguyên số liệu, tên riêng, mã ngành và liên kết; không kéo dài từng từ hoặc lặp quá nhiều. Nếu không chắc, nói rõ em chưa đủ thông tin. Không tự bịa dữ kiện về Trường Đại học Nam Cần Thơ.';
 
     const payload = {
       contents: trimmedHistory,
@@ -129,19 +129,19 @@ export async function sendChatMessage(
   const previousUserMessage = history.filter((m) => m.role === 'user').at(-2)?.content || '';
   const simplePrompt = prompt.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
   if (/^(xin chao|chao|hello|hi|hey)[!.? ]*$/.test(simplePrompt)) {
-    return { text: 'Dạ chào bạn! Bạn cần mình giúp gì nha?', isMock: false };
+    return { text: 'Dạaaaa, em chào bạn nhaaaa! Bạn cần em giúp gì nèee?', isMock: false };
   }
   if (/^(cam on|thanks|thank you)( ban)?[!.? ]*$/.test(simplePrompt)) {
-    return { text: 'Dạ không có gì đâu, bạn cứ hỏi tiếp nha!', isMock: false };
+    return { text: 'Dạaaaa, có gì đâu ạaaaa. Bạn cứ hỏi em tiếp nhaaaa!', isMock: false };
   }
   if (/^(ban la ai|bot la ai)[?.! ]*$/.test(simplePrompt)) {
-    return { text: 'Dạ, mình là trợ lý trên website HTSV, giúp bạn tìm thông tin về Trường Đại học Nam Cần Thơ nha.', isMock: false };
+    return { text: 'Dạaaaa, em là trợ lý trên website HTSV nèee. Em giúp bạn tìm thông tin về Trường Đại học Nam Cần Thơ nhaaaa.', isMock: false };
   }
   const confessionContext = /\bconfession\b/.test(simplePrompt) ||
     (/\bconfession\b/.test(previousUserMessage.toLowerCase()) && /^(con|the|vay|bao lau|khi nao|sao)\b/.test(simplePrompt));
   if (confessionContext && /\b(duyet|kiem duyet|bao lau|khi nao|chua hien|chua dang|len bai|len mat)\b/.test(simplePrompt)) {
     return {
-      text: 'Dạ, mình hiểu bạn đang chờ bài Confession. Bài sẽ qua kiểm duyệt tự động và quản trị viên xem xét trước khi lên bảng tin. Mình chưa thấy website HTSV thông báo thời gian duyệt cụ thể, nên chưa thể báo chính xác cho bạn. Bạn kiểm tra lại bảng tin sau nha.',
+      text: 'Dạaaaa, em hiểu bạn đang chờ bài Confession nèee. Bài sẽ qua kiểm duyệt tự động và quản trị viên xem xét trước khi lên bảng tin. Em chưa thấy website HTSV thông báo thời gian duyệt cụ thể, nên chưa thể báo chính xác cho bạn. Bạn kiểm tra lại bảng tin sau nhaaaa.',
       isMock: false,
     };
   }
@@ -163,7 +163,7 @@ export async function sendChatMessage(
   // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ siêu thông minh và đúng trọng tâm
   if (!apiKey) {
     return {
-      text: 'Dạ, mình chưa có đủ thông tin để trả lời chắc chắn câu này. Bạn nói rõ thêm một chút, mình tìm giúp nha.',
+      text: 'Dạaaaa, em chưa có đủ thông tin để trả lời chắc chắn câu này. Bạn nói rõ thêm một chút, em tìm giúp nhaaaa.',
       isMock: false,
     };
   }
@@ -178,7 +178,7 @@ export async function sendChatMessage(
   } catch (err: unknown) {
     console.warn('Gemini API call failed:', err);
     return {
-      text: 'Dạ, hiện mình chưa kiểm tra được câu này. Bạn thử hỏi lại sau một chút nha.',
+      text: 'Dạaaaa, hiện em chưa kiểm tra được câu này. Bạn thử hỏi lại sau một chút nhaaaa.',
       isMock: false,
     };
   }
