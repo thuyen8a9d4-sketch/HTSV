@@ -72,7 +72,7 @@ async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLo
 
     const instruction = dnc
       ? `Bạn là trợ lý HTSV. Trả lời câu hỏi cuối bằng tiếng Việt tự nhiên, trực tiếp, tối đa 3 câu. Chỉ dùng dữ kiện DNC dưới đây; không tự thêm số liệu, chính sách, tên người hoặc địa chỉ. Nếu dữ kiện chưa đủ để trả lời đúng ý hỏi, chỉ nói: "${DNC_UNKNOWN}". Không nhắc chủ đề khác. Không tự viết liên kết nguồn.\nDữ kiện đã đối chiếu:\n${dnc.evidence.map(({ answer }) => `- ${answer}`).join('\n')}`
-      : 'Bạn là trợ lý HTSV. Trả lời câu hỏi cuối bằng tiếng Việt tự nhiên, thân thiện, đúng trọng tâm và ngắn gọn. Nếu không chắc, hãy nói rõ mình chưa có đủ thông tin để khẳng định và gợi ý người dùng hỏi cụ thể hơn khi phù hợp. Không tự bịa dữ kiện về Trường Đại học Nam Cần Thơ.';
+      : 'Bạn là trợ lý HTSV. Trả lời ngắn gọn, rõ ý bằng giọng Nam Bộ nhẹ nhàng, lễ phép; dùng “dạ”, “nha” tự nhiên khi hợp ngữ cảnh, không lạm dụng từ địa phương. Nếu không chắc, nói rõ mình chưa có đủ thông tin để khẳng định. Không tự bịa dữ kiện về Trường Đại học Nam Cần Thơ.';
 
     const payload = {
       contents: trimmedHistory,
@@ -129,19 +129,19 @@ export async function sendChatMessage(
   const previousUserMessage = history.filter((m) => m.role === 'user').at(-2)?.content || '';
   const simplePrompt = prompt.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
   if (/^(xin chao|chao|hello|hi|hey)[!.? ]*$/.test(simplePrompt)) {
-    return { text: 'Chào bạn! Mình có thể giúp gì cho bạn?', isMock: false };
+    return { text: 'Dạ chào bạn! Bạn cần mình giúp gì nha?', isMock: false };
   }
   if (/^(cam on|thanks|thank you)( ban)?[!.? ]*$/.test(simplePrompt)) {
-    return { text: 'Không có gì! Bạn cứ hỏi tiếp nhé.', isMock: false };
+    return { text: 'Dạ không có gì đâu, bạn cứ hỏi tiếp nha!', isMock: false };
   }
   if (/^(ban la ai|bot la ai)[?.! ]*$/.test(simplePrompt)) {
-    return { text: 'Mình là trợ lý của cổng HTSV, có thể giúp bạn tìm thông tin về Trường Đại học Nam Cần Thơ.', isMock: false };
+    return { text: 'Dạ, mình là trợ lý trên website HTSV, giúp bạn tìm thông tin về Trường Đại học Nam Cần Thơ nha.', isMock: false };
   }
   const confessionContext = /\bconfession\b/.test(simplePrompt) ||
     (/\bconfession\b/.test(previousUserMessage.toLowerCase()) && /^(con|the|vay|bao lau|khi nao|sao)\b/.test(simplePrompt));
   if (confessionContext && /\b(duyet|kiem duyet|bao lau|khi nao|chua hien|chua dang|len bai|len mat)\b/.test(simplePrompt)) {
     return {
-      text: 'Mình hiểu bạn đang chờ bài Confession hiển thị. Bài sẽ qua kiểm duyệt tự động và quản trị viên xem xét trước khi lên bảng tin; hiện ứng dụng chưa công bố thời gian duyệt cố định, nên mình không muốn đoán một mốc cho bạn. Bạn thử kiểm tra lại bảng tin sau nhé.',
+      text: 'Dạ, mình hiểu bạn đang chờ bài Confession. Bài sẽ qua kiểm duyệt tự động và quản trị viên xem xét trước khi lên bảng tin. Mình chưa thấy website HTSV thông báo thời gian duyệt cụ thể, nên chưa thể báo chính xác cho bạn. Bạn kiểm tra lại bảng tin sau nha.',
       isMock: false,
     };
   }
@@ -163,7 +163,7 @@ export async function sendChatMessage(
   // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ siêu thông minh và đúng trọng tâm
   if (!apiKey) {
     return {
-      text: 'Mình chưa có đủ thông tin để trả lời chắc chắn câu này. Bạn nói rõ hơn điều bạn muốn biết nhé.',
+      text: 'Dạ, mình chưa có đủ thông tin để trả lời chắc chắn câu này. Bạn nói rõ thêm một chút, mình tìm giúp nha.',
       isMock: false,
     };
   }
@@ -178,7 +178,7 @@ export async function sendChatMessage(
   } catch (err: unknown) {
     console.warn('Gemini API call failed:', err);
     return {
-      text: 'Mình chưa kiểm tra được câu này ngay lúc này. Bạn thử hỏi lại sau một chút nhé.',
+      text: 'Dạ, hiện mình chưa kiểm tra được câu này. Bạn thử hỏi lại sau một chút nha.',
       isMock: false,
     };
   }

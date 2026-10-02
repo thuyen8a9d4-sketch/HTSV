@@ -21,7 +21,7 @@ const SOURCES = {
   library: 'https://thuvien.nctu.edu.vn/',
 } as const;
 
-export const DNC_UNKNOWN = 'Mình chưa thấy trường công bố rõ thông tin này trên website chính thức, nên chưa dám trả lời chắc chắn.';
+export const DNC_UNKNOWN = 'Dạ, mình chưa thấy trường công bố rõ thông tin này trên website chính thức, nên chưa dám trả lời chắc chắn cho bạn nha.';
 
 export interface DncEvidence {
   answer: string;
@@ -113,7 +113,12 @@ function result(evidence: DncEvidence[]): DncLookup {
   return {
     evidence,
     fallback: evidence.length
-      ? evidence.map(({ answer, source }) => `${answer} [Nguồn](${source})`).join('\n\n')
+      ? evidence.map(({ answer, source }, index) => {
+        const spoken = index === 0 && !/^(DNC|MyDNC)\b/.test(answer)
+          ? answer.charAt(0).toLocaleLowerCase('vi') + answer.slice(1)
+          : answer;
+        return `${index === 0 ? 'Dạ, ' : ''}${spoken} [Nguồn](${source})`;
+      }).join('\n\n')
       : DNC_UNKNOWN,
   };
 }
