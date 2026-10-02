@@ -1,11 +1,15 @@
 import * as Joi from 'joi';
 
 export const envValidationSchema = Joi.object({
-  NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
+  NODE_ENV: Joi.string()
+    .valid('development', 'production', 'test')
+    .default('development'),
   PORT: Joi.number().default(3000),
   FRONTEND_ORIGIN: Joi.string().uri().required(),
 
-  CORE_DATABASE_URL: Joi.string().uri({ scheme: ['postgresql', 'postgres'] }).required(),
+  CORE_DATABASE_URL: Joi.string()
+    .uri({ scheme: ['postgresql', 'postgres'] })
+    .required(),
 
   JWT_ACCESS_SECRET: Joi.string().min(16).required(),
   JWT_ACCESS_EXPIRES_IN: Joi.string().default('15m'),
@@ -26,8 +30,12 @@ export const envValidationSchema = Joi.object({
   // not at our server) until these are filled in with real app credentials.
   GOOGLE_CLIENT_ID: Joi.string().allow('').default(''),
   GOOGLE_CLIENT_SECRET: Joi.string().allow('').default(''),
-  GOOGLE_CALLBACK_URL: Joi.string().default('http://localhost:3000/api/auth/google/callback'),
+  GOOGLE_CALLBACK_URL: Joi.string().default(
+    'http://localhost:3000/api/auth/google/callback',
+  ),
   FACEBOOK_APP_ID: Joi.string().allow('').default(''),
   FACEBOOK_APP_SECRET: Joi.string().allow('').default(''),
-  FACEBOOK_CALLBACK_URL: Joi.string().default('http://localhost:3000/api/auth/facebook/callback'),
+  FACEBOOK_CALLBACK_URL: Joi.string().default(
+    'http://localhost:3000/api/auth/facebook/callback',
+  ),
 });

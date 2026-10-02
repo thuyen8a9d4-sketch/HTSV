@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, useLocation, useOutletContext } from 'react-router-dom';
 import { GlassModal } from '../../components/GlassModal';
 import { ChatBubble, GridSquares, Plus } from '../../components/Icons';
@@ -9,7 +9,7 @@ import { CareerGuidancePanel } from './CareerGuidancePanel';
 import { ClassSectionsPanel } from './ClassSectionsPanel';
 import { ConductScorePanel } from './ConductScorePanel';
 import { CvBuilderPanel } from './CvBuilderPanel';
-import { DepthGallery } from './depth-gallery';
+const DepthGallery = lazy(() => import('./depth-gallery').then((m) => ({ default: m.DepthGallery })));
 import { DevelopmentPathPanel } from './DevelopmentPathPanel';
 import { GradeAppealPanel } from './GradeAppealPanel';
 import { InterviewPracticePanel } from './InterviewPracticePanel';
@@ -112,7 +112,7 @@ export function StudentHomePage({ view = 'home' }: { view?: StudentView }) {
     return (
       <div className="relative min-h-screen w-full">
         {/* Full-Screen 3D Depth Gallery with Zero Annotations */}
-        <DepthGallery />
+        <Suspense fallback={<div className="h-[100dvh] bg-slate-950" aria-label="Đang tải trang chủ" />}><DepthGallery /></Suspense>
 
         {/* Extended Content: DNC Announcements, Featured Forum Posts, Quick Services, Comprehensive Footer */}
         <HomeContentSection

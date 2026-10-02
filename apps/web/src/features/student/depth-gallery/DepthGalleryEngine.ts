@@ -28,6 +28,9 @@ export class DepthGalleryEngine {
 
   private isRunning = false;
   private isDestroyed = false;
+  private isReady = false;
+  private isVisible = true;
+  private observer: IntersectionObserver;
   private rafId = 0;
   private activeIndex = -1;
 
@@ -35,6 +38,10 @@ export class DepthGalleryEngine {
 
   private readonly boundResize = this.resize.bind(this);
   private readonly boundAnimate = this.animate.bind(this);
+  private readonly syncPlayback = () => {
+    if (this.isReady && this.isVisible && !document.hidden) this.start();
+    else this.stop();
+  };
 
   constructor(canvas: HTMLCanvasElement, onSlideChange?: SlideChangeCallback) {
     this.canvas = canvas;
@@ -52,7 +59,7 @@ export class DepthGalleryEngine {
       alpha: false,
       powerPreference: 'high-performance',
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.5 : 2));
     this.renderer.outputColorSpace = SRGBColorSpace;
     this.renderer.autoClear = false;
 
@@ -62,6 +69,12 @@ export class DepthGalleryEngine {
     this.scroll = new Scroll(this.camera, this.gallery);
 
     window.addEventListener('resize', this.boundResize, { passive: true });
+    document.addEventListener('visibilitychange', this.syncPlayback);
+    this.observer = new IntersectionObserver(([entry]) => {
+      this.isVisible = entry.isIntersecting;
+      this.syncPlayback();
+    });
+    this.observer.observe(canvas);
   }
 
   async init() {
@@ -73,6 +86,7 @@ export class DepthGalleryEngine {
       galleryPlaneData.map(async (plane) => {
         try {
           const tex = await textureLoader.loadAsync(plane.textureSrc);
+          if (this.isDestroyed) { tex.dispose(); return; }
           tex.colorSpace = SRGBColorSpace;
           textures.set(plane.textureSrc, tex);
         } catch (err) {
@@ -81,7 +95,10 @@ export class DepthGalleryEngine {
       })
     );
 
-    if (this.isDestroyed) return;
+    if (this.isDestroyed) {
+      textures.forEach((texture) => texture.dispose());
+      return;
+    }
 
     this.gallery.setTextures(textures);
     this.gallery.init(this.scene);
@@ -96,13 +113,19 @@ export class DepthGalleryEngine {
       this.background.setMoodBlend(initialMood);
     }
 
-    this.start();
+    this.isReady = true;
+    this.syncPlayback();
   }
 
   start() {
     if (this.isRunning || this.isDestroyed) return;
     this.isRunning = true;
     this.animate();
+  }
+
+  private stop() {
+    this.isRunning = false;
+    cancelAnimationFrame(this.rafId);
   }
 
   jumpToSlide(index: number) {
@@ -173,9 +196,11 @@ export class DepthGalleryEngine {
   }
 
   destroy() {
+    if (this.isDestroyed) return;
     this.isDestroyed = true;
-    this.isRunning = false;
-    cancelAnimationFrame(this.rafId);
+    this.stop();
+    this.observer.disconnect();
+    document.removeEventListener('visibilitychange', this.syncPlayback);
     window.removeEventListener('resize', this.boundResize);
 
     this.scroll.dispose();

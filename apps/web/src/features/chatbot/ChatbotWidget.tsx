@@ -17,7 +17,7 @@ import {
 } from '../../components/Icons';
 import { useTheme } from '../../lib/theme';
 import type { ChatMessage, QuickSuggestion } from './chatbot-types';
-import { getEffectiveApiKey, sendChatMessage } from './chatbot-service';
+import { sendChatMessage } from './chatbot-service';
 import { QUICK_SUGGESTIONS, generateFollowUpSuggestions } from './chatbot-knowledge';
 import { ChatMarkdown } from './ChatMarkdown';
 import './chatbot.css';
@@ -54,7 +54,7 @@ function SuggestionIcon({ type }: { type?: QuickSuggestion['iconType'] }) {
 const INITIAL_BOT_MESSAGE: ChatMessage = {
   id: 'msg-welcome',
   role: 'assistant',
-  content: `Xin chào bạn! Tôi là **Tư vấn & Hỗ trợ Sinh viên DNC**.\n\nTôi sẵn sàng đồng hành và giải đáp các thông tin học vụ, đời sống cho bạn:\n* **Đại học Nam Cần Thơ (DNC):** 86 ngành đào tạo, 4 phương thức xét tuyển, học phí ổn định, Ký túc xá & Bệnh viện DNC...\n* **Cổng Sinh viên HTSV:** Thủ tục học vụ một cửa, đăng ký Ký túc xá, tra cứu lịch học & học phí, Confession...\n* **Học tập & CNTT:** Giải thích công nghệ, hỗ trợ code, phương pháp học tập đại học...\n* **Quy chế & Chế độ chính sách:** Học bổng, rèn luyện, vay vốn ngân hàng, BHYT sinh viên...\n\nBạn có thể gửi câu hỏi hoặc chọn các chủ đề gợi ý bên dưới nhé!`,
+  content: 'Dạaaaa, em chào bạn nhaaaa! Em giúp bạn tra thông tin về Trường Đại học Nam Cần Thơ từ website chính thức nèee. Bạn muốn hỏi về tuyển sinh, học phí, ký túc xá, bệnh viện hay MyDNC? Cứ nhắn em nhaaaa.',
   timestamp: 0,
   isMock: true,
   followUps: [
@@ -94,7 +94,11 @@ function getInitialMessages(): ChatMessage[] {
     const saved = localStorage.getItem(STORAGE_CHAT_HISTORY);
     if (saved) {
       const parsed = JSON.parse(saved) as ChatMessage[];
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed.every((m) =>
+        m && typeof m.id === 'string' && typeof m.content === 'string' &&
+        ['user', 'assistant', 'system'].includes(m.role) && Number.isFinite(m.timestamp) &&
+        (m.followUps === undefined || (Array.isArray(m.followUps) && m.followUps.every((item) => typeof item === 'string')))
+      )) {
         return parsed.map((m) => {
           if (m.id === 'msg-welcome') {
             return { ...INITIAL_BOT_MESSAGE, timestamp: m.timestamp };
@@ -126,10 +130,14 @@ export function ChatbotWidget() {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const streamIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const requestVersion = useRef(0);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Clean up streaming timer on unmount
   useEffect(() => {
     return () => {
+      requestVersion.current += 1;
+      if (copyTimer.current) clearTimeout(copyTimer.current);
       if (streamIntervalRef.current) {
         clearInterval(streamIntervalRef.current);
       }
@@ -151,14 +159,14 @@ export function ChatbotWidget() {
       const list = messageListRef.current;
       list?.scrollTo({
         top: messages.length === 1 ? 0 : list.scrollHeight,
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        behavior: isStreaming || window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
       });
-      // focus input when opening on non-touch devices
-      if (window.innerWidth >= 640 && !isStreaming) {
-        inputRef.current?.focus();
-      }
     }
   }, [isOpen, messages, isLoading, isStreaming]);
+
+  useEffect(() => {
+    if (isOpen && window.matchMedia('(pointer: fine)').matches) inputRef.current?.focus();
+  }, [isOpen]);
 
   // Handle escape to close
   useEffect(() => {
@@ -172,7 +180,6 @@ export function ChatbotWidget() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  const hasApiKey = Boolean(getEffectiveApiKey());
   const avatarState = isLoading || isStreaming ? 'working' : 'default';
 
   const handleChangeAvatar = () => {
@@ -196,12 +203,19 @@ export function ChatbotWidget() {
     setMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
+    const version = ++requestVersion.current;
 
     try {
       const response = await sendChatMessage(updatedMessages);
+      if (version !== requestVersion.current) return;
       const fullText = response.text;
       const followUps = generateFollowUpSuggestions(text, fullText);
       setIsLoading(false);
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setMessages((prev) => [...prev, createMessage('assistant', fullText, { status: 'success', isMock: response.isMock, followUps })]);
+        return;
+      }
 
       // Start streaming typewriter animation
       const newBotMessage = createMessage('assistant', '', {
@@ -247,6 +261,7 @@ export function ChatbotWidget() {
         }
       }, 16);
     } catch (err) {
+      if (version !== requestVersion.current) return;
       setIsLoading(false);
       setIsStreaming(false);
       const errorMsg = err instanceof Error ? err.message : 'Đã có lỗi xảy ra khi kết nối tới trợ lý AI.';
@@ -260,6 +275,7 @@ export function ChatbotWidget() {
   };
 
   const handleClearHistory = () => {
+    requestVersion.current += 1;
     if (streamIntervalRef.current) {
       clearInterval(streamIntervalRef.current);
       streamIntervalRef.current = null;
@@ -275,14 +291,16 @@ export function ChatbotWidget() {
   };
 
   const handleCopyText = (content: string, id: string) => {
-    navigator.clipboard.writeText(content).then(() => {
+    if (!navigator.clipboard) return;
+    void navigator.clipboard.writeText(content).then(() => {
       setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+      copyTimer.current = setTimeout(() => setCopiedId(null), 2000);
+    }).catch(() => { setCopiedId(null); });
   };
 
   const handleKeyDownInput = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSendMessage(input);
     }
@@ -348,8 +366,8 @@ export function ChatbotWidget() {
                   <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs" title="Đang trực tuyến" aria-label="Đang trực tuyến" />
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="htsv-chat-subtitle text-[11px] font-medium">
-                    {hasApiKey ? 'Hỗ trợ trực tuyến 24/7' : 'Giải đáp thông tin sinh viên'}
+                  <span className="htsv-chat-subtitle text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                    Giải đáp thông tin sinh viên DNC
                   </span>
                 </div>
               </div>
@@ -410,11 +428,6 @@ export function ChatbotWidget() {
                     >
                       {!isUser && (
                         <div className="flex items-center gap-1">
-                          {msg.isMock && (
-                            <span className="htsv-chat-mock-badge rounded-md px-1.5 py-0.5 text-[9px] font-semibold">
-                              Mẫu HTSV
-                            </span>
-                          )}
                           {!msg.isStreaming && (
                             <button
                               type="button"

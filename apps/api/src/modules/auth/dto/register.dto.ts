@@ -1,4 +1,10 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 const PASSWORD_REGEX = /^[A-Z](?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>_-]).{7,}$/;
 

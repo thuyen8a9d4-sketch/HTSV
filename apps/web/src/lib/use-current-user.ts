@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
+import type { AxiosResponse } from 'axios';
 import { apiClient } from './api-client';
 import { useAuthStore } from './auth-store';
+import type { AuthUser } from './auth-store';
+
+let bootstrapPromise: Promise<AxiosResponse<{ accessToken: string; user: AuthUser }>> | null = null;
 
 export function useAuthBootstrap() {
   const [ready, setReady] = useState(false);
@@ -9,8 +13,8 @@ export function useAuthBootstrap() {
 
   useEffect(() => {
     let cancelled = false;
-    apiClient
-      .post('/auth/refresh')
+    bootstrapPromise ??= apiClient.post('/auth/refresh').finally(() => { bootstrapPromise = null; });
+    bootstrapPromise
       .then((res) => {
         if (!cancelled) setSession(res.data.accessToken, res.data.user);
       })
@@ -23,8 +27,7 @@ export function useAuthBootstrap() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setSession, clearSession]);
 
   return ready;
 }

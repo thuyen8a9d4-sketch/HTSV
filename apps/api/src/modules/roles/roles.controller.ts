@@ -43,7 +43,10 @@ export class RolesController {
   }
 
   @Put(':id/permissions')
-  assignPermissions(@Param('id', ParseIntPipe) id: number, @Body() dto: AssignPermissionsDto) {
+  assignPermissions(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: AssignPermissionsDto,
+  ) {
     return this.rolesService.assignPermissions(id, dto);
   }
 }

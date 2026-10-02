@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Copy } from '../../components/Icons';
 
 interface ChatMarkdownProps {
@@ -11,10 +11,12 @@ interface ChatMarkdownProps {
  */
 function renderInline(text: string, isUser = false) {
   // Regex to match **bold** or `code`
-  const regex = /(\*\*.*?\*\*|`[^`]+?`)/g;
+  const regex = /(\[[^\]]+\]\(https:\/\/[^\s)]+\)|\*\*.*?\*\*|`[^`]+?`)/g;
   const parts = text.split(regex);
 
   return parts.map((part, index) => {
+    const link = part.match(/^\[([^\]]+)\]\((https:\/\/[^\s)]+)\)$/);
+    if (link) return <a key={index} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline underline-offset-2">{link[1]}</a>;
     if (part.startsWith('**') && part.endsWith('**')) {
       return (
         <strong
@@ -48,12 +50,16 @@ function renderInline(text: string, isUser = false) {
  */
 function CodeBlock({ code, language }: { code: string; language: string }) {
   const [copied, setCopied] = useState(false);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (copyTimer.current) clearTimeout(copyTimer.current); }, []);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(code).then(() => {
+    if (!navigator.clipboard) return;
+    void navigator.clipboard.writeText(code).then(() => {
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+      copyTimer.current = setTimeout(() => setCopied(false), 2000);
+    }).catch(() => { setCopied(false); });
   };
 
   return (
@@ -81,7 +87,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
 /**
  * Enhanced lightweight markdown parser for chat messages (Gemini/ChatGPT style)
  */
-export function ChatMarkdown({ content, isUser = false }: ChatMarkdownProps) {
+export const ChatMarkdown = memo(function ChatMarkdown({ content, isUser = false }: ChatMarkdownProps) {
   if (isUser) {
     return <div className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{content}</div>;
   }
@@ -211,4 +217,4 @@ export function ChatMarkdown({ content, isUser = false }: ChatMarkdownProps) {
       })}
     </div>
   );
-}
+});

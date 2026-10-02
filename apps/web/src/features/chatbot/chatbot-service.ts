@@ -1,17 +1,7 @@
+let cachedFallbackKey = "";
 import type { ChatMessage } from './chatbot-types';
-import { HTSV_SYSTEM_PROMPT, getMockResponse } from './chatbot-knowledge';
-
-// Clean up any previously stored key in browser localStorage to prevent leakage
-try {
-  localStorage.removeItem('htsv_chatbot_settings');
-} catch {
-  // ignore
-}
-
-export function getEffectiveApiKey(): string {
-  const envKey = (import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_AI_API_KEY || '') as string;
-  return envKey.trim();
-}
+import { DNC_UNKNOWN, findDncEvidence } from './dnc-sources';
+import { getSmallTalkReply } from './chatbot-smalltalk';
 
 // Cache câu trả lời để tiết kiệm Quota/Token cho các câu hỏi trùng lặp hoặc gợi ý nhanh
 const RESPONSE_CACHE = new Map<string, string>();
@@ -31,141 +21,139 @@ function setCachedResponse(prompt: string, answer: string): void {
   RESPONSE_CACHE.set(key, answer);
 }
 
-/**
- * Call Google Gemini REST API directly with automatic fallback
- */
-async function callGeminiApi(
-  apiKey: string,
-  model: string,
-  messages: ChatMessage[],
-  temperature: number
-): Promise<string> {
-  const primaryModel = model.trim() || 'gemini-2.5-flash-lite';
+const MODEL_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent';
+const INSTRUCTION = 'Bạn là trợ lý HTSV, xưng em với người dùng. Trả lời trực tiếp đúng câu hỏi cuối bằng tiếng Việt ngắn gọn, kể cả chủ đề ngoài trường. Không tự kéo câu trả lời về Trường Đại học Nam Cần Thơ. Giọng miền Tây vui vẻ, dùng “Dạaaaa” và “nhaaaa” vừa phải. Khi người dùng buồn hoặc gặp khó khăn, trả lời đồng cảm, bình tĩnh. Nếu không biết thì nói rõ là không biết; tuyệt đối không bịa dữ kiện, đặc biệt về Trường Đại học Nam Cần Thơ.';
 
-  const makeRequest = async (targetModel: string) => {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
-
-    // Tối ưu hóa Context Window để tiết kiệm tối đa Token/Quota:
-    // Lấy 6 tin nhắn gần nhất thay vì toàn bộ lịch sử, cắt ngắn các phản hồi dài trước đó
-    const trimmedHistory = messages.slice(-6).map((msg) => {
-      let content = msg.content;
-      if (msg.role !== 'user' && content.length > 800) {
-        content = content.slice(0, 800) + '...';
-      }
-      return {
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: content }],
-      };
-    });
-
-    const payload = {
-      contents: trimmedHistory,
-      systemInstruction: {
-        parts: [{ text: HTSV_SYSTEM_PROMPT }],
-      },
-      generationConfig: {
-        temperature: Math.max(0, Math.min(2, temperature || 0.7)),
-        maxOutputTokens: 2048,
-      },
-    };
-
-    return fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(25000), // 25-second timeout ensures completion
-    });
+async function callGeminiDirect(key: string, messages: ChatMessage[]): Promise<string> {
+  const relevantMessages = messages
+    .filter((msg) => msg.role === 'user' || (msg.role === 'assistant' && msg.id !== 'msg-welcome' && !msg.isMock))
+    .slice(-6);
+  const payload = {
+    contents: relevantMessages.map((msg) => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }],
+    })),
+    systemInstruction: { parts: [{ text: INSTRUCTION }] },
+    generationConfig: { temperature: 0.2, maxOutputTokens: 600 },
   };
-
-  let response: Response;
-  try {
-    response = await makeRequest(primaryModel);
-  } catch (firstErr) {
-    console.warn(`Primary model ${primaryModel} failed, trying fallback model gemini-2.5-flash:`, firstErr);
-    response = await makeRequest('gemini-2.5-flash');
-  }
-
-  // If primary model is busy (503/429/timeout), try fallback
-  if (!response.ok && primaryModel !== 'gemini-2.5-flash') {
-    try {
-      response = await makeRequest('gemini-2.5-flash');
-    } catch {
-      // ignore
-    }
-  }
-
-  if (!response.ok) {
-    const errorJson = await response.json().catch(() => null);
-    const errorMsg = errorJson?.error?.message || `Lỗi máy chủ Google (${response.status})`;
-    if (response.status === 400 && errorMsg.includes('API_KEY_INVALID')) {
-      throw new Error('API Key Google Gemini không hợp lệ. Vui lòng kiểm tra lại khóa của bạn.');
-    }
-    if (response.status === 429) {
-      const err = new Error('RATE_LIMIT_EXCEEDED');
-      err.name = 'RateLimitError';
-      throw err;
-    }
-    throw new Error(errorMsg);
-  }
-
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) {
-    throw new Error('Không nhận được nội dung phản hồi từ mô hình AI.');
-  }
-
+  const response = await fetch(MODEL_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(25000),
+  });
+  if (!response.ok) throw new Error(`Gemini direct call failed (${response.status})`);
+  const data: unknown = await response.json();
+  const candidate = typeof data === 'object' && data !== null && 'candidates' in data && Array.isArray(data.candidates)
+    ? data.candidates[0]
+    : null;
+  const parts = candidate?.content?.parts;
+  const text = Array.isArray(parts)
+    ? parts
+        .filter((part: unknown): part is { text: string } => typeof part === 'object' && part !== null && 'text' in part && typeof part.text === 'string')
+        .map((part) => part.text)
+        .join('\n')
+        .trim()
+    : '';
+  if (!text) throw new Error('No answer returned from Gemini');
   return text;
 }
 
+/** Gửi câu hỏi ngoài dữ kiện DNC tới Pages Function; tự động fallback nếu khu vực server bị hạn chế. */
+async function callChatApi(messages: ChatMessage[]): Promise<string> {
+  const envKey = ((import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_AI_API_KEY || '') as string).trim();
+  const relevantMessages = messages
+    .filter((msg) => msg.role === 'user' || (msg.role === 'assistant' && msg.id !== 'msg-welcome' && !msg.isMock))
+    .slice(-6)
+    .map((msg) => ({ role: msg.role, content: msg.content.slice(0, 2000) }));
+
+  let fallbackKey = envKey || cachedFallbackKey;
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: relevantMessages }),
+      signal: AbortSignal.timeout(30000),
+    });
+
+    const data: unknown = await response.json().catch(() => null);
+    if (data && typeof data === 'object') {
+      if ('text' in data && typeof data.text === 'string' && data.text.trim()) {
+        return data.text.trim();
+      }
+      if ('fallbackKey' in data && typeof data.fallbackKey === 'string' && data.fallbackKey.trim()) {
+        fallbackKey = data.fallbackKey.trim();
+        cachedFallbackKey = fallbackKey;
+      }
+    }
+  } catch (err) {
+    console.warn('Pages function chat API call failed:', err);
+  }
+
+  if (fallbackKey) {
+    return await callGeminiDirect(fallbackKey, messages);
+  }
+
+  throw new Error('Chat API returned no answer');
+}
+
 /**
- * Main function to generate response for the user using server/env configured API key
+ * Main function to generate a response for the user.
  */
 export async function sendChatMessage(
   history: ChatMessage[]
 ): Promise<{ text: string; isMock: boolean }> {
-  const apiKey = getEffectiveApiKey();
   const lastUserMessage = history.filter((m) => m.role === 'user').pop();
   const prompt = lastUserMessage?.content || '';
+  const previousUserMessage = history.filter((m) => m.role === 'user').at(-2)?.content || '';
+  const simplePrompt = prompt.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+  if (/^(xin chao|chao|hello|hi|hey)[!.? ]*$/.test(simplePrompt)) {
+    return { text: 'Dạaaaa, em chào bạn nhaaaa! Bạn cần em giúp gì nèee?', isMock: false };
+  }
+  if (/^(cam on|thanks|thank you)( ban)?[!.? ]*$/.test(simplePrompt)) {
+    return { text: 'Dạaaaa, có gì đâu ạaaaa. Bạn cứ hỏi em tiếp nhaaaa!', isMock: false };
+  }
+  if (/^(ban la ai|bot la ai)[?.! ]*$/.test(simplePrompt)) {
+    return { text: 'Dạaaaa, em là trợ lý trên website HTSV nèee. Em giúp bạn tìm thông tin về Trường Đại học Nam Cần Thơ nhaaaa.', isMock: false };
+  }
+  const smallTalk = getSmallTalkReply(prompt);
+  if (smallTalk) return { text: smallTalk, isMock: false };
+  const confessionContext = /\bconfession\b/.test(simplePrompt) ||
+    (/\bconfession\b/.test(previousUserMessage.toLowerCase()) && /^(con|the|vay|bao lau|khi nao|sao)\b/.test(simplePrompt));
+  if (confessionContext && /\b(duyet|kiem duyet|bao lau|khi nao|chua hien|chua dang|len bai|len mat)\b/.test(simplePrompt)) {
+    return {
+      text: 'Dạaaaa, em hiểu bạn đang chờ bài Confession nèee. Bài sẽ qua kiểm duyệt tự động và quản trị viên xem xét trước khi lên bảng tin. Em chưa thấy website HTSV thông báo thời gian duyệt cụ thể, nên chưa thể báo chính xác cho bạn. Bạn kiểm tra lại bảng tin sau nhaaaa.',
+      isMock: false,
+    };
+  }
+  const dnc = findDncEvidence(prompt, previousUserMessage);
+
+  if (dnc && dnc.evidence.length === 0) return { text: DNC_UNKNOWN, isMock: false };
+  // Trả lời nội dung về trường trực tiếp từ dữ kiện đã kiểm chứng, không để mô hình thêm thông tin không có nguồn.
+  if (dnc) {
+    return { text: dnc.fallback, isMock: false };
+  }
 
   // 1. Kiểm tra Cache trước: nếu câu hỏi này đã từng được trả lời, trả về ngay lập tức (tiết kiệm 100% quota)
-  const cachedAnswer = getCachedResponse(prompt);
+  const cacheKey = `${previousUserMessage}\n${prompt}`;
+  const cachedAnswer = getCachedResponse(cacheKey);
   if (cachedAnswer) {
     return { text: cachedAnswer, isMock: false };
   }
 
-  // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ
-  if (!apiKey) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return {
-      text: getMockResponse(prompt),
-      isMock: true,
-    };
-  }
-
-  // 3. Gọi Gemini API trực tuyến
+  // Gọi Pages Function để trả lời câu hỏi ngoài dữ kiện DNC.
   try {
-    const text = await callGeminiApi(apiKey, 'gemini-2.5-flash-lite', history, 0.7);
+    const text = await callChatApi(history);
+    const answer = text.trim();
     // Lưu vào Cache để các lần hỏi sau không tốn thêm token
-    setCachedResponse(prompt, text);
-    return { text, isMock: false };
+    setCachedResponse(cacheKey, answer);
+    return { text: answer, isMock: false };
   } catch (err: unknown) {
-    console.warn('Gemini API call failed, falling back to smart local knowledge base:', err);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    
-    // Nếu gặp lỗi giới hạn Quota (429 Rate Limit), chuyển mượt sang bộ dữ liệu nội bộ
-    const isRateLimit = (err instanceof Error && err.message === 'RATE_LIMIT_EXCEEDED') ||
-      (typeof err === 'object' && err !== null && 'name' in err && (err as { name: string }).name === 'RateLimitError');
-
-    const fallbackText = getMockResponse(prompt);
-    const finalNotice = isRateLimit
-      ? `*(Hệ thống vừa đạt ngưỡng giới hạn tạm thời từ máy chủ, đã kích hoạt bộ phản hồi nhanh để không làm gián đoạn trò chuyện)*\n\n${fallbackText}`
-      : fallbackText;
-
+    console.warn('Chat API call failed:', err);
     return {
-      text: finalNotice,
-      isMock: true,
+      text: 'Dạ, em chưa trả lời chắc được câu này ngay lúc này. Bạn thử hỏi lại sau nhaaaa.',
+      isMock: false,
     };
   }
 }
