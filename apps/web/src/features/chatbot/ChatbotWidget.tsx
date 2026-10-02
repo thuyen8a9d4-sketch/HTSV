@@ -119,7 +119,7 @@ function getInitialMessages(): ChatMessage[] {
 export function ChatbotWidget() {
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const [avatarType, setAvatarType] = useState<BotAvatarType>('clover');
+  const [avatarType, setAvatarType] = useState<BotAvatarType>('hexagon');
   const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialMessages());
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -184,7 +184,7 @@ export function ChatbotWidget() {
 
   const handleChangeAvatar = () => {
     const otherSkins = botAvatarTypes.filter((type) => type !== avatarType);
-    setAvatarType(otherSkins[Math.floor(Math.random() * otherSkins.length)] ?? 'clover');
+    setAvatarType(otherSkins[Math.floor(Math.random() * otherSkins.length)] ?? 'hexagon');
   };
 
   const handleSendMessage = async (userText: string) => {

@@ -5,7 +5,7 @@ const isMobile =
 
 export const QUALITY = {
   isMobile,
-  maxDpr: isMobile ? 1.5 : 2,
+  maxDpr: isMobile ? 1.25 : 2,
   glassBufferScale: isMobile ? 0.5 : 1,
 } as const;
 

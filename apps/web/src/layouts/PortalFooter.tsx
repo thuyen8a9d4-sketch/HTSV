@@ -30,15 +30,15 @@ const ecosystemItems = [
 ];
 
 const policyItems = [
-  'Chính sách bảo mật danh tính sinh viên',
-  'Quy chế duyệt bài & Tiêu chuẩn cộng đồng',
-  'An toàn tài khoản & Phòng chống lừa đảo',
-  'Quy trình xử lý phản ánh & Báo cáo vi phạm',
+  { to: '/faq#anonymous-safety', label: 'Chính sách bảo mật danh tính sinh viên' },
+  { to: '/faq#moderation-process', label: 'Quy chế duyệt bài & Tiêu chuẩn cộng đồng' },
+  { to: '/faq#account-security', label: 'An toàn tài khoản & Phòng chống lừa đảo' },
+  { to: '/faq#report-content', label: 'Quy trình xử lý phản ánh & Báo cáo vi phạm' },
 ];
 
 export function PortalFooter() {
   return (
-    <footer className="student-footer">
+    <footer aria-label="Thông tin nhà trường và pháp lý" className="student-footer">
       <div className="student-footer-grid">
         <div className="student-footer-col">
           <div className="student-footer-brand">
@@ -113,9 +113,9 @@ export function PortalFooter() {
           </h3>
           <ul className="student-footer-list">
             {policyItems.map((item) => (
-              <li key={item}>
+              <li key={item.to}>
                 <Check className="h-4 w-4 shrink-0 text-emerald-600" />
-                <span>{item}</span>
+                <Link to={item.to} className="student-footer-link">{item.label}</Link>
               </li>
             ))}
           </ul>
@@ -154,6 +154,7 @@ export function PortalFooter() {
               {item.label}
             </Link>
           ))}
+          <span>Phiên bản 2.4.0</span>
         </nav>
       </div>
     </footer>

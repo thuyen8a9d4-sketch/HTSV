@@ -36,6 +36,19 @@ function chatbotDevApi(): Plugin {
 
 export default defineConfig({
   plugins: [chatbotDevApi(), react(), tailwindcss()],
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'react-vendor', test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+            { name: 'three-core', test: /[\\/]three[\\/]build[\\/]three\.core\.js$/ },
+            { name: 'three-renderer', test: /[\\/]three[\\/]build[\\/]three\.module\.js$/ },
+          ],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '/api': {

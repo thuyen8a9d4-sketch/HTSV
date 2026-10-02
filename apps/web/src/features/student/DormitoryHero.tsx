@@ -22,8 +22,8 @@ export function DormitoryHero() {
 
         {/* Floating Liquid Frosted Glass Card: "Ký túc xá" */}
         <div className="absolute bottom-6 left-4 sm:bottom-8 sm:left-6 md:bottom-10 md:left-10 lg:left-14">
-          <div className="inline-flex items-center rounded-2xl sm:rounded-3xl border border-white/20 bg-white/55 px-7 py-3.5 shadow-xl backdrop-blur-xl sm:backdrop-blur-2xl transition-all hover:bg-white/65 dark:border-white/10 dark:bg-slate-900/60 dark:shadow-2xl dark:shadow-black/60 dark:hover:bg-slate-900/70 sm:px-9 sm:py-4.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl md:text-4xl dark:text-white">
+          <div className="dormitory-title-glass inline-flex items-center rounded-2xl sm:rounded-3xl px-7 py-3.5 sm:px-9 sm:py-4.5">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
               Ký túc xá
             </h1>
           </div>
