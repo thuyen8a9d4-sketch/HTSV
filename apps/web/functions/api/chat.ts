@@ -72,15 +72,20 @@ export async function onRequestPost({ request, env }: RequestContext): Promise<R
     systemInstruction: { parts: [{ text: INSTRUCTION }] },
     generationConfig: { temperature: 0.2, maxOutputTokens: 600 },
   };
-
   try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = controller ? setTimeout(() => controller.abort(), 25000) : null;
     const response = await fetch(MODEL_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(25_000),
+      signal: controller?.signal,
     });
-    if (!response.ok) return json({ error: 'AI unavailable' }, response.status === 429 ? 429 : 502);
+    if (timer) clearTimeout(timer);
+    if (!response.ok) {
+      const errDetail = await response.text().catch(() => '');
+      return json({ error: 'AI unavailable', status: response.status, details: errDetail }, response.status === 429 ? 429 : 502);
+    }
     const data: unknown = await response.json();
     const candidate = typeof data === 'object' && data !== null && 'candidates' in data && Array.isArray(data.candidates)
       ? data.candidates[0] : null;
@@ -90,7 +95,8 @@ export async function onRequestPost({ request, env }: RequestContext): Promise<R
       : '';
     if (!text) return json({ error: 'AI returned no answer' }, 502);
     return json({ text });
-  } catch {
-    return json({ error: 'AI unavailable' }, 502);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return json({ error: 'AI unavailable', details: message }, 502);
   }
 }
