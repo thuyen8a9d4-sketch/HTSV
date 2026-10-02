@@ -1,36 +1,6 @@
 import type { ChatMessage } from './chatbot-types';
-import { DNC_UNKNOWN, findDncEvidence, type DncLookup } from './dnc-sources';
+import { DNC_UNKNOWN, findDncEvidence } from './dnc-sources';
 import { getSmallTalkReply } from './chatbot-smalltalk';
-
-const STORAGE_USER_KEY = 'htsv_gemini_api_key';
-
-export function getStoredCustomApiKey(): string {
-  if (typeof window === 'undefined') return '';
-  try {
-    return (localStorage.getItem(STORAGE_USER_KEY) || '').trim();
-  } catch {
-    return '';
-  }
-}
-
-export function setCustomApiKey(key: string): void {
-  if (typeof window === 'undefined') return;
-  try {
-    const trimmed = key.trim();
-    if (trimmed) {
-      localStorage.setItem(STORAGE_USER_KEY, trimmed);
-    } else {
-      localStorage.removeItem(STORAGE_USER_KEY);
-    }
-  } catch {
-    // ignore
-  }
-}
-
-export function getEffectiveApiKey(): string {
-  const envKey = (import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_AI_API_KEY || '') as string;
-  return envKey.trim() || getStoredCustomApiKey();
-}
 
 // Cache câu trả lời để tiết kiệm Quota/Token cho các câu hỏi trùng lặp hoặc gợi ý nhanh
 const RESPONSE_CACHE = new Map<string, string>();
@@ -50,79 +20,32 @@ function setCachedResponse(prompt: string, answer: string): void {
   RESPONSE_CACHE.set(key, answer);
 }
 
-/**
- * Call Google Gemini REST API with only the evidence relevant to the question.
- */
-async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLookup | null): Promise<string> {
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent';
-
-    const relevantMessages = dnc ? messages.filter((msg) => msg.role === 'user').slice(-2) : messages.filter((msg) => msg.role !== 'system').slice(-6);
-    const trimmedHistory = relevantMessages.map((msg) => {
-      let content = msg.content;
-      if (msg.role !== 'user' && content.length > 500) {
-        content = content.slice(0, 500) + '...';
-      }
-      return {
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: content }],
-      };
-    });
-
-    const instruction = dnc
-      ? `Bạn là trợ lý HTSV. Trả lời câu hỏi cuối bằng tiếng Việt tự nhiên, trực tiếp, tối đa 3 câu. Chỉ dùng dữ kiện DNC dưới đây; không tự thêm số liệu, chính sách, tên người hoặc địa chỉ. Nếu dữ kiện chưa đủ để trả lời đúng ý hỏi, chỉ nói: "${DNC_UNKNOWN}". Không nhắc chủ đề khác. Không tự viết liên kết nguồn.\nDữ kiện đã đối chiếu:\n${dnc.evidence.map(({ answer }) => `- ${answer}`).join('\n')}`
-      : 'Bạn là trợ lý HTSV, xưng em với người dùng. Trả lời đúng câu hỏi cuối, kể cả chủ đề ngoài trường; không tự kéo câu trả lời về DNC. Giọng miền Tây vui vẻ, dùng “Dạaaaa,” và “nhaaaa” vừa phải. Khi người dùng buồn hoặc gặp khó khăn, ưu tiên lắng nghe với giọng bình tĩnh, không nhõng nhẽo. Giữ nguyên số liệu, tên riêng và liên kết. Nếu không chắc, nói rõ điều chưa biết; không bịa dữ kiện về Trường Đại học Nam Cần Thơ.';
-
-    const payload = {
-      contents: trimmedHistory,
-      systemInstruction: {
-        parts: [{ text: instruction }],
-      },
-      generationConfig: {
-        temperature: 0.2,
-        maxOutputTokens: 320,
-      },
-    };
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey,
-      },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(25000),
-    });
-
-  if (!response.ok) {
-    const errorJson = await response.json().catch(() => null);
-    const errorMsg = errorJson?.error?.message || `Lỗi máy chủ Google (${response.status})`;
-    if ([400, 401, 403].includes(response.status) && /API key not valid|API_KEY_INVALID|API key expired|invalid authentication credentials/i.test(errorMsg)) {
-      throw new Error('API Key Google Gemini không hợp lệ. Vui lòng kiểm tra lại khóa của bạn.');
-    }
-    if (response.status === 429) {
-      const err = new Error('RATE_LIMIT_EXCEEDED');
-      err.name = 'RateLimitError';
-      throw err;
-    }
-    throw new Error(errorMsg);
+/** Gửi câu hỏi ngoài dữ kiện DNC tới Pages Function; khóa Gemini chỉ ở máy chủ. */
+async function callChatApi(messages: ChatMessage[]): Promise<string> {
+  const relevantMessages = messages
+    .filter((msg) => msg.role === 'user' || (msg.role === 'assistant' && msg.id !== 'msg-welcome' && !msg.isMock))
+    .slice(-6)
+    .map((msg) => ({ role: msg.role, content: msg.content.slice(0, 2000) }));
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: relevantMessages }),
+    signal: AbortSignal.timeout(30000),
+  });
+  if (!response.ok) throw new Error(`Chat API unavailable (${response.status})`);
+  const data: unknown = await response.json();
+  if (!data || typeof data !== 'object' || !('text' in data) || typeof data.text !== 'string' || !data.text.trim()) {
+    throw new Error('Chat API returned no answer');
   }
-
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.filter((part: { text?: string }) => part.text).map((part: { text: string }) => part.text).join('\n');
-  if (!text) {
-    throw new Error('Không nhận được nội dung phản hồi từ mô hình AI.');
-  }
-
-  return text;
+  return data.text.trim();
 }
 
 /**
- * Main function to generate response for the user using server/env configured API key
+ * Main function to generate a response for the user.
  */
 export async function sendChatMessage(
   history: ChatMessage[]
 ): Promise<{ text: string; isMock: boolean }> {
-  const apiKey = getEffectiveApiKey();
   const lastUserMessage = history.filter((m) => m.role === 'user').pop();
   const prompt = lastUserMessage?.content || '';
   const previousUserMessage = history.filter((m) => m.role === 'user').at(-2)?.content || '';
@@ -161,27 +84,15 @@ export async function sendChatMessage(
     return { text: cachedAnswer, isMock: false };
   }
 
-  // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ siêu thông minh và đúng trọng tâm
-  if (!apiKey) {
-    return {
-      text: 'Dạ, câu này em chưa có câu trả lời đủ chắc nên không muốn nói sai với bạn. Bạn thử hỏi lại sau nhaaaa.',
-      isMock: false,
-    };
-  }
-
-  // 3. Gọi Gemini API trực tuyến
+  // Gọi Pages Function để trả lời câu hỏi ngoài dữ kiện DNC.
   try {
-    const text = await callGeminiApi(apiKey, history, null);
+    const text = await callChatApi(history);
     const answer = text.trim();
     // Lưu vào Cache để các lần hỏi sau không tốn thêm token
     setCachedResponse(cacheKey, answer);
     return { text: answer, isMock: false };
   } catch (err: unknown) {
-    console.warn('Gemini API call failed:', err);
-    const message = err instanceof Error ? err.message : '';
-    if (message.includes('API Key Google Gemini không hợp lệ')) {
-      return { text: 'Dạ, câu này em chưa trả lời chắc được ngay lúc này. Bạn thử hỏi lại sau nhaaaa.', isMock: false };
-    }
+    console.warn('Chat API call failed:', err);
     return {
       text: 'Dạ, em chưa trả lời chắc được câu này ngay lúc này. Bạn thử hỏi lại sau nhaaaa.',
       isMock: false,
