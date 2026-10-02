@@ -24,6 +24,7 @@ export function PortalLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const isDorm = location.pathname === '/dorm';
   const [menuOpen, setMenuOpen] = useState(false);
   const [actionMenu, setActionMenu] = useState<'auth' | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -272,7 +273,7 @@ export function PortalLayout() {
 
       {/* Main Content Area */}
       <div className="min-w-0 w-full">
-        <main id="main-content" tabIndex={-1} className={isHome ? 'min-h-screen' : 'student-main'}>
+        <main id="main-content" tabIndex={-1} className={isHome ? 'min-h-screen' : isDorm ? 'min-h-screen w-full' : 'student-main'}>
           <Suspense fallback={<LoadingSkeleton count={2} />}><Outlet context={context} /></Suspense>
         </main>
         {!isHome && <PortalFooter />}

@@ -180,13 +180,15 @@ export function StudentHomePage({ view = 'home' }: { view?: StudentView }) {
 
   // Other Dedicated Views (/services, /requests, /faq, /support, /schedule, /dorm, /tuition)
   return (
-    <div className="student-workspace space-y-7">
-      <div className="mb-2">
-        <Link to="/" className="text-xs font-medium text-slate-500 hover:text-blue-700">Trang chủ /</Link>
-        <h1 className="mt-1.5 text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">{titles[view]}</h1>
-      </div>
+    <div className={view === 'dorm' ? 'w-full' : 'student-workspace space-y-7'}>
+      {view !== 'dorm' && (
+        <div className="mb-2">
+          <Link to="/" className="text-xs font-medium text-slate-500 hover:text-blue-700 dark:text-slate-400 dark:hover:text-blue-400">Trang chủ /</Link>
+          <h1 className="mt-1.5 text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 dark:text-slate-100">{titles[view]}</h1>
+        </div>
+      )}
 
-      <div id="portal-services-overview" className="space-y-7">
+      <div id="portal-services-overview" className={view === 'dorm' ? 'w-full' : 'space-y-7'}>
         {/* Real Core Support & Community Services */}
         {view === 'services' && (
           <ServiceGrid

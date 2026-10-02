@@ -116,3 +116,28 @@
   @media (prefers-reduced-transparency: reduce) { .student-header, .student-sidebar, .student-search, .student-service { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; } }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .student-header, .student-sidebar, .student-search, .student-service { background: #fff; } }
 }
+@layer components {
+  .depth-gallery-scroll-hint {
+    color: #1e293b;
+    background-color: #fff;
+    border-color: #cbd5e1;
+  }
+  .depth-gallery-scroll-hint:hover {
+    color: #1d4ed8;
+    border-color: #93c5fd;
+  }
+  :root[data-theme="dark"] .depth-gallery-scroll-hint {
+    color: #f1f5f9;
+    background-color: #0f172a;
+    border-color: #64748b;
+  }
+  :root[data-theme="dark"] .depth-gallery-scroll-hint:hover {
+    color: #fff;
+    background-color: #1e293b;
+    border-color: #94a3b8;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .depth-gallery-scroll-hint,
+    .depth-gallery-scroll-hint svg { transition: none; transform: none; }
+  }
+}
