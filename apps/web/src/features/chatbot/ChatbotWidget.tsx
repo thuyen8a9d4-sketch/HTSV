@@ -428,11 +428,6 @@ export function ChatbotWidget() {
                     >
                       {!isUser && (
                         <div className="flex items-center gap-1">
-                          {msg.isMock && (
-                            <span className="htsv-chat-mock-badge rounded-md px-1.5 py-0.5 text-[9px] font-semibold">
-                              Mẫu HTSV
-                            </span>
-                          )}
                           {!msg.isStreaming && (
                             <button
                               type="button"

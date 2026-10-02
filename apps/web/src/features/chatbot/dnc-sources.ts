@@ -21,7 +21,7 @@ const SOURCES = {
   library: 'https://thuvien.nctu.edu.vn/',
 } as const;
 
-export const DNC_UNKNOWN = 'Mình chưa tìm được thông tin này trên website chính thức của Trường Đại học Nam Cần Thơ.';
+export const DNC_UNKNOWN = 'Mình chưa thấy trường công bố rõ thông tin này trên website chính thức, nên chưa dám trả lời chắc chắn.';
 
 export interface DncEvidence {
   answer: string;
