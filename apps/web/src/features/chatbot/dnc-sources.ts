@@ -110,17 +110,24 @@ function contains(query: string, terms: string[]): boolean {
 }
 
 function result(evidence: DncEvidence[]): DncLookup {
+  if (!evidence.length) return { evidence, fallback: DNC_UNKNOWN };
+  const uniqueSources = Array.from(new Set(evidence.map((item) => item.source)));
+  const sourceCitations = uniqueSources.map((s) => `[Nguồn](${s})`).join(' | ');
+
+  const textBlocks = evidence.map(({ answer }, index) => {
+    const spoken = index === 0 && !/^(DNC|MyDNC)\b/.test(answer)
+      ? answer.charAt(0).toLocaleLowerCase('vi') + answer.slice(1)
+      : answer;
+    const cleanSpoken = spoken.replace(/[.!?]\s*$/, '');
+    if (index === evidence.length - 1) {
+      return `${cleanSpoken} nhaaaa.`;
+    }
+    return `${cleanSpoken}.`;
+  });
+
   return {
     evidence,
-    fallback: evidence.length
-      ? evidence.map(({ answer, source }, index) => {
-        const spoken = index === 0 && !/^(DNC|MyDNC)\b/.test(answer)
-          ? answer.charAt(0).toLocaleLowerCase('vi') + answer.slice(1)
-          : answer;
-        const ending = index === evidence.length - 1 ? `${spoken.replace(/[.!?]\s*$/, '')} nhaaaa.` : spoken;
-        return `${index === 0 ? 'Dạaaaa, ' : ''}${ending} [Nguồn](${source})`;
-      }).join('\n\n')
-      : DNC_UNKNOWN,
+    fallback: `Dạaaaa, ${textBlocks.join('\n\n')} ${sourceCitations}`,
   };
 }
 
@@ -221,7 +228,9 @@ export function findDncEvidence(question: string, previousUserQuestion = ''): Dn
 
   if (contains(query, ['hoc bong'])) {
     add('Đợt tuyển sinh chính 2026, DNC công bố hơn 2.000 suất học bổng đầu vào, giá trị 6–27 triệu đồng tùy diện xét.', SOURCES.scholarship);
-    add('Đợt bổ sung 22–31/08/2026 từng có học bổng 3,5–30 triệu đồng và hiện đã hết thời hạn công bố; chưa có căn cứ về đợt đang mở.', SOURCES.additionalScholarship);
+    if (contains(query, ['bo sung', 'dot 2', 'het han'])) {
+      add('Đợt bổ sung 22–31/08/2026 từng có học bổng 3,5–30 triệu đồng và hiện đã hết thời hạn công bố.', SOURCES.additionalScholarship);
+    }
   }
 
   if (contains(query, ['hoc phi', 'bao nhieu tien', 'chi phi hoc']) || (major && contains(previous, ['hoc phi']) && contains(query, ['con', 'the']))) {

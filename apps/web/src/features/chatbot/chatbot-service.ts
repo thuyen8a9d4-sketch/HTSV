@@ -1,3 +1,4 @@
+let cachedFallbackKey = "";
 import type { ChatMessage } from './chatbot-types';
 import { DNC_UNKNOWN, findDncEvidence } from './dnc-sources';
 import { getSmallTalkReply } from './chatbot-smalltalk';
@@ -66,7 +67,7 @@ async function callChatApi(messages: ChatMessage[]): Promise<string> {
     .slice(-6)
     .map((msg) => ({ role: msg.role, content: msg.content.slice(0, 2000) }));
 
-  let fallbackKey = envKey;
+  let fallbackKey = envKey || cachedFallbackKey;
 
   try {
     const response = await fetch('/api/chat', {
@@ -76,15 +77,14 @@ async function callChatApi(messages: ChatMessage[]): Promise<string> {
       signal: AbortSignal.timeout(30000),
     });
 
-    if (response.ok) {
-      const data: unknown = await response.json();
-      if (data && typeof data === 'object') {
-        if ('text' in data && typeof data.text === 'string' && data.text.trim()) {
-          return data.text.trim();
-        }
-        if ('fallbackKey' in data && typeof data.fallbackKey === 'string' && data.fallbackKey.trim()) {
-          fallbackKey = data.fallbackKey.trim();
-        }
+    const data: unknown = await response.json().catch(() => null);
+    if (data && typeof data === 'object') {
+      if ('text' in data && typeof data.text === 'string' && data.text.trim()) {
+        return data.text.trim();
+      }
+      if ('fallbackKey' in data && typeof data.fallbackKey === 'string' && data.fallbackKey.trim()) {
+        fallbackKey = data.fallbackKey.trim();
+        cachedFallbackKey = fallbackKey;
       }
     }
   } catch (err) {
