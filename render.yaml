@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: htsv-api
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: corepack enable && corepack prepare pnpm@11.24.0 --activate && pnpm install --frozen-lockfile && pnpm --filter api prisma:generate:core && pnpm --filter api build
+    startCommand: pnpm --filter api start:prod
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: CORE_DATABASE_URL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        sync: false
+      - key: FACEBOOK_APP_ID
+        sync: false
+      - key: FACEBOOK_APP_SECRET
+        sync: false
+      - key: FACEBOOK_CALLBACK_URL
+        sync: false

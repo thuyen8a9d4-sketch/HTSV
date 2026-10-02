@@ -1,6 +1,7 @@
 {
   "name": "htsv-workspace",
   "private": true,
+  "packageManager": "pnpm@11.24.0",
   "scripts": {
     "build": "pnpm --filter web build",
     "dev:api": "pnpm --filter api start:dev",
