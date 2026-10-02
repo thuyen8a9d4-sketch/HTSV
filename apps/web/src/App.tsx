@@ -48,6 +48,22 @@ function App() {
         <Route path="/support" element={<StudentHomePage view="support" />} />
         <Route path="/tuition" element={<StudentHomePage view="tuition" />} />
         <Route path="/dorm" element={<StudentHomePage view="dorm" />} />
+        <Route path="/conduct-score" element={<StudentHomePage view="conduct-score" />} />
+        <Route path="/grade-appeal" element={<StudentHomePage view="grade-appeal" />} />
+        <Route path="/class-sections" element={<StudentHomePage view="class-sections" />} />
+        <Route path="/transcript" element={<StudentHomePage view="transcript" />} />
+        <Route path="/scholarship" element={<StudentHomePage view="scholarship" />} />
+        <Route path="/jobs" element={<StudentHomePage view="jobs" />} />
+        <Route path="/cv-builder" element={<StudentHomePage view="cv-builder" />} />
+        <Route path="/career-guidance" element={<StudentHomePage view="career-guidance" />} />
+        <Route path="/development-path" element={<StudentHomePage view="development-path" />} />
+        <Route path="/personal-path" element={<StudentHomePage view="personal-path" />} />
+        <Route path="/interview-practice" element={<StudentHomePage view="interview-practice" />} />
+        <Route path="/staff/lecturer" element={<StudentHomePage view="staff-lecturer" />} />
+        <Route path="/staff/advisor" element={<StudentHomePage view="staff-advisor" />} />
+        <Route path="/staff/office" element={<StudentHomePage view="staff-office" />} />
+        <Route path="/campus-map" element={<StudentHomePage view="campus-map" />} />
+        <Route path="/library" element={<StudentHomePage view="library" />} />
         <Route path="/announcements" element={<StudentHomePage view="announcements" />} />
         <Route path="/forum" element={<ForumFeedPage />} />
         <Route path="/forum/:id" element={<ForumDetailPage />} />

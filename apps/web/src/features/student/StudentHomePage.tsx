@@ -2,18 +2,35 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useOutletContext } from 'react-router-dom';
 import { GlassModal } from '../../components/GlassModal';
 import { ChatBubble, GridSquares, Plus } from '../../components/Icons';
+import { AcademicRecordPanel } from './AcademicRecordPanel';
+import { AdvisorPortalPanel } from './AdvisorPortalPanel';
+import { CampusMapPanel } from './CampusMapPanel';
+import { CareerGuidancePanel } from './CareerGuidancePanel';
+import { ClassSectionsPanel } from './ClassSectionsPanel';
+import { ConductScorePanel } from './ConductScorePanel';
+import { CvBuilderPanel } from './CvBuilderPanel';
 import { DepthGallery } from './depth-gallery';
+import { DevelopmentPathPanel } from './DevelopmentPathPanel';
+import { GradeAppealPanel } from './GradeAppealPanel';
+import { InterviewPracticePanel } from './InterviewPracticePanel';
+import { JobsPanel } from './JobsPanel';
+import { LecturerPortalPanel } from './LecturerPortalPanel';
+import { LibraryPanel } from './LibraryPanel';
+import { OfficePortalPanel } from './OfficePortalPanel';
+import { PersonalPathPanel } from './PersonalPathPanel';
 import { RequestTracker } from './RequestTracker';
+import { ScholarshipPanel } from './ScholarshipPanel';
 import { studentFaqs, studentServices } from './student-mock-data';
 import { StudentIcon } from './StudentIcon';
 import { StudentSearch } from './StudentSearch';
 import { StudentSupportPanel } from './StudentSupportPanel';
 import { StudentLifePanel } from './StudentLifePanel';
 import type { StudentPortalContext, StudentService } from './student-types';
+import { TuitionPanel } from './TuitionPanel';
 import { WeeklySchedule } from './WeeklySchedule';
 import { HomeContentSection } from './HomeContentSection';
 
-export type StudentView = 'home' | 'schedule' | 'services' | 'requests' | 'faq' | 'support' | 'tuition' | 'dorm' | 'announcements';
+export type StudentView = 'home' | 'schedule' | 'services' | 'requests' | 'faq' | 'support' | 'tuition' | 'dorm' | 'announcements' | 'conduct-score' | 'grade-appeal' | 'class-sections' | 'transcript' | 'scholarship' | 'jobs' | 'cv-builder' | 'career-guidance' | 'development-path' | 'personal-path' | 'interview-practice' | 'staff-lecturer' | 'staff-advisor' | 'staff-office' | 'campus-map' | 'library';
 
 const titles: Record<StudentView, string> = {
   home: 'Trang chủ',
@@ -25,6 +42,22 @@ const titles: Record<StudentView, string> = {
   tuition: 'Học phí & BHYT',
   dorm: 'Đời sống sinh viên',
   announcements: 'Thông báo',
+  'conduct-score': 'Điểm rèn luyện',
+  'grade-appeal': 'Phúc khảo điểm',
+  'class-sections': 'Lớp học phần của tôi',
+  transcript: 'Bảng điểm',
+  scholarship: 'Học bổng',
+  jobs: 'Việc làm & thực tập',
+  'cv-builder': 'Trình tạo hồ sơ xin việc',
+  'career-guidance': 'Hướng nghiệp',
+  'development-path': 'Lộ trình phát triển',
+  'personal-path': 'Bản đồ kỹ năng & Lộ trình cá nhân',
+  'interview-practice': 'Luyện phỏng vấn',
+  'staff-lecturer': 'Cổng giảng viên (demo)',
+  'staff-advisor': 'Cổng cố vấn học tập (demo)',
+  'staff-office': 'Cổng phòng ban (demo)',
+  'campus-map': 'Sơ đồ khuôn viên',
+  library: 'Thư viện',
 };
 
 function ServiceGrid({ title, subtitle, services, onService }: { title: string; subtitle: string; services: StudentService[]; onService: StudentPortalContext['openService'] }) {
@@ -169,7 +202,24 @@ export function StudentHomePage({ view = 'home' }: { view?: StudentView }) {
 
         {/* Community FAQ & Rules Accordion */}
         {view === 'support' && <StudentSupportPanel openRequest={openRequest} />}
-        {view === 'dorm' && <StudentLifePanel />}
+        {view === 'dorm' && <StudentLifePanel openRequest={openRequest} />}
+        {view === 'conduct-score' && <ConductScorePanel />}
+        {view === 'grade-appeal' && <GradeAppealPanel />}
+        {view === 'class-sections' && <ClassSectionsPanel />}
+        {view === 'transcript' && <AcademicRecordPanel />}
+        {view === 'tuition' && <TuitionPanel />}
+        {view === 'scholarship' && <ScholarshipPanel />}
+        {view === 'jobs' && <JobsPanel />}
+        {view === 'cv-builder' && <CvBuilderPanel />}
+        {view === 'career-guidance' && <CareerGuidancePanel />}
+        {view === 'development-path' && <DevelopmentPathPanel />}
+        {view === 'personal-path' && <PersonalPathPanel />}
+        {view === 'interview-practice' && <InterviewPracticePanel />}
+        {view === 'staff-lecturer' && <LecturerPortalPanel />}
+        {view === 'staff-advisor' && <AdvisorPortalPanel />}
+        {view === 'staff-office' && <OfficePortalPanel />}
+        {view === 'campus-map' && <CampusMapPanel />}
+        {view === 'library' && <LibraryPanel />}
         {view === 'faq' && (
           <section aria-label="Hỏi đáp và quy chế cộng đồng" className="student-faq-section">
             <div className="student-section-heading">
@@ -198,7 +248,7 @@ export function StudentHomePage({ view = 'home' }: { view?: StudentView }) {
         )}
 
         {/* Explanatory Fallback for external ERP Views */}
-        {(view === 'schedule' || view === 'tuition' || view === 'announcements') && (
+        {(view === 'schedule' || view === 'announcements') && (
           <section className="space-y-5">
             <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-4 dark:border-blue-500/20 dark:bg-blue-500/10">
               <div className="flex items-start gap-3">
