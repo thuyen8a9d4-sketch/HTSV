@@ -9,7 +9,7 @@ export function DormitoryHero() {
       <div className="relative h-64 w-full overflow-hidden sm:h-80 md:h-96 lg:h-[420px] xl:h-[460px]">
         <img
           src={dormitoryBannerImg}
-          alt="Ký túc xá Trường Đại học Y Dược Cần Thơ"
+          alt="Ký túc xá Trường Đại học Nam Cần Thơ"
           className="h-full w-full object-cover object-[center_35%] select-none transition-transform duration-700 ease-out hover:scale-[1.02]"
           loading="eager"
         />
