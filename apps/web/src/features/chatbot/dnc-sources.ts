@@ -311,14 +311,14 @@ export function findDncEvidence(question: string, previousUserQuestion = ''): Dn
     add('MyDNC ở https://sv.nctu.edu.vn/login. Sinh viên chọn “Đăng nhập với Google” bằng email s[MSSV]@student.nctu.edu.vn; lần đầu dùng mật khẩu trường cấp và đổi mật khẩu mới.', SOURCES.mydnc);
     if (contains(query, ['chuc nang', 'lam duoc gi', 'xem diem', 'lich hoc', 'dang ky hoc phan'])) add('Trên MyDNC có thời khóa biểu, kết quả học tập, đăng ký học phần, chương trình khung, điểm rèn luyện, thông báo và dịch vụ giấy tờ.', SOURCES.mydnc);
   }
-  if (contains(query, ['nhap hoc', 'tan sinh vien']) && hasDnc) {
+  if (contains(query, ['nhap hoc', 'tan sinh vien']) && hasDnc && !contains(query, ['ky tuc xa', 'ktx', 'hoc phi', 'hoc bong', 'phong o', 'cho o', 'thoi khoa bieu', 'mydnc'])) {
     add('Hướng dẫn nhập học của trường gồm xác nhận nhập học trực tuyến, bổ sung hồ sơ, đóng học phí, nộp hồ sơ tại trường, nhận thẻ và tài khoản sinh viên; đăng ký ký túc xá nếu cần.', SOURCES.enrollment);
   }
   if (contains(query, ['benh vien']) && hasDnc && !contains(query, ['dia chi', 'o dau', 'hotline', 'vi tri', 'toa lac', 'so dien thoai'])) {
     add('Bệnh viện Đại học Nam Cần Thơ vừa khám chữa bệnh vừa là nơi thực hành thực tế cho sinh viên nhóm ngành Sức khỏe.', SOURCES.hospital);
   }
   if (contains(query, ['ky tuc xa', 'ktx']) && hasDnc && !contains(query, ['gia', 'phi', 'bao nhieu tien', 'dia chi', 'o dau'])) {
-    if (contains(query, ['dang ky', 'thu tuc', 'lien he'])) add('Sinh viên có thể đăng ký ký túc xá trực tuyến trên trang ký túc xá của trường hoặc gọi 02923 798 123 trong giờ hành chính để được tư vấn.', SOURCES.dorm);
+    if (contains(query, ['dang ky', 'thu tuc', 'lien he', 'nhu the nao', 'cach'])) add('Tân sinh viên và sinh viên có thể đăng ký ký túc xá trực tuyến trên trang ký túc xá của trường hoặc gọi 02923 798 123 trong giờ hành chính để được hướng dẫn tư vấn.', SOURCES.dorm);
     else add('Trường có ký túc xá trong khuôn viên. Dự án Ký túc xá Quốc tế 15 tầng, dự kiến 2.500 chỗ, được khởi công tháng 01/2026; đây là dự án, không phải số chỗ đang vận hành.', SOURCES.history);
   }
   if (contains(query, ['thu vien']) && hasDnc) add('Trường có Trung tâm Thư viện điện tử phục vụ học tập và nghiên cứu.', SOURCES.history);
