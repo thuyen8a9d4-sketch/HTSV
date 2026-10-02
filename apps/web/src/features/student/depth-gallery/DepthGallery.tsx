@@ -106,8 +106,8 @@ export function DepthGallery() {
             <span
               className="h-2 sm:h-2.5 w-6 sm:w-8 rounded-full shadow-lg transition-all duration-300"
               style={{
-                backgroundColor: '#1d4ed8',
-                boxShadow: '0 0 16px rgba(29, 78, 216, 0.6)',
+                backgroundColor: currentSlide.accentColor,
+                boxShadow: `0 0 16px ${currentSlide.accentColor}99`,
               }}
             />
             <span className="font-mono text-xs font-bold tracking-widest text-slate-200/90 uppercase">

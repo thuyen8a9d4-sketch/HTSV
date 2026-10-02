@@ -121,18 +121,23 @@
   .student-utilities-trigger:hover { transform: translateY(-2px); border-color: #fffffff2; }
   .student-utilities-trigger:active { transform: scale(.97); }
 
-  .student-utilities-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    border-radius: 999px;
+  .student-utilities-pill, .dormitory-title-glass {
     border: 1px solid rgba(255, 255, 255, 0.5);
     background: linear-gradient(135deg, rgba(29, 78, 216, 0.2), rgba(255, 255, 255, 0.12));
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
     box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.6);
     color: #ffffff;
+  }
+  .dormitory-title-glass h1 {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+  .student-utilities-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 999px;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -173,7 +178,8 @@
   }
   :root[data-theme="dark"] .student-utilities-trigger svg { filter: drop-shadow(0 1px 1px #ffffff80); }
 
-  :root[data-theme="dark"] .student-utilities-pill {
+  :root[data-theme="dark"] .student-utilities-pill,
+  :root[data-theme="dark"] .dormitory-title-glass {
     background: linear-gradient(135deg, rgba(29, 78, 216, 0.15), rgba(255, 255, 255, 0.08));
     border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
@@ -234,7 +240,9 @@
   .navbar-action-option:hover, .navbar-action-option:focus-visible { background: var(--accent-soft); color: var(--accent-text); }
   .navbar-action-option:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px; }
   @media (max-width: 639px) {
-    .navbar-action-menu:has(.btn-nav-action-icon) .navbar-action-popup { right: -90px; }
+    /* Anchor the post menu to the whole action row, including when buttons wrap. */
+    .forum-post-actions .navbar-action-menu { position: static; }
+    .forum-post-actions .navbar-action-popup { left: 0; right: auto; max-width: 100%; }
   }
   .theme-toggle {
     position: relative;
@@ -504,6 +512,7 @@
     .theme-toggle, .theme-toggle-icon, .btn-primary, .btn-nav-action, .btn-nav-action-icon, .btn-nav-login { transition: none; transform: none !important; }
   }
   @media (prefers-reduced-transparency: reduce) {
+    .dormitory-title-glass { background: #334155; backdrop-filter: none; -webkit-backdrop-filter: none; }
     .student-utilities-trigger, .student-utilities-pill, .liquid-glass-btn { background: #334155; backdrop-filter: none; -webkit-backdrop-filter: none; }
     .navbar-action-popup, .forum-glass-surface { background: var(--floating-glass-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
     .theme-toggle { background: #e1e5e9; backdrop-filter: none; -webkit-backdrop-filter: none; }
@@ -512,12 +521,42 @@
     :root[data-theme="dark"] :is(.liquid-glass-header, .liquid-glass-navbar, .student-search, .scroll-to-top) { background: #282d34; backdrop-filter: none; -webkit-backdrop-filter: none; }
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .dormitory-title-glass { background: #334155; }
     .student-utilities-trigger, .student-utilities-pill, .liquid-glass-btn { background: #334155; }
     .navbar-action-popup, .forum-glass-surface { background: var(--floating-glass-solid); }
     .theme-toggle { background: #e1e5e9; }
     :root[data-theme="dark"] .theme-toggle { background: #30363e; }
     :root[data-theme="dark"] :is(.student-utilities-pill, .liquid-glass-btn) { background: #e2e8f0; color: #000; }
     :root[data-theme="dark"] :is(.liquid-glass-header, .liquid-glass-navbar, .student-search, .scroll-to-top) { background: #282d34; }
+  }
+}
+
+/* Explicit dark variants use native shades, independent of the inverted
+   palette that adapts existing light-only utilities to dark mode. */
+@layer utilities {
+  :root[data-theme="dark"] .dark\:text-slate-100 { color: #f1f5f9; }
+  :root[data-theme="dark"] .dark\:text-slate-200 { color: #e2e8f0; }
+  :root[data-theme="dark"] .dark\:text-slate-300 { color: #cbd5e1; }
+  :root[data-theme="dark"] .dark\:text-blue-200 { color: var(--accent-text); }
+  :root[data-theme="dark"] .dark\:bg-slate-700 { background-color: #334155; }
+  :root[data-theme="dark"] .dark\:bg-slate-800 { background-color: #1e293b; }
+  :root[data-theme="dark"] .dark\:bg-slate-800\/40 { background-color: #1e293b66; }
+  :root[data-theme="dark"] .dark\:bg-slate-800\/60 { background-color: #1e293b99; }
+  :root[data-theme="dark"] .dark\:bg-slate-800\/70 { background-color: #1e293bb3; }
+  :root[data-theme="dark"] .dark\:bg-slate-800\/80 { background-color: #1e293bcc; }
+  :root[data-theme="dark"] .dark\:bg-slate-800\/85 { background-color: #1e293bd9; }
+  :root[data-theme="dark"] .dark\:bg-slate-800\/95 { background-color: #1e293bf2; }
+  :root[data-theme="dark"] .dark\:bg-slate-900 { background-color: #0f172a; }
+  :root[data-theme="dark"] .dark\:bg-slate-900\/30 { background-color: #0f172a4d; }
+  :root[data-theme="dark"] .dark\:bg-slate-900\/40 { background-color: #0f172a66; }
+  :root[data-theme="dark"] .dark\:bg-slate-900\/95 { background-color: #0f172af2; }
+  :root[data-theme="dark"] .dark\:border-slate-600 { border-color: #475569; }
+  :root[data-theme="dark"] .dark\:border-slate-700 { border-color: #334155; }
+  :root[data-theme="dark"] .dark\:border-slate-800\/80 { border-color: #1e293bcc; }
+  :root[data-theme="dark"] .dark\:fill-slate-200 { fill: #e2e8f0; }
+  :root[data-theme="dark"] .dark\:stroke-slate-700 { stroke: #334155; }
+  @media (hover: hover) {
+    :root[data-theme="dark"] .dark\:hover\:bg-slate-700:hover { background-color: #334155; }
   }
 }
 
@@ -529,4 +568,44 @@
   :root[data-theme="dark"] .auth-canvas .text-blue-100 { color: #bdc8d7; }
   :root[data-theme="dark"] .text-amber-600 { color: #d7c093; }
   :root[data-theme="dark"] .text-rose-600 { color: #e0adb9; }
+}
+.student-portal .glass-drawer.portal-menu-glass {
+  --menu-ink: #000;
+  --menu-fill: linear-gradient(135deg, #ffffffd9, #ffffffb3);
+  --menu-solid: #fff;
+  --menu-hover: #0000000a;
+  --menu-active: #00000012;
+  color: var(--menu-ink);
+  background: var(--menu-fill);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+:root[data-theme="dark"] .student-portal .glass-drawer.portal-menu-glass {
+  --menu-ink: #fff;
+  --menu-fill: linear-gradient(135deg, #000000d9, #000000b3);
+  --menu-solid: #000;
+  --menu-hover: #ffffff1f;
+  --menu-active: #ffffff26;
+  border-color: #ffffff33;
+  box-shadow: 0 8px 32px -8px #00000066, inset 0 1px 1px #ffffff33;
+}
+.student-portal .portal-menu-glass .nav-item,
+.student-portal .portal-menu-glass .btn-ghost { color: var(--menu-ink); }
+.student-portal .portal-menu-glass .nav-item:hover,
+.student-portal .portal-menu-glass .btn-ghost:hover { background: var(--menu-hover); color: var(--menu-ink); }
+.student-portal .portal-menu-glass .nav-item[aria-current="page"] {
+  color: var(--menu-ink);
+  background: var(--menu-active);
+  box-shadow: inset 3px 0 0 var(--menu-ink);
+}
+.student-portal .portal-menu-glass .btn-ghost:focus-visible {
+  outline-color: var(--menu-ink);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .student-portal .glass-drawer.portal-menu-glass { background: var(--menu-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .student-portal .glass-drawer.portal-menu-glass { background: var(--menu-solid); }
 }

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, FileText, Globe, GraduationCap, Headset, Home, Mail, MapPin, Phone } from '../../components/Icons';
+import { ArrowRight, ExternalLink, FileText, GraduationCap, Headset, Home } from '../../components/Icons';
 import { FeaturedPosts } from './FeaturedPosts';
 import { HomeScrollReveal } from './HomeScrollReveal';
 import type { StudentPortalContext } from './student-types';
@@ -51,13 +51,6 @@ const announcements = [
     summary: 'Khu Ký túc xá trang bị đầy đủ máy lạnh, wifi tốc độ cao, hệ thống an ninh 24/7 và các tiện ích thể thao đa năng dành cho sinh viên nội trú.',
     link: '/services',
   },
-];
-
-const policyLinks = [
-  { to: '/faq#anonymous-safety', label: 'Chính sách bảo mật danh tính sinh viên' },
-  { to: '/faq#moderation-process', label: 'Quy chế duyệt bài & Tiêu chuẩn cộng đồng' },
-  { to: '/faq#account-security', label: 'An toàn tài khoản & Phòng chống lừa đảo' },
-  { to: '/faq#report-content', label: 'Quy trình xử lý phản ánh & Báo cáo vi phạm' },
 ];
 
 export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeContentSectionProps) {
@@ -155,57 +148,6 @@ export function HomeContentSection({ onOpenServiceModal, openRequest }: HomeCont
           </div>
         </section>
 
-        <footer aria-label="Thông tin nhà trường và pháp lý" className="home-footer">
-          <div className="home-footer-grid">
-            <HomeScrollReveal>
-              <div className="home-footer-brand">
-                <img src={`${import.meta.env.BASE_URL}assets/logo-dnc-transparent.png`} alt="Đại học Nam Cần Thơ" width={46} height={40} />
-                <div>
-                  <p className="home-footer-name">Đại học Nam Cần Thơ</p>
-                  <p className="home-footer-english">Nam Can Tho University · DNC</p>
-                </div>
-              </div>
-              <p className="home-footer-description">Cổng Thông tin Hỗ trợ Sinh viên (HTSV) — hỗ trợ học vụ, tiện ích đời sống và diễn đàn giao lưu cho sinh viên DNC.</p>
-              <p className="home-footer-motto">“Trí tuệ – Sáng tạo – Hội nhập – Phát triển”</p>
-            </HomeScrollReveal>
-            <HomeScrollReveal delay={60}>
-              <h3 className="home-footer-title">Trụ sở và liên hệ</h3>
-              <ul className="home-footer-list">
-                <li className="home-footer-contact"><MapPin aria-hidden="true" /><div><strong>Địa chỉ</strong>Số 168, Nguyễn Văn Cừ nối dài, P. An Bình, Q. Ninh Kiều, TP. Cần Thơ</div></li>
-                <li className="home-footer-contact"><Phone aria-hidden="true" /><div><strong>Tổng đài</strong>(0292) 3 798 222 - (0292) 3 798 668</div></li>
-                <li className="home-footer-contact"><Phone aria-hidden="true" /><div><strong>Hotline HTSV</strong>(0292) 3 798 168</div></li>
-                <li className="home-footer-contact"><Mail aria-hidden="true" /><div><strong>Email</strong>dnc@nctu.edu.vn | htsv@nctu.edu.vn</div></li>
-                <li className="home-footer-contact"><Globe aria-hidden="true" /><a href="https://nctu.edu.vn" target="_blank" rel="noopener noreferrer">nctu.edu.vn <ExternalLink aria-hidden="true" /></a></li>
-              </ul>
-            </HomeScrollReveal>
-            <HomeScrollReveal delay={120}>
-              <h3 className="home-footer-title">Hệ sinh thái DNC</h3>
-              <ul className="home-footer-list">
-                <li><a href="https://qldt.nctu.edu.vn" target="_blank" rel="noopener noreferrer">Cổng Đào tạo tín chỉ <ExternalLink aria-hidden="true" /></a></li>
-                <li>Bệnh viện Đại học Nam Cần Thơ (300 giường)</li>
-                <li>Showroom Ô tô Nam Cần Thơ DNC</li>
-                <li>Viện Nghiên cứu & Phát triển Dược liệu</li>
-                <li>Khu Thể thao Đa năng & Hồ bơi Chuẩn Olympic</li>
-              </ul>
-            </HomeScrollReveal>
-            <HomeScrollReveal delay={180}>
-              <h3 className="home-footer-title">Chính sách và bảo mật</h3>
-              <ul className="home-footer-list">
-                {policyLinks.map((item) => <li key={item.to}><Link to={item.to}>{item.label}</Link></li>)}
-              </ul>
-            </HomeScrollReveal>
-          </div>
-          <HomeScrollReveal>
-            <div className="home-footer-bottom">
-              <p>© 2026 Trường Đại học Nam Cần Thơ. Bản quyền thuộc về Cổng HTSV DNC.</p>
-              <div className="home-footer-bottom-links">
-                <Link to="/faq#anonymous-safety">Bảo mật dữ liệu sinh viên</Link>
-                <Link to="/faq#moderation-process">Tiêu chuẩn cộng đồng</Link>
-                <span>Phiên bản 2.4.0</span>
-              </div>
-            </div>
-          </HomeScrollReveal>
-        </footer>
       </div>
     </div>
   );

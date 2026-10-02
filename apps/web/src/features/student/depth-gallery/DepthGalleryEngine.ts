@@ -59,7 +59,7 @@ export class DepthGalleryEngine {
       alpha: false,
       powerPreference: 'high-performance',
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.5 : 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.25 : 2));
     this.renderer.outputColorSpace = SRGBColorSpace;
     this.renderer.autoClear = false;
 
@@ -140,6 +140,7 @@ export class DepthGalleryEngine {
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, width < 768 ? 1.25 : 2));
     this.renderer.setSize(width, height, false);
     this.gallery.updatePlaneScale();
     this.gallery.layoutPlanes();

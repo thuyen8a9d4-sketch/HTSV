@@ -87,7 +87,7 @@ export function PortalLayout() {
           {/* Left: Brand & Mobile Toggle */}
           <div className="flex items-center gap-1 sm:gap-3">
             <GlassButton
-              className="shrink-0 px-2.5 py-1.5 lg:hidden"
+              className="portal-menu-trigger shrink-0 px-2.5 py-1.5 lg:hidden"
               onClick={() => setMenuOpen(true)}
               aria-label="Mở menu"
               aria-haspopup="dialog"
@@ -232,7 +232,7 @@ export function PortalLayout() {
       </header>
 
       {/* Mobile Drawer */}
-      <GlassModal open={menuOpen} drawer onClose={() => setMenuOpen(false)} title="Menu HTSV">
+      <GlassModal open={menuOpen} drawer className="portal-menu-glass dnc-brand-menu" onClose={() => setMenuOpen(false)} title="Menu HTSV">
         <nav aria-label="Điều hướng di động" className="space-y-1">
           {primaryNav.map((item) => (
             <NavLink
@@ -276,7 +276,7 @@ export function PortalLayout() {
         <main id="main-content" tabIndex={-1} className={isHome ? 'min-h-screen' : isDorm ? 'min-h-screen w-full' : 'student-main'}>
           <Suspense fallback={<LoadingSkeleton count={2} />}><Outlet context={context} /></Suspense>
         </main>
-        {!isHome && <PortalFooter />}
+        <PortalFooter />
 
         {/* ── Mobile Bottom Navigation ── */}
         <nav className="bottom-nav md:hidden" aria-label="Điều hướng nhanh">

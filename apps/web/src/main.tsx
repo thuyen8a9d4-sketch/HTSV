@@ -6,6 +6,7 @@ import App from './App.tsx';
 import './index.css';
 import './features/student/student.css';
 import './theme.css';
+import './dnc-brand.css';
 import { queryClient } from './lib/query-client';
 
 createRoot(document.getElementById('root')!).render(

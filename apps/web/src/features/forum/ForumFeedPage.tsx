@@ -209,7 +209,7 @@ export function ForumFeedPage() {
         { label: 'Đăng bài công khai', to: '/forum/new?anonymous=false', icon: <FileText className="h-5 w-5" /> },
         { label: 'Đăng bài ẩn danh', to: '/forum/new?anonymous=true', icon: <Shield className="h-5 w-5" /> },
       ]}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25 transition-all duration-200 hover:scale-105 hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 active:scale-95"
+      className="btn-nav-action-icon inline-flex h-11 w-11 items-center justify-center rounded-full text-white transition-all duration-200 hover:scale-105 focus-ring active:scale-95"
     >
       <Plus className="h-6 w-6 stroke-[2.2]" />
     </NavbarActionMenu>
@@ -223,7 +223,7 @@ export function ForumFeedPage() {
       {/* Main Foreground Content */}
       <div className="forum-glass-surface relative z-10 mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
         {/* ── Hero Banner ── */}
-        <section className="forum-glass-panel relative mb-8 overflow-hidden rounded-3xl p-6 sm:p-8">
+        <section className="forum-glass-panel relative z-20 mb-8 rounded-3xl p-6 sm:p-8">
           <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="max-w-2xl">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-blue-200/60 bg-blue-50/80 px-3 py-1 text-xs font-semibold text-blue-700 backdrop-blur-md dark:border-blue-900/50 dark:bg-blue-950/40 dark:text-blue-300">
@@ -241,7 +241,7 @@ export function ForumFeedPage() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="forum-post-actions relative flex flex-wrap items-center gap-3">
               <Link
                 to="/forum/new?anonymous=false"
                 className="btn-nav-action inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold shadow-md shadow-blue-500/20"
