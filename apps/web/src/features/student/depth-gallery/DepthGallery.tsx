@@ -148,7 +148,7 @@ export function DepthGallery() {
           onClick={() => {
             document.getElementById('home-content-section')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
           }}
-          className="depth-gallery-scroll-hint group inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold shadow-md transition-all hover:shadow-lg active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 whitespace-nowrap"
+          className="depth-gallery-scroll-hint group inline-flex min-h-9 items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-semibold shadow-md transition-all hover:shadow-lg active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 whitespace-nowrap"
           title="Cuộn xuống xem thông báo, tin tức và dịch vụ"
         >
           <span>Xem thông báo & tin tức mới</span>
