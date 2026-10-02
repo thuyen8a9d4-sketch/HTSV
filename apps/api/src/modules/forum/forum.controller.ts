@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
@@ -29,13 +37,19 @@ export class ForumController {
   @Public()
   @UseGuards(OptionalJwtAuthGuard)
   @Get('posts/:id')
-  findOne(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: AuthenticatedUser | null) {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthenticatedUser | null,
+  ) {
     return this.forumService.findPostById(id, user);
   }
 
   @Roles('STUDENT', 'LECTURER', 'ADMIN')
   @Post('posts')
-  createPost(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreatePostDto) {
+  createPost(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreatePostDto,
+  ) {
     return this.forumService.createPost(user.userId, dto);
   }
 
@@ -67,7 +81,10 @@ export class ForumController {
 
   @Roles('STUDENT', 'LECTURER', 'ADMIN')
   @Post('reports')
-  createReport(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateReportDto) {
+  createReport(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateReportDto,
+  ) {
     return this.forumService.createReport(user.userId, dto);
   }
 }

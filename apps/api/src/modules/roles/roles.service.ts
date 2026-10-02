@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
 import { AssignPermissionsDto } from './dto/assign-permissions.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -49,7 +53,10 @@ export class RolesService {
     await this.findOne(id);
     await this.prisma.vaiTroQuyen.deleteMany({ where: { roleId: id } });
     await this.prisma.vaiTroQuyen.createMany({
-      data: dto.permissionIds.map((permissionId) => ({ roleId: id, permissionId })),
+      data: dto.permissionIds.map((permissionId) => ({
+        roleId: id,
+        permissionId,
+      })),
     });
     return this.findOne(id);
   }

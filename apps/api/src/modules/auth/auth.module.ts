@@ -12,8 +12,20 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
-  imports: [CorePrismaModule, UsersModule, MailModule, PassportModule, JwtModule.register({})],
+  imports: [
+    CorePrismaModule,
+    UsersModule,
+    MailModule,
+    PassportModule,
+    JwtModule.register({}),
+  ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, GoogleStrategy, FacebookStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    GoogleStrategy,
+    FacebookStrategy,
+  ],
 })
 export class AuthModule {}

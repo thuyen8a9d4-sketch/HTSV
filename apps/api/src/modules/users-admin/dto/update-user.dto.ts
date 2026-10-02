@@ -1,5 +1,12 @@
-import { IsArray, IsBoolean, IsEmail, IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
-
+import {
+  IsArray,
+  IsBoolean,
+  IsEmail,
+  IsInt,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 export class UpdateUserDto {
   @IsOptional()
   @IsEmail()

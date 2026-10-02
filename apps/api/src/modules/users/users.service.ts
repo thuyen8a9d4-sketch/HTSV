@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   BadRequestException,
   Injectable,
@@ -11,7 +12,10 @@ export interface UserSummary {
   email: string;
   fullName: string;
 }
-
+interface ExtendedPrismaUser {
+    findUnique(args: Record<string, unknown>): Promise<Record<string, unknown> | null>;
+    update(args: Record<string, unknown>): Promise<Record<string, unknown>>;
+}
 export const USER_WITH_ROLES_INCLUDE = {
   userRoles: { include: { role: true } },
 } as const;
@@ -124,4 +128,65 @@ export class UsersService {
     }
     return user;
   }
+    async getProfileWithDetails(
+        userId: number,
+    ): Promise<Record<string, unknown>> {
+        const userDelegate = this.prisma
+            .nguoiDung as unknown as ExtendedPrismaUser;
+        const user = await userDelegate.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                fullName: true,
+                createdAt: true,
+            },
+        });
+
+        if (!user) {
+            throw new NotFoundException('Người dùng không tồn tại');
+        }
+
+        return user;
+    }
+
+    async updateProfile(
+        userId: number,
+        data: { fullName?: string },
+    ): Promise<Record<string, unknown>> {
+        await this.findOrThrow(userId);
+
+        const userDelegate = this.prisma
+            .nguoiDung as unknown as ExtendedPrismaUser;
+        return userDelegate.update({
+            where: { id: userId },
+            data: {
+                fullName: data.fullName,
+            },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                fullName: true,
+            },
+        });
+    }
+
+    async updateAvatar(
+        userId: number,
+        avatarUrl: string,
+    ): Promise<Record<string, unknown>> {
+        await this.findOrThrow(userId);
+
+        const userDelegate = this.prisma
+            .nguoiDung as unknown as ExtendedPrismaUser;
+        return userDelegate.update({
+            where: { id: userId },
+            data: { avatarUrl },
+            select: {
+                id: true,
+            },
+        });
+    }
 }

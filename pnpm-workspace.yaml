@@ -4,6 +4,7 @@ allowBuilds:
   '@prisma/engines': true
   '@scarf/scarf': false
   argon2: true
+  bcrypt: true
   esbuild: true
   msgpackr-extract: true
   prisma: true

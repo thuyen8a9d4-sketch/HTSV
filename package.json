@@ -8,5 +8,8 @@
     "prisma:generate:core": "pnpm --filter api prisma:generate:core",
     "prisma:migrate:core": "pnpm --filter api prisma:migrate:core",
     "prisma:seed:core": "pnpm --filter api prisma:seed:core"
+  },
+  "dependencies": {
+    "axios": "^1.20.0"
   }
 }
