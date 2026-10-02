@@ -20,24 +20,82 @@ function setCachedResponse(prompt: string, answer: string): void {
   RESPONSE_CACHE.set(key, answer);
 }
 
-/** Gửi câu hỏi ngoài dữ kiện DNC tới Pages Function; khóa Gemini chỉ ở máy chủ. */
+const MODEL_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent';
+const INSTRUCTION = 'Bạn là trợ lý HTSV, xưng em với người dùng. Trả lời trực tiếp đúng câu hỏi cuối bằng tiếng Việt ngắn gọn, kể cả chủ đề ngoài trường. Không tự kéo câu trả lời về Trường Đại học Nam Cần Thơ. Giọng miền Tây vui vẻ, dùng “Dạaaaa” và “nhaaaa” vừa phải. Khi người dùng buồn hoặc gặp khó khăn, trả lời đồng cảm, bình tĩnh. Nếu không biết thì nói rõ là không biết; tuyệt đối không bịa dữ kiện, đặc biệt về Trường Đại học Nam Cần Thơ.';
+
+async function callGeminiDirect(key: string, messages: ChatMessage[]): Promise<string> {
+  const relevantMessages = messages
+    .filter((msg) => msg.role === 'user' || (msg.role === 'assistant' && msg.id !== 'msg-welcome' && !msg.isMock))
+    .slice(-6);
+  const payload = {
+    contents: relevantMessages.map((msg) => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }],
+    })),
+    systemInstruction: { parts: [{ text: INSTRUCTION }] },
+    generationConfig: { temperature: 0.2, maxOutputTokens: 600 },
+  };
+  const response = await fetch(MODEL_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(25000),
+  });
+  if (!response.ok) throw new Error(`Gemini direct call failed (${response.status})`);
+  const data: unknown = await response.json();
+  const candidate = typeof data === 'object' && data !== null && 'candidates' in data && Array.isArray(data.candidates)
+    ? data.candidates[0]
+    : null;
+  const parts = candidate?.content?.parts;
+  const text = Array.isArray(parts)
+    ? parts
+        .filter((part: unknown): part is { text: string } => typeof part === 'object' && part !== null && 'text' in part && typeof part.text === 'string')
+        .map((part) => part.text)
+        .join('\n')
+        .trim()
+    : '';
+  if (!text) throw new Error('No answer returned from Gemini');
+  return text;
+}
+
+/** Gửi câu hỏi ngoài dữ kiện DNC tới Pages Function; tự động fallback nếu khu vực server bị hạn chế. */
 async function callChatApi(messages: ChatMessage[]): Promise<string> {
+  const envKey = ((import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_AI_API_KEY || '') as string).trim();
   const relevantMessages = messages
     .filter((msg) => msg.role === 'user' || (msg.role === 'assistant' && msg.id !== 'msg-welcome' && !msg.isMock))
     .slice(-6)
     .map((msg) => ({ role: msg.role, content: msg.content.slice(0, 2000) }));
-  const response = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: relevantMessages }),
-    signal: AbortSignal.timeout(30000),
-  });
-  if (!response.ok) throw new Error(`Chat API unavailable (${response.status})`);
-  const data: unknown = await response.json();
-  if (!data || typeof data !== 'object' || !('text' in data) || typeof data.text !== 'string' || !data.text.trim()) {
-    throw new Error('Chat API returned no answer');
+
+  let fallbackKey = envKey;
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: relevantMessages }),
+      signal: AbortSignal.timeout(30000),
+    });
+
+    if (response.ok) {
+      const data: unknown = await response.json();
+      if (data && typeof data === 'object') {
+        if ('text' in data && typeof data.text === 'string' && data.text.trim()) {
+          return data.text.trim();
+        }
+        if ('fallbackKey' in data && typeof data.fallbackKey === 'string' && data.fallbackKey.trim()) {
+          fallbackKey = data.fallbackKey.trim();
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Pages function chat API call failed:', err);
   }
-  return data.text.trim();
+
+  if (fallbackKey) {
+    return await callGeminiDirect(fallbackKey, messages);
+  }
+
+  throw new Error('Chat API returned no answer');
 }
 
 /**
