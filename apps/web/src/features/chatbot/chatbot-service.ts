@@ -1,5 +1,6 @@
 import type { ChatMessage } from './chatbot-types';
 import { DNC_UNKNOWN, findDncEvidence, type DncLookup } from './dnc-sources';
+import { getSmallTalkReply } from './chatbot-smalltalk';
 
 const STORAGE_USER_KEY = 'htsv_gemini_api_key';
 
@@ -27,11 +28,8 @@ export function setCustomApiKey(key: string): void {
 }
 
 export function getEffectiveApiKey(): string {
-  const userKey = getStoredCustomApiKey();
-  if (userKey) return userKey;
-
   const envKey = (import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_AI_API_KEY || '') as string;
-  return envKey.trim();
+  return envKey.trim() || getStoredCustomApiKey();
 }
 
 // Cache câu trả lời để tiết kiệm Quota/Token cho các câu hỏi trùng lặp hoặc gợi ý nhanh
@@ -56,7 +54,7 @@ function setCachedResponse(prompt: string, answer: string): void {
  * Call Google Gemini REST API with only the evidence relevant to the question.
  */
 async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLookup | null): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent';
 
     const relevantMessages = dnc ? messages.filter((msg) => msg.role === 'user').slice(-2) : messages.filter((msg) => msg.role !== 'system').slice(-6);
     const trimmedHistory = relevantMessages.map((msg) => {
@@ -72,7 +70,7 @@ async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLo
 
     const instruction = dnc
       ? `Bạn là trợ lý HTSV. Trả lời câu hỏi cuối bằng tiếng Việt tự nhiên, trực tiếp, tối đa 3 câu. Chỉ dùng dữ kiện DNC dưới đây; không tự thêm số liệu, chính sách, tên người hoặc địa chỉ. Nếu dữ kiện chưa đủ để trả lời đúng ý hỏi, chỉ nói: "${DNC_UNKNOWN}". Không nhắc chủ đề khác. Không tự viết liên kết nguồn.\nDữ kiện đã đối chiếu:\n${dnc.evidence.map(({ answer }) => `- ${answer}`).join('\n')}`
-      : 'Bạn là trợ lý HTSV, xưng em với người dùng. Trả lời ngắn gọn, rõ ý bằng giọng miền Tây vui vẻ, nhõng nhẽo: mở bằng “Dạaaaa,” và thỉnh thoảng kéo chữ cuối như “nhaaaa”, “nèee”, “ạaaaa”. Giữ nguyên số liệu, tên riêng, mã ngành và liên kết; không kéo dài từng từ hoặc lặp quá nhiều. Nếu không chắc, nói rõ em chưa đủ thông tin. Không tự bịa dữ kiện về Trường Đại học Nam Cần Thơ.';
+      : 'Bạn là trợ lý HTSV, xưng em với người dùng. Trả lời đúng câu hỏi cuối, kể cả chủ đề ngoài trường; không tự kéo câu trả lời về DNC. Giọng miền Tây vui vẻ, dùng “Dạaaaa,” và “nhaaaa” vừa phải. Khi người dùng buồn hoặc gặp khó khăn, ưu tiên lắng nghe với giọng bình tĩnh, không nhõng nhẽo. Giữ nguyên số liệu, tên riêng và liên kết. Nếu không chắc, nói rõ điều chưa biết; không bịa dữ kiện về Trường Đại học Nam Cần Thơ.';
 
     const payload = {
       contents: trimmedHistory,
@@ -89,6 +87,7 @@ async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLo
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
       },
       body: JSON.stringify(payload),
       signal: AbortSignal.timeout(25000),
@@ -97,7 +96,7 @@ async function callGeminiApi(apiKey: string, messages: ChatMessage[], dnc: DncLo
   if (!response.ok) {
     const errorJson = await response.json().catch(() => null);
     const errorMsg = errorJson?.error?.message || `Lỗi máy chủ Google (${response.status})`;
-    if (response.status === 400 && errorMsg.includes('API_KEY_INVALID')) {
+    if ([400, 401, 403].includes(response.status) && /API key not valid|API_KEY_INVALID|API key expired|invalid authentication credentials/i.test(errorMsg)) {
       throw new Error('API Key Google Gemini không hợp lệ. Vui lòng kiểm tra lại khóa của bạn.');
     }
     if (response.status === 429) {
@@ -137,6 +136,8 @@ export async function sendChatMessage(
   if (/^(ban la ai|bot la ai)[?.! ]*$/.test(simplePrompt)) {
     return { text: 'Dạaaaa, em là trợ lý trên website HTSV nèee. Em giúp bạn tìm thông tin về Trường Đại học Nam Cần Thơ nhaaaa.', isMock: false };
   }
+  const smallTalk = getSmallTalkReply(prompt);
+  if (smallTalk) return { text: smallTalk, isMock: false };
   const confessionContext = /\bconfession\b/.test(simplePrompt) ||
     (/\bconfession\b/.test(previousUserMessage.toLowerCase()) && /^(con|the|vay|bao lau|khi nao|sao)\b/.test(simplePrompt));
   if (confessionContext && /\b(duyet|kiem duyet|bao lau|khi nao|chua hien|chua dang|len bai|len mat)\b/.test(simplePrompt)) {
@@ -163,7 +164,7 @@ export async function sendChatMessage(
   // 2. Nếu không có API Key, dùng bộ phản hồi cục bộ siêu thông minh và đúng trọng tâm
   if (!apiKey) {
     return {
-      text: 'Dạaaaa, em chưa có đủ thông tin để trả lời chắc chắn câu này. Bạn nói rõ thêm một chút, em tìm giúp nhaaaa.',
+      text: 'Dạ, câu này em chưa có câu trả lời đủ chắc nên không muốn nói sai với bạn. Bạn thử hỏi lại sau nhaaaa.',
       isMock: false,
     };
   }
@@ -177,8 +178,12 @@ export async function sendChatMessage(
     return { text: answer, isMock: false };
   } catch (err: unknown) {
     console.warn('Gemini API call failed:', err);
+    const message = err instanceof Error ? err.message : '';
+    if (message.includes('API Key Google Gemini không hợp lệ')) {
+      return { text: 'Dạ, câu này em chưa trả lời chắc được ngay lúc này. Bạn thử hỏi lại sau nhaaaa.', isMock: false };
+    }
     return {
-      text: 'Dạaaaa, hiện em chưa kiểm tra được câu này. Bạn thử hỏi lại sau một chút nhaaaa.',
+      text: 'Dạ, em chưa trả lời chắc được câu này ngay lúc này. Bạn thử hỏi lại sau nhaaaa.',
       isMock: false,
     };
   }

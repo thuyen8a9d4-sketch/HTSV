@@ -207,9 +207,10 @@ export function findDncEvidence(question: string, previousUserQuestion = ''): Dn
     }));
   }
   const campusTopic = contains(query, ['hoc phi', 'hoc bong', 'xet tuyen', 'tuyen sinh', 'hoc ba', 'ky tuc xa', 'ktx', 'ma nganh', 'ma truong', 'diem san', 'diem chuan', 'nganh hoc', 'thong tin nganh', 'cong thong tin sinh vien']) || (contains(query, ['truong']) && contains(query, ['o dau', 'dia chi', 'gioi thieu']));
+  const schoolFollowUp = /^(con (nganh|hoc phi|ma|diem|ky tuc xa)|the (dia chi|hoc phi|ma)|no (o dau|bao nhieu|the nao)|o dau|bao nhieu|ma nganh)\b/.test(query);
   const hasDnc = contains(query, ['nam can tho', 'dnc', 'nctu', 'mydnc']) ||
     (contains(previous, ['nam can tho', 'dnc', 'nctu', 'mydnc']) &&
-      (campusTopic || Boolean(findMajor(query)) || /^(con|the|vay|no|o dau|bao nhieu|ma)\b/.test(query)));
+      (campusTopic || Boolean(findMajor(query)) || schoolFollowUp));
   if (!hasDnc && !campusTopic) return null;
   if (/\bdai hoc (?!nam can tho)/.test(query) && !contains(query, ['nam can tho', 'dnc', 'nctu'])) return null;
   if (query.includes('dai hoc can tho') && !query.includes('nam can tho')) return null;
