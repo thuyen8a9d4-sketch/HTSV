@@ -148,11 +148,11 @@ export function DepthGallery() {
           onClick={() => {
             document.getElementById('home-content-section')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
           }}
-          className="group inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-800 backdrop-blur-md shadow-md transition-all hover:bg-white hover:text-blue-700 hover:border-blue-300 hover:shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap dark:border-white/20 dark:bg-slate-900/85 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white dark:hover:border-white/40 dark:shadow-xl"
+          className="depth-gallery-scroll-hint group inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold shadow-md transition-all hover:shadow-lg active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 whitespace-nowrap"
           title="Cuộn xuống xem thông báo, tin tức và dịch vụ"
         >
           <span>Xem thông báo & tin tức mới</span>
-          <ArrowDown className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-y-0.5 text-slate-500 group-hover:text-blue-600 dark:text-slate-300 dark:group-hover:text-blue-400" />
+          <ArrowDown aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-y-0.5" />
         </button>
       </div>
     </section>
