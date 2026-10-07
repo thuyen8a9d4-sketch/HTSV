@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { BotAvatar, botAvatarTypes } from 'bot-avatars';
 import type { BotAvatarType } from 'bot-avatars';
 import {
@@ -20,6 +20,7 @@ import type { ChatMessage, QuickSuggestion } from './chatbot-types';
 import { sendChatMessage } from './chatbot-service';
 import { QUICK_SUGGESTIONS, generateFollowUpSuggestions } from './chatbot-knowledge';
 import { ChatMarkdown } from './ChatMarkdown';
+import { ChatContactPanel } from './ChatContactPanel';
 import './chatbot.css';
 
 const STORAGE_CHAT_HISTORY = 'htsv_chatbot_history_v2';
@@ -116,9 +117,90 @@ function getInitialMessages(): ChatMessage[] {
   return [INITIAL_BOT_MESSAGE];
 }
 
+interface ChatMessageItemProps {
+  msg: ChatMessage;
+  copied: boolean;
+  onCopy: (content: string, id: string) => void;
+  onFollowUp?: (text: string) => Promise<void>;
+}
+
+// Existing message objects retain their identity while the draft or last reply changes.
+const ChatMessageItem = memo(function ChatMessageItem({ msg, copied, onCopy, onFollowUp }: ChatMessageItemProps) {
+  const isUser = msg.role === 'user';
+  return (
+    <div
+      className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
+    >
+      <div
+        className={`htsv-chat-message max-w-[92%] rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-xs ${
+          isUser
+            ? 'htsv-chat-bubble-user rounded-br-xs'
+            : msg.status === 'error'
+            ? 'htsv-chat-bubble-error rounded-bl-xs'
+            : 'htsv-chat-bubble-ai rounded-bl-xs'
+        }`}
+      >
+        <ChatMarkdown content={isUser ? msg.content : cleanEmojis(msg.content)} isUser={isUser} />
+        {msg.isStreaming && <span className="htsv-chat-cursor" aria-hidden="true" />}
+
+        <div
+          className={`mt-1.5 flex items-center gap-1.5 text-[10px] ${
+            isUser
+              ? 'htsv-chat-user-time justify-end'
+              : 'justify-between htsv-chat-subtitle'
+          }`}
+        >
+          {!isUser && (
+            <div className="flex items-center gap-1">
+              {!msg.isStreaming && (
+                <button
+                  type="button"
+                  onClick={() => onCopy(msg.content, msg.id)}
+                  className="htsv-chat-action-btn flex items-center gap-0.5 rounded px-1.5 py-0.5"
+                  title="Sao chép nội dung"
+                >
+                  <Copy className="h-3 w-3" />
+                  <span>{copied ? 'Đã chép' : 'Chép'}</span>
+                </button>
+              )}
+            </div>
+          )}
+          <span>{formatTime(msg.timestamp)}</span>
+        </div>
+      </div>
+
+      {/* Follow-up Prompt Chips (chỉ hiển thị ở câu trả lời mới nhất khi đã gõ xong) */}
+      {onFollowUp && msg.followUps && msg.followUps.length > 0 && (
+        <div className="htsv-followup-wrapper mt-2.5 flex flex-col gap-1.5 w-full max-w-[85%]">
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+            <HelpCircle className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+            <span>Câu hỏi thường gặp liên quan:</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {msg.followUps.map((chip, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => void onFollowUp(chip)}
+                className="htsv-followup-chip"
+              >
+                <ChatBubble className="h-3 w-3 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <span>{chip}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+});
+
 export function ChatbotWidget() {
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'chat' | 'contact'>('chat');
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const wasOpen = useRef(false);
   const [avatarType, setAvatarType] = useState<BotAvatarType>('hexagon');
   const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialMessages());
   const [input, setInput] = useState('');
@@ -155,18 +237,22 @@ export function ChatbotWidget() {
   }, [messages, isStreaming]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && activeTab === 'chat') {
       const list = messageListRef.current;
       list?.scrollTo({
         top: messages.length === 1 ? 0 : list.scrollHeight,
         behavior: isStreaming || window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
       });
     }
-  }, [isOpen, messages, isLoading, isStreaming]);
+  }, [isOpen, activeTab, messages, isLoading, isStreaming]);
 
   useEffect(() => {
-    if (isOpen && window.matchMedia('(pointer: fine)').matches) inputRef.current?.focus();
-  }, [isOpen]);
+    if (isOpen && !wasOpen.current) {
+      if (activeTab === 'chat' && window.matchMedia('(pointer: fine)').matches) inputRef.current?.focus();
+      else tabsRef.current?.querySelector<HTMLButtonElement>('[aria-selected="true"]')?.focus();
+    }
+    wasOpen.current = isOpen;
+  }, [isOpen, activeTab]);
 
   // Handle escape to close
   useEffect(() => {
@@ -187,7 +273,7 @@ export function ChatbotWidget() {
     setAvatarType(otherSkins[Math.floor(Math.random() * otherSkins.length)] ?? 'hexagon');
   };
 
-  const handleSendMessage = async (userText: string) => {
+  const handleSendMessage = useCallback(async (userText: string) => {
     const text = userText.trim();
     if (!text || isLoading || isStreaming) return;
 
@@ -272,7 +358,7 @@ export function ChatbotWidget() {
       );
       setMessages((prev) => [...prev, errorMessage]);
     }
-  };
+  }, [messages, isLoading, isStreaming]);
 
   const handleClearHistory = () => {
     requestVersion.current += 1;
@@ -290,26 +376,20 @@ export function ChatbotWidget() {
     }
   };
 
-  const handleCopyText = (content: string, id: string) => {
+  const handleCopyText = useCallback((content: string, id: string) => {
     if (!navigator.clipboard) return;
     void navigator.clipboard.writeText(content).then(() => {
       setCopiedId(id);
       if (copyTimer.current) clearTimeout(copyTimer.current);
       copyTimer.current = setTimeout(() => setCopiedId(null), 2000);
     }).catch(() => { setCopiedId(null); });
-  };
+  }, []);
 
   const handleKeyDownInput = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSendMessage(input);
     }
-  };
-
-  // Render markdown with rich styling like ChatGPT/Gemini
-  const renderMessageContent = (content: string, isUser: boolean) => {
-    const text = isUser ? content : cleanEmojis(content);
-    return <ChatMarkdown content={text} isUser={isUser} />;
   };
 
   return (
@@ -335,7 +415,7 @@ export function ChatbotWidget() {
         <div
           id="htsv-chat-panel"
           role="region"
-          aria-label="Cửa sổ trò chuyện HTSV"
+          aria-label="Tư vấn và liên hệ HTSV"
           className="htsv-chat-window"
           onWheel={(e) => e.stopPropagation()}
           onTouchMove={(e) => e.stopPropagation()}
@@ -377,6 +457,7 @@ export function ChatbotWidget() {
             <div className="flex items-center gap-1">
               <button
                 type="button"
+                hidden={activeTab !== 'chat'}
                 onClick={handleClearHistory}
                 title="Làm mới đoạn hội thoại"
                 className="htsv-chat-action-btn rounded-xl p-2 focus:outline-hidden"
@@ -396,81 +477,29 @@ export function ChatbotWidget() {
             </div>
           </div>
 
+          <div ref={tabsRef} className="htsv-chat-tabs" role="tablist" aria-label="Nội dung trợ lý HTSV"
+            onKeyDown={(event) => {
+              const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+              if (!keys.includes(event.key)) return;
+              event.preventDefault();
+              const next = event.key === 'Home' ? 'chat' : event.key === 'End' ? 'contact' : activeTab === 'chat' ? 'contact' : 'chat';
+              setActiveTab(next);
+              tabsRef.current?.querySelector<HTMLButtonElement>(`#htsv-tab-${next}`)?.focus();
+            }}>
+            <button type="button" role="tab" id="htsv-tab-chat" aria-controls="htsv-panel-chat" aria-selected={activeTab === 'chat'} tabIndex={activeTab === 'chat' ? 0 : -1}
+              className="htsv-chat-tab focus-ring" onClick={() => setActiveTab('chat')}>Trò chuyện</button>
+            <button type="button" role="tab" id="htsv-tab-contact" aria-controls="htsv-panel-contact" aria-selected={activeTab === 'contact'} tabIndex={activeTab === 'contact' ? 0 : -1}
+              className="htsv-chat-tab focus-ring" onClick={() => setActiveTab('contact')}>Liên hệ</button>
+          </div>
+
+          <div className="htsv-chat-tab-panel" id="htsv-panel-chat" role="tabpanel" aria-labelledby="htsv-tab-chat" hidden={activeTab !== 'chat'}>
+
           {/* Message List */}
           <div ref={messageListRef} className="htsv-chat-body flex-1 space-y-4 overflow-y-auto p-4">
-            {messages.map((msg, index) => {
-              const isUser = msg.role === 'user';
-              const isLastMessage = index === messages.length - 1;
-
-              return (
-                <div
-                  key={msg.id}
-                  className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
-                >
-                  <div
-                    className={`htsv-chat-message max-w-[92%] rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-xs ${
-                      isUser
-                        ? 'htsv-chat-bubble-user rounded-br-xs'
-                        : msg.status === 'error'
-                        ? 'htsv-chat-bubble-error rounded-bl-xs'
-                        : 'htsv-chat-bubble-ai rounded-bl-xs'
-                    }`}
-                  >
-                    {renderMessageContent(msg.content, isUser)}
-                    {msg.isStreaming && <span className="htsv-chat-cursor" aria-hidden="true" />}
-
-                    <div
-                      className={`mt-1.5 flex items-center gap-1.5 text-[10px] ${
-                        isUser
-                          ? 'htsv-chat-user-time justify-end'
-                          : 'justify-between htsv-chat-subtitle'
-                      }`}
-                    >
-                      {!isUser && (
-                        <div className="flex items-center gap-1">
-                          {!msg.isStreaming && (
-                            <button
-                              type="button"
-                              onClick={() => handleCopyText(msg.content, msg.id)}
-                              className="htsv-chat-action-btn flex items-center gap-0.5 rounded px-1.5 py-0.5"
-                              title="Sao chép nội dung"
-                            >
-                              <Copy className="h-3 w-3" />
-                              <span>{copiedId === msg.id ? 'Đã chép' : 'Chép'}</span>
-                            </button>
-                          )}
-                        </div>
-                      )}
-                      <span>{formatTime(msg.timestamp)}</span>
-                    </div>
-                  </div>
-
-                  {/* Follow-up Prompt Chips (chỉ hiển thị ở câu trả lời mới nhất khi đã gõ xong) */}
-                  {!isUser && !msg.isStreaming && !isLoading && isLastMessage && msg.followUps && msg.followUps.length > 0 && (
-                    <div className="htsv-followup-wrapper mt-2.5 flex flex-col gap-1.5 w-full max-w-[85%]">
-                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-300">
-                        <HelpCircle className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                        <span>Câu hỏi thường gặp liên quan:</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {msg.followUps.map((chip, idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            disabled={isLoading || isStreaming}
-                            onClick={() => handleSendMessage(chip)}
-                            className="htsv-followup-chip"
-                          >
-                            <ChatBubble className="h-3 w-3 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                            <span>{chip}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {messages.map((msg, index) => (
+              <ChatMessageItem key={msg.id} msg={msg} copied={copiedId === msg.id} onCopy={handleCopyText}
+                onFollowUp={index === messages.length - 1 && msg.role === 'assistant' && !msg.isStreaming && !isLoading && !isStreaming ? handleSendMessage : undefined} />
+            ))}
 
             {/* Typing Loader */}
             {isLoading && (
@@ -539,6 +568,10 @@ export function ChatbotWidget() {
               </button>
             </div>
           </form>
+          </div>
+          <div className="htsv-chat-tab-panel htsv-chat-contact-panel focus-ring" id="htsv-panel-contact" role="tabpanel" aria-labelledby="htsv-tab-contact" tabIndex={0} hidden={activeTab !== 'contact'}>
+            <ChatContactPanel />
+          </div>
         </div>
       )}
     </div>

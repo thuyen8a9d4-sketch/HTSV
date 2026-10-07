@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar } from '../components/Avatar';
@@ -11,6 +11,7 @@ import { Bell, Search, User, Logout, Menu, Plus, Shield } from '../components/Ic
 import { StudentSearch } from '../features/student/StudentSearch';
 import { studentNavigation as primaryNav } from '../features/student/student-navigation';
 import { StudentIcon } from '../features/student/StudentIcon';
+import { ServiceIllustration } from '../features/student/ServiceIllustration';
 import { SubmitRequestModal } from '../features/student/SubmitRequestModal';
 import { requestOwner, useStudentStore } from '../features/student/student-store';
 import type { StudentPortalContext, StudentService } from '../features/student/student-types';
@@ -24,7 +25,7 @@ export function PortalLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === '/';
-  const isDorm = location.pathname === '/dorm';
+  const isForum = location.pathname.startsWith('/forum');
   const [menuOpen, setMenuOpen] = useState(false);
   const [actionMenu, setActionMenu] = useState<'auth' | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -33,7 +34,48 @@ export function PortalLayout() {
   const [service, setService] = useState<StudentService | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileMenu = useRef<HTMLDetailsElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const navigationRef = useRef<HTMLElement>(null);
   const readyCount = useStudentStore((s) => (s.requests[requestOwner(user?.id)] ?? []).filter((r) => r.status === 'READY').length);
+
+  useEffect(() => {
+    let frame = 0;
+    let lastLift = -1;
+    const update = () => {
+      frame = 0;
+      const lift = Math.min(Math.max(window.scrollY, 0), 12);
+      if (lift === lastLift) return;
+      lastLift = lift;
+      headerRef.current?.style.setProperty('--nav-lift', `${lift}px`);
+      if (headerRef.current) headerRef.current.dataset.scrolled = String(lift >= 12);
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const track = navigationRef.current;
+    if (!track) return;
+    const update = () => {
+      const active = track.querySelector<HTMLElement>('[aria-current="page"]');
+      const visible = Boolean(active && track.offsetWidth);
+      track.dataset.indicatorVisible = String(visible);
+      if (active && visible) {
+        track.style.setProperty('--nav-active-x', `${active.offsetLeft}px`);
+        track.style.setProperty('--nav-active-width', `${active.offsetWidth}px`);
+      }
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(track);
+    track.querySelectorAll('a').forEach((link) => observer.observe(link));
+    return () => observer.disconnect();
+  }, [location.pathname, user?.roles]);
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 1024px)');
@@ -82,7 +124,7 @@ export function PortalLayout() {
       <a href="#main-content" className="skip-link">Đến nội dung chính</a>
 
       {/* Liquid Glass Navigation Bar */}
-      <header className={`liquid-glass-nav-container ${isHome ? 'is-home-header' : ''}`}>
+      <header ref={headerRef} className={`liquid-glass-nav-container ${isHome ? 'is-home-header' : ''}`}>
         <div className="liquid-glass-navbar">
           {/* Left: Brand & Mobile Toggle */}
           <div className="flex items-center gap-1 sm:gap-3">
@@ -105,7 +147,8 @@ export function PortalLayout() {
           </div>
 
           {/* Center: Desktop Liquid Glass Nav Pills */}
-          <nav className="liquid-nav-track hidden lg:inline-flex" aria-label="Điều hướng chính">
+          <nav ref={navigationRef} className="liquid-nav-track liquid-nav-sliding hidden lg:inline-flex" aria-label="Điều hướng chính">
+            <span className="liquid-nav-indicator" aria-hidden="true" />
             {primaryNav.map((item) => (
               <NavLink
                 key={item.path}
@@ -273,7 +316,7 @@ export function PortalLayout() {
 
       {/* Main Content Area */}
       <div className="min-w-0 w-full">
-        <main id="main-content" tabIndex={-1} className={isHome ? 'min-h-screen' : isDorm ? 'min-h-screen w-full' : 'student-main'}>
+        <main id="main-content" tabIndex={-1} className={isHome ? 'min-h-screen' : isForum ? 'student-main' : 'min-h-screen w-full'}>
           <Suspense fallback={<LoadingSkeleton count={2} />}><Outlet context={context} /></Suspense>
         </main>
         <PortalFooter />
@@ -321,7 +364,7 @@ export function PortalLayout() {
       <GlassModal open={!!service} onClose={() => setService(null)} title={service?.name ?? 'Thông tin dịch vụ'}>
         {service && (
           <div className="space-y-5">
-            <StudentIcon name={service.icon} className="h-10 w-10 text-blue-600" />
+            <ServiceIllustration service={service} />
             <p className="rounded-xl bg-white p-4 leading-7 text-slate-700">{service.guidance}</p>
             <GlassButton variant="primary" onClick={() => openRequest(service.requestType ?? 'Hỗ trợ sinh viên')}>
               Tạo yêu cầu / Báo cáo mẫu

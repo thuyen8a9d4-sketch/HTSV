@@ -26,17 +26,9 @@ import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import { NavbarActionMenu } from '../../components/NavbarActionMenu';
 import { QueryError } from '../../components/QueryError';
 import { forumPostsQuery } from './forum-queries';
-import { useAuthStore } from '../../lib/auth-store';
+import { getForumHashtags, getHotPosts, searchForumPosts } from './forum-feed-utils';
 const XylophoneCanvas = lazy(() => import('./xylophone').then((m) => ({ default: m.XylophoneCanvas })));
-
-
-const TRENDING_TAGS = [
-  { tag: '#ThiHocKy2026', count: '142 bài' },
-  { tag: '#KTXNamCanTho', count: '98 bài' },
-  { tag: '#CLBSinhVien', count: '76 bài' },
-  { tag: '#TimDoThatLac', count: '54 bài' },
-  { tag: '#GocHocTapIT', count: '38 bài' },
-];
+type ForumFilter = 'all' | 'hot' | 'study' | 'ktx' | 'lost';
 
 
 function getCategoryMeta(categoryName?: string | null, content = '') {
@@ -102,7 +94,7 @@ function getCategoryMeta(categoryName?: string | null, content = '') {
 
 export function ForumFeedPage() {
   const [postMenuOpen, setPostMenuOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [activeFilter, setActiveFilter] = useState<ForumFilter>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
@@ -110,11 +102,12 @@ export function ForumFeedPage() {
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (copyTimer.current) clearTimeout(copyTimer.current); }, []);
 
-  const user = useAuthStore((s) => s.user);
+  const filterPanel = useRef<HTMLDivElement>(null);
+  const [copyStatus, setCopyStatus] = useState('');
 
-  const { data, isLoading, isError, refetch } = useQuery(forumPostsQuery);
+  const { data, isLoading, isError, isFetching, refetch } = useQuery(forumPostsQuery);
 
-  const filterOptions = [
+  const filterOptions: { key: ForumFilter; label: string; icon?: typeof Flame }[] = [
     { key: 'all', label: 'Tất cả' },
     { key: 'hot', label: 'Hot trong tuần', icon: Flame },
     { key: 'study', label: 'Góc học tập', icon: BookOpen },
@@ -122,102 +115,58 @@ export function ForumFeedPage() {
     { key: 'lost', label: 'Tìm đồ thất lạc', icon: Search },
   ];
 
-  // Tính số lượng bài viết cho từng bộ lọc
-  const filterCounts = useMemo(() => {
-    if (!data) return {};
-    const counts: Record<string, number> = {
-      all: data.length,
-      hot: 0,
-      study: 0,
-      ktx: 0,
-      lost: 0,
+  const feed = useMemo(() => {
+    const searched = searchForumPosts(data ?? [], deferredSearch);
+    return {
+      all: searched,
+      hot: getHotPosts(searched),
+      study: searched.filter((post) => getCategoryMeta(post.category?.name, post.content).icon === BookOpen),
+      ktx: searched.filter((post) => getCategoryMeta(post.category?.name, post.content).icon === Home),
+      lost: searched.filter((post) => getCategoryMeta(post.category?.name, post.content).icon === Search),
     };
+  }, [data, deferredSearch]);
+  const filteredPosts = feed[activeFilter];
+  const trendingTags = useMemo(() => getForumHashtags(data ?? []), [data]);
+  const hasFilters = Boolean(searchQuery.trim()) || activeFilter !== 'all';
 
-    data.forEach((post) => {
-      const reactions = (post._count?.luotThiches ?? 0) + (post._count?.binhLuans ?? 0);
-      if (reactions >= 2) counts.hot = (counts.hot ?? 0) + 1;
-
-      const meta = getCategoryMeta(post.category?.name, post.content);
-      if (meta.icon === BookOpen) counts.study = (counts.study ?? 0) + 1;
-      if (meta.icon === Home) counts.ktx = (counts.ktx ?? 0) + 1;
-      if (meta.icon === Search) counts.lost = (counts.lost ?? 0) + 1;
-    });
-
-    return counts;
-  }, [data]);
-
-  // Lọc và tìm kiếm danh sách bài viết
-  const filteredPosts = useMemo(() => {
-    if (!data) return [];
-
-    let result = [...data];
-
-    // Lọc theo Search Query
-    const query = deferredSearch.trim().toLowerCase();
-    if (query) {
-      result = result.filter((post) => {
-        const matchContent = post.content.toLowerCase().includes(query);
-        const matchAuthor = !post.isAnonymous && post.authorUser?.fullName?.toLowerCase().includes(query);
-        const matchCategory = post.category?.name?.toLowerCase().includes(query);
-        return matchContent || matchAuthor || matchCategory;
-      });
-    }
-
-    // Lọc theo Category / Hot
-    if (activeFilter === 'hot') {
-      result.sort((a, b) => {
-        const totalA = (a._count?.luotThiches ?? 0) * 2 + (a._count?.binhLuans ?? 0) * 3;
-        const totalB = (b._count?.luotThiches ?? 0) * 2 + (b._count?.binhLuans ?? 0) * 3;
-        return totalB - totalA;
-      });
-    } else if (activeFilter === 'study') {
-      result = result.filter((p) => getCategoryMeta(p.category?.name, p.content).icon === BookOpen);
-    } else if (activeFilter === 'ktx') {
-      result = result.filter((p) => getCategoryMeta(p.category?.name, p.content).icon === Home);
-    } else if (activeFilter === 'lost') {
-      result = result.filter((p) => getCategoryMeta(p.category?.name, p.content).icon === Search);
-    }
-
-    return result;
-  }, [data, activeFilter, deferredSearch]);
-
-  const handleCopyLink = async (e: React.MouseEvent, postId: number) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleCopyLink = async (postId: number) => {
     try {
       const url = `${window.location.origin}/forum/${postId}`;
       await navigator.clipboard.writeText(url);
       setCopiedId(postId);
+      setCopyStatus('Đã sao chép liên kết bài viết.');
       if (copyTimer.current) clearTimeout(copyTimer.current);
       copyTimer.current = setTimeout(() => setCopiedId(null), 2200);
     } catch {
-      // Fallback
+      setCopyStatus('Không thể sao chép. Hãy mở bài viết và sao chép địa chỉ trên trình duyệt.');
     }
   };
 
   const handleHashtagClick = (tag: string) => {
     setSearchQuery(tag);
-    window.scrollTo({ top: 220, behavior: 'smooth' });
+    setActiveFilter('all');
+    filterPanel.current?.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
   const createPostAction = (
     <NavbarActionMenu
-      label="Đăng bài mới"
+      label="Chia sẻ câu chuyện"
       open={postMenuOpen}
       onOpenChange={setPostMenuOpen}
       items={[
         { label: 'Đăng bài công khai', to: '/forum/new?anonymous=false', icon: <FileText className="h-5 w-5" /> },
         { label: 'Đăng bài ẩn danh', to: '/forum/new?anonymous=true', icon: <Shield className="h-5 w-5" /> },
       ]}
-      className="btn-nav-action-icon inline-flex h-11 w-11 items-center justify-center rounded-full text-white transition-all duration-200 hover:scale-105 focus-ring active:scale-95"
+      className="btn-nav-action focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold"
     >
-      <Plus className="h-6 w-6 stroke-[2.2]" />
+      <Plus className="h-5 w-5" />
+      <span>Chia sẻ câu chuyện</span>
     </NavbarActionMenu>
   );
 
   return (
     <div className="forum-page relative min-h-screen">
-      {/* 3D Glass Xylophone Interactive Background (Giữ nguyên 100%) */}
+      {/* Nền 3D tương tác hiện có. */}
       <Suspense fallback={null}><XylophoneCanvas /></Suspense>
 
       {/* Main Foreground Content */}
@@ -242,13 +191,6 @@ export function ForumFeedPage() {
             </div>
 
             <div className="forum-post-actions relative flex flex-wrap items-center gap-3">
-              <Link
-                to="/forum/new?anonymous=false"
-                className="btn-nav-action inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold shadow-md shadow-blue-500/20"
-              >
-                <Plus className="h-4 w-4" />
-                <span>Chia sẻ câu chuyện</span>
-              </Link>
               {createPostAction}
             </div>
           </div>
@@ -259,7 +201,7 @@ export function ForumFeedPage() {
           {/* Cột trái: Tìm kiếm, Bộ lọc & Danh sách bài viết */}
           <section aria-label="Bảng tin diễn đàn" className="min-w-0 space-y-6">
             {/* Thanh Tìm kiếm & Điều khiển Kính */}
-            <div className="forum-glass-panel rounded-2xl p-4 sm:p-5">
+            <div ref={filterPanel} className="forum-glass-panel rounded-2xl p-4 sm:p-5">
               {/* Ô tìm kiếm nhanh */}
               <div className="relative mb-4">
                 <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -268,15 +210,15 @@ export function ForumFeedPage() {
                   aria-label="Tìm kiếm bài viết"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm kiếm câu chuyện, chủ đề, tên sinh viên hoặc #hashtag..."
-                  className="w-full rounded-xl border border-slate-200/80 bg-white/80 py-2.5 pr-10 pl-10 text-sm text-slate-800 placeholder-slate-400 backdrop-blur-md transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-white/10 dark:bg-slate-800/80 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-blue-400"
+                  placeholder="Tìm câu chuyện, sinh viên, #hashtag…"
+                  className="min-h-11 w-full rounded-xl border border-slate-200/80 bg-white/80 py-2.5 pr-12 pl-10 text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-white/10 dark:bg-slate-800/80 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-blue-400"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700"
-                    title="Xóa tìm kiếm"
+                    className="focus-ring absolute top-1/2 right-0 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
+                    aria-label="Xóa tìm kiếm"
                   >
                     <XMark className="h-4 w-4" />
                   </button>
@@ -284,19 +226,19 @@ export function ForumFeedPage() {
               </div>
 
               {/* Thanh Filter Pills cuộn ngang */}
-              <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar pb-1">
+              <div className="flex items-center justify-between gap-2 forum-filter-scroll overflow-x-auto pb-2">
                 <div className="flex shrink-0 items-center gap-2" role="group" aria-label="Lọc bài viết">
                   {filterOptions.map((filter) => {
                     const Icon = filter.icon;
                     const isActive = activeFilter === filter.key;
-                    const count = filterCounts[filter.key] ?? 0;
+                    const count = feed[filter.key].length;
 
                     return (
                       <button
                         key={filter.key}
                         type="button"
                         onClick={() => setActiveFilter(filter.key)}
-                        className={`forum-filter-pill inline-flex items-center gap-1.5 whitespace-nowrap transition-all duration-200 ${
+                        className={`forum-filter-pill focus-ring inline-flex items-center gap-1.5 whitespace-nowrap transition-all duration-200 ${
                           isActive ? 'active' : ''
                         }`}
                         aria-pressed={isActive}
@@ -305,9 +247,9 @@ export function ForumFeedPage() {
                         <span>{filter.label}</span>
                         {count > 0 && (
                           <span
-                            className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                            className={`ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
                               isActive
-                                ? 'bg-white/20 text-white'
+                                ? 'bg-black/10 text-inherit'
                                 : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
                             }`}
                           >
@@ -319,14 +261,14 @@ export function ForumFeedPage() {
                   })}
                 </div>
 
-                {searchQuery && (
+                {hasFilters && (
                   <button
                     type="button"
                     onClick={() => {
                       setSearchQuery('');
                       setActiveFilter('all');
                     }}
-                    className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400"
+                    className="focus-ring inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
                     <span>Đặt lại</span>
@@ -335,10 +277,11 @@ export function ForumFeedPage() {
               </div>
             </div>
 
+            <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300" role="status">{copyStatus}</p>
             {/* Thông tin số lượng bài viết */}
-            <div className="flex items-center justify-between px-1 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-slate-500 dark:text-slate-400">
               <span className="font-medium">
-                {searchQuery ? (
+                {isLoading ? 'Đang tải bài viết…' : isError && !data ? 'Chưa tải được bài viết' : searchQuery ? (
                   <>
                     Kết quả tìm kiếm cho <strong className="text-slate-800 dark:text-slate-200">"{searchQuery}"</strong>: {filteredPosts.length} bài
                   </>
@@ -346,7 +289,11 @@ export function ForumFeedPage() {
                   <>Đang hiển thị {filteredPosts.length} bài viết trên diễn đàn</>
                 )}
               </span>
-              <span className="text-[11px] text-slate-400">Tự động cập nhật</span>
+              <button type="button" onClick={() => void refetch()} disabled={isFetching}
+                className="focus-ring inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg px-2 font-semibold disabled:opacity-50">
+                <RotateCcw className="h-3.5 w-3.5" />
+                {isFetching ? 'Đang cập nhật…' : 'Làm mới'}
+              </button>
             </div>
 
             {/* Loading & Error States */}
@@ -375,11 +322,11 @@ export function ForumFeedPage() {
                   return (
                     <article
                       key={post.id}
-                      className="forum-post-card group"
+                      className="forum-post-card group p-4 sm:p-6"
                     >
                       <Link
                         to={`/forum/${post.id}`}
-                        className="focus-ring block p-5 sm:p-6"
+                        className="focus-ring block rounded-xl"
                       >
                         {/* Header bài viết */}
                         <div className="mb-4 flex flex-col items-start justify-between gap-3 sm:flex-row">
@@ -416,12 +363,12 @@ export function ForumFeedPage() {
                           </div>
 
                           {/* Category Badge */}
-                          <div className="shrink-0">
+                          <div className="max-w-full sm:max-w-[45%]">
                             <span
                               className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur-md transition-colors ${meta.badgeClass}`}
                             >
                               <CategoryIcon className="h-3.5 w-3.5 shrink-0" />
-                              <span>{meta.label}</span>
+                              <span className="break-words">{meta.label}</span>
                             </span>
                           </div>
                         </div>
@@ -431,6 +378,7 @@ export function ForumFeedPage() {
                           {post.content}
                         </p>
 
+                      </Link>
                         {/* Footer tương tác của Card */}
                         <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-slate-200/60 pt-4 text-xs text-slate-600 dark:border-white/10 dark:text-slate-300">
                           {/* Lượt thích */}
@@ -456,8 +404,8 @@ export function ForumFeedPage() {
                           {/* Nút Sao chép liên kết nhanh */}
                           <button
                             type="button"
-                            onClick={(e) => handleCopyLink(e, post.id)}
-                            className="liquid-pill transition-all duration-200 hover:scale-105 active:scale-95"
+                            onClick={() => void handleCopyLink(post.id)}
+                            className="liquid-pill focus-ring min-h-11 transition-colors"
                             title="Sao chép liên kết bài viết"
                           >
                             {isCopied ? (
@@ -474,12 +422,11 @@ export function ForumFeedPage() {
                           </button>
 
                           {/* CTA Đọc tiếp */}
-                          <span className="ml-auto inline-flex items-center gap-1 font-semibold text-blue-600 transition-transform group-hover:translate-x-1 dark:text-blue-400">
+                          <Link to={`/forum/${post.id}`} className="focus-ring ml-auto inline-flex min-h-11 items-center gap-1 rounded-lg px-2 font-semibold text-blue-600 dark:text-blue-400">
                             <span>Thảo luận</span>
                             <ArrowRight className="h-4 w-4" />
-                          </span>
+                          </Link>
                         </div>
-                      </Link>
                     </article>
                   );
                 })}
@@ -487,14 +434,14 @@ export function ForumFeedPage() {
                 {/* Empty State */}
                 {filteredPosts.length === 0 && (
                   <EmptyState
-                    title={searchQuery ? 'Không tìm thấy bài viết phù hợp' : 'Chưa có câu chuyện nào'}
+                    title={hasFilters ? 'Không có bài viết phù hợp bộ lọc' : 'Chưa có câu chuyện nào'}
                     description={
-                      searchQuery
-                        ? `Không có bài viết nào khớp với từ khóa "${searchQuery}". Hãy thử tìm kiếm với cụm từ khác hoặc chọn danh mục khác.`
+                      hasFilters
+                        ? 'Thử từ khóa hoặc danh mục khác, hoặc xem tất cả bài viết.'
                         : 'Hãy là người đầu tiên mở đầu câu chuyện trên diễn đàn HTSV.'
                     }
                     action={
-                      searchQuery ? (
+                      hasFilters ? (
                         <button
                           type="button"
                           onClick={() => {
@@ -524,45 +471,6 @@ export function ForumFeedPage() {
 
           {/* Cột phải: Sidebar Thông tin & Tiện ích sinh viên */}
           <aside className="min-w-0 space-y-6 lg:sticky lg:top-24">
-            {/* Widget 1: Hộp tạo bài nhanh */}
-            <div className="forum-glass-panel rounded-3xl p-5 sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <Avatar name={user?.fullName} />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-slate-800 dark:text-white">
-                    {user ? user.fullName : 'Bạn đang nghĩ gì?'}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {user ? 'Cùng chia sẻ với bạn bè' : 'Đăng nhập để kết nối'}
-                  </p>
-                </div>
-              </div>
-
-              <Link
-                to="/forum/new?anonymous=false"
-                className="block w-full rounded-xl border border-slate-200/90 bg-white/70 p-3 text-xs text-slate-500 shadow-inner transition-colors hover:border-blue-400 hover:bg-white dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-400"
-              >
-                Nhắn gửi tâm sự, hỏi bài tập hoặc chia sẻ tin tức...
-              </Link>
-
-              <div className="mt-4 flex gap-2">
-                <Link
-                  to="/forum/new?anonymous=false"
-                  className="btn-liquid-glass flex-1 justify-center text-xs"
-                >
-                  <FileText className="h-3.5 w-3.5 text-blue-600" />
-                  <span>Đăng bài</span>
-                </Link>
-                <Link
-                  to="/forum/new?anonymous=true"
-                  className="btn-liquid-glass flex-1 justify-center text-xs"
-                >
-                  <Shield className="h-3.5 w-3.5 text-cyan-600" />
-                  <span>Ẩn danh</span>
-                </Link>
-              </div>
-            </div>
-
             {/* Widget 2: Chủ đề thịnh hành (#Trending) */}
             <div className="forum-glass-panel rounded-3xl p-5 sm:p-6">
               <div className="mb-3.5 flex items-center gap-2">
@@ -570,22 +478,25 @@ export function ForumFeedPage() {
                   <Flame className="h-4 w-4" />
                 </span>
                 <h3 className="text-sm font-bold text-slate-800 dark:text-white">
-                  Chủ đề thịnh hành DNC
+                  Chủ đề được nhắc tới
                 </h3>
               </div>
 
               <div className="space-y-2.5">
-                {TRENDING_TAGS.map((item) => (
+                {trendingTags.length === 0 && <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                  {!data ? 'Chủ đề sẽ hiển thị khi tải được bài viết.' : 'Chưa có hashtag trong các bài viết.'}
+                </p>}
+                {trendingTags.map((item) => (
                   <button
                     key={item.tag}
                     type="button"
                     onClick={() => handleHashtagClick(item.tag)}
-                    className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-medium text-slate-700 transition-colors hover:bg-blue-50/80 hover:text-blue-700 dark:text-slate-300 dark:hover:bg-blue-950/40 dark:hover:text-blue-300"
+                    className="focus-ring flex min-h-11 w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-xs font-medium text-slate-700 transition-colors hover:bg-blue-50/80 hover:text-blue-700 dark:text-slate-300 dark:hover:bg-blue-950/40 dark:hover:text-blue-300"
                   >
-                    <span className="font-semibold text-blue-600 dark:text-blue-400">
+                    <span className="min-w-0 break-all font-semibold text-blue-600 dark:text-blue-400">
                       {item.tag}
                     </span>
-                    <span className="text-[11px] text-slate-400">{item.count}</span>
+                    <span className="text-[11px] text-slate-400">{item.count} bài</span>
                   </button>
                 ))}
               </div>
@@ -599,13 +510,13 @@ export function ForumFeedPage() {
               <div className="grid grid-cols-2 gap-3 text-center">
                 <div className="rounded-2xl border border-white/60 bg-white/50 p-3 backdrop-blur-sm dark:border-white/5 dark:bg-slate-800/40">
                   <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                    {data ? data.length : '120+'}
+                    {data ? data.length : '—'}
                   </p>
                   <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Câu chuyện</p>
                 </div>
                 <div className="rounded-2xl border border-white/60 bg-white/50 p-3 backdrop-blur-sm dark:border-white/5 dark:bg-slate-800/40">
-                  <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">98%</p>
-                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Đồng cảm</p>
+                  <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{data ? data.reduce((total, post) => total + (post._count?.binhLuans ?? 0), 0) : '—'}</p>
+                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Bình luận</p>
                 </div>
               </div>
               <p className="mt-3 text-[11.5px] leading-relaxed text-slate-500 dark:text-slate-400">
@@ -620,7 +531,7 @@ export function ForumFeedPage() {
                 <span>Không gian an toàn & Tử tế</span>
               </div>
               <p className="text-[11.5px] leading-relaxed text-slate-500 dark:text-slate-400">
-                Tôn trọng sự khác biệt, bảo vệ danh tính tuyệt đối và trao gửi sự động viên. Mọi câu chuyện đều được kiểm duyệt vì một cộng đồng văn minh.
+                Tôn trọng sự khác biệt, không chia sẻ thông tin riêng tư của người khác và trao gửi sự động viên. Bạn có thể chọn đăng công khai hoặc ẩn danh khi chia sẻ.
               </p>
             </div>
           </aside>

@@ -22,6 +22,7 @@ import { RequestTracker } from './RequestTracker';
 import { ScholarshipPanel } from './ScholarshipPanel';
 import { studentFaqs, studentServices } from './student-mock-data';
 import { StudentIcon } from './StudentIcon';
+import { ServiceIllustration } from './ServiceIllustration';
 import { StudentSearch } from './StudentSearch';
 import { StudentSupportPanel } from './StudentSupportPanel';
 import { StudentLifePanel } from './StudentLifePanel';
@@ -29,6 +30,8 @@ import type { StudentPortalContext, StudentService } from './student-types';
 import { TuitionPanel } from './TuitionPanel';
 import { WeeklySchedule } from './WeeklySchedule';
 import { HomeContentSection } from './HomeContentSection';
+import { StudentPageHero } from './StudentPageHero';
+import { getPageBanner } from './page-banner-data';
 
 export type StudentView = 'home' | 'schedule' | 'services' | 'requests' | 'faq' | 'support' | 'tuition' | 'dorm' | 'announcements' | 'conduct-score' | 'grade-appeal' | 'class-sections' | 'transcript' | 'scholarship' | 'jobs' | 'cv-builder' | 'career-guidance' | 'development-path' | 'personal-path' | 'interview-practice' | 'staff-lecturer' | 'staff-advisor' | 'staff-office' | 'campus-map' | 'library';
 
@@ -78,9 +81,7 @@ function ServiceGrid({ title, subtitle, services, onService }: { title: string; 
             className="student-service liquid-glass-card cursor-pointer"
             onClick={() => onService(service)}
           >
-            <span className={`student-service-icon tone-${service.tone}`}>
-              <StudentIcon name={service.icon} className="h-6 w-6" />
-            </span>
+            <ServiceIllustration service={service} />
             <span className="mt-3 block text-[13px] font-semibold text-slate-800">{service.name}</span>
             <span className="mt-1 block text-[11px] leading-relaxed text-slate-500">{service.description}</span>
           </button>
@@ -164,9 +165,7 @@ export function StudentHomePage({ view = 'home' }: { view?: StudentView }) {
                     openService(service);
                   }}
                 >
-                  <span className={`student-service-icon tone-${service.tone} inline-flex p-2 rounded-xl`}>
-                    <StudentIcon name={service.icon} className="h-5 w-5" />
-                  </span>
+                  <ServiceIllustration service={service} />
                   <span className="mt-2 block text-xs font-semibold text-slate-800">{service.name}</span>
                   <span className="mt-0.5 block text-[11px] leading-relaxed text-slate-500">{service.description}</span>
                 </button>
@@ -180,15 +179,9 @@ export function StudentHomePage({ view = 'home' }: { view?: StudentView }) {
 
   // Other Dedicated Views (/services, /requests, /faq, /support, /schedule, /dorm, /tuition)
   return (
-    <div className={view === 'dorm' ? 'w-full' : 'student-workspace space-y-7'}>
-      {view !== 'dorm' && (
-        <div className="mb-2">
-          <Link to="/" className="text-xs font-medium text-slate-500 hover:text-blue-700 dark:text-slate-400 dark:hover:text-blue-400">Trang chủ /</Link>
-          <h1 className="mt-1.5 text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 dark:text-slate-100">{titles[view]}</h1>
-        </div>
-      )}
-
-      <div id="portal-services-overview" className={view === 'dorm' ? 'w-full' : 'space-y-7'}>
+    <div className="w-full">
+      {view !== 'dorm' && <StudentPageHero title={titles[view]} {...getPageBanner(view)} />}
+      <div id="portal-services-overview" className={view === 'dorm' ? 'w-full' : 'student-main student-workspace space-y-7'}>
         {/* Real Core Support & Community Services */}
         {view === 'services' && (
           <ServiceGrid

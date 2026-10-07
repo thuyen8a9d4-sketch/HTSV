@@ -220,6 +220,11 @@
 :root .student-footer-heading svg { color: var(--accent-text); }
 :root .student-footer-bottom { border-top-color: var(--accent-border); }
 :root .student-footer-map { background: var(--accent-soft); border-color: var(--accent-border); }
+:root .student-page-breadcrumb { background: var(--canvas); color: var(--muted); border-color: var(--accent-border); }
+:root .student-page-breadcrumb a:hover { color: var(--accent-text); }
+:root .student-page-breadcrumb-current { color: #b91c1c; }
+:root[data-theme="dark"] .student-page-breadcrumb-current { color: #fca5a5; }
+:root .student-page-hero-title { line-height: 1.3; overflow-wrap: anywhere; text-wrap: balance; }
 :root .student-footer-link:focus-visible { color: var(--accent-text); outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 3px; }
 :root .focus-ring:focus-visible { box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 18%, transparent); }
 :root .chatbot-widget-container {
@@ -262,4 +267,119 @@
 }
 @media (hover: none) and (pointer: coarse) {
   .liquid-glass-card, .student-service, .student-post, .gleam-card { animation: none; }
+}
+:root[data-theme] .forum-page .forum-glass-surface {
+  background: linear-gradient(135deg, #ffffff66, #fff8e54d);
+  backdrop-filter: blur(8px) saturate(125%);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
+}
+
+:root[data-theme="dark"] .forum-page .forum-glass-surface {
+  background: linear-gradient(135deg, #25231f73, #19181659);
+}
+
+.forum-page .forum-glass-panel,
+.forum-page .forum-post-card {
+  /* One blur layer behind the page; reading panels retain a stable fill. */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.forum-page .forum-post-card {
+  background: #fffffff0;
+}
+
+:root[data-theme="dark"] .forum-page .forum-post-card {
+  background: #24221ff2;
+}
+
+.forum-filter-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-border) transparent;
+}
+
+.forum-page .forum-post-actions {
+  flex-shrink: 0;
+}
+
+@media (max-width: 639px) {
+  .forum-page .forum-glass-surface { padding: 12px; border-radius: 20px; }
+  .forum-page .forum-post-actions .navbar-action-menu,
+  .forum-page .forum-post-actions .btn-nav-action { width: 100%; }
+  .forum-page .forum-filter-pill { min-height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forum-page .forum-post-card { transition: none; }
+  .forum-page .forum-post-card:hover { transform: none; }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-theme] .forum-page .forum-glass-surface { background: var(--floating-glass-solid); }
+}
+:root .liquid-glass-nav-container > .liquid-glass-navbar {
+  transform: translateY(calc(-1 * var(--nav-lift, 0px)));
+  transition: transform 180ms ease-out, border-top-left-radius 180ms ease-out, border-top-right-radius 180ms ease-out, background-color 250ms ease-out, border-color 250ms ease-out, box-shadow 250ms ease-out;
+}
+:root .liquid-glass-nav-container[data-scrolled="true"] > .liquid-glass-navbar {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.liquid-nav-sliding { position: relative; isolation: isolate; }
+.liquid-nav-sliding .liquid-nav-pill {
+  z-index: 1;
+  border: 1px solid transparent;
+  transition: color 180ms ease-out, background-color 180ms ease-out;
+}
+:root[data-theme] .liquid-nav-sliding .liquid-nav-pill[aria-current="page"] {
+  border-color: transparent;
+  box-shadow: none;
+}
+@layer components {
+  :root[data-theme] .liquid-nav-sliding .liquid-nav-pill[aria-current="page"] {
+    background: transparent !important;
+  }
+}
+.liquid-nav-indicator {
+  position: absolute;
+  z-index: 0;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: var(--nav-active-width, 0px);
+  transform: translateX(var(--nav-active-x, 0px));
+  border-radius: 9999px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  box-shadow: 0 3px 10px #a162071a, inset 0 1px 0 #ffffff66;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 340ms cubic-bezier(.22, 1, .36, 1), width 340ms cubic-bezier(.22, 1, .36, 1), opacity 150ms ease-out;
+}
+.liquid-nav-sliding[data-indicator-visible="true"] .liquid-nav-indicator { opacity: 1; }
+
+@media (max-width: 639px) {
+  :root .liquid-glass-nav-container > .liquid-glass-navbar { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .liquid-glass-nav-container > .liquid-glass-navbar,
+  .liquid-nav-sliding .liquid-nav-pill,
+  .liquid-nav-indicator { transition: none; }
+}
+.student-service-illustration {
+  display: block;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+:root[data-theme="dark"] .student-service-illustration {
+  /* The light paper faces remain legible against dark reading surfaces. */
+  filter: drop-shadow(0 2px 3px #00000026);
+}
+
+@media (max-width: 639px) {
+  .student-service-illustration { width: 64px; height: 64px; }
 }
