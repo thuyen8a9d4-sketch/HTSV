@@ -18,14 +18,24 @@ export function CampusMapPanel() {
 
       <div className="liquid-glass-card space-y-2 p-5 sm:p-6">
         <p className="text-xs text-slate-600">Dữ liệu mẫu — hệ thống chưa nối sơ đồ chi tiết từ Phòng Quản trị - Thiết bị.</p>
-        <a
-          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(universityAddress)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="student-text-link"
-        >
-          Xem vị trí trường trên Google Maps ↗
-        </a>
+        <div className="flex flex-wrap gap-x-4 gap-y-1">
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(universityAddress)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="student-text-link"
+          >
+            Xem vị trí trường trên Google Maps ↗
+          </a>
+          <a
+            href="https://vtour.nctu.edu.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="student-text-link"
+          >
+            Tham quan 360° khuôn viên trường ↗
+          </a>
+        </div>
       </div>
 
       <div>
