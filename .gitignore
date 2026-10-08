@@ -7,6 +7,10 @@
 # Claude Code local project settings
 .claude/
 
+# Load test results
+test-result.txt
+*.log
+
 # OS files
 Thumbs.db
 .DS_Store

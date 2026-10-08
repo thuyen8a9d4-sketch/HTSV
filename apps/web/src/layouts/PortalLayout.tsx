@@ -235,6 +235,9 @@ export function PortalLayout() {
                     >
                       Hồ sơ sinh viên
                     </button>
+                    <Link to="/profile" className="nav-item text-sm" onClick={closeProfileMenu}>
+                      Thông tin cá nhân
+                    </Link>
                     <Link to="/requests" className="nav-item text-sm" onClick={closeProfileMenu}>
                       Trạng thái yêu cầu / phản ánh
                     </Link>

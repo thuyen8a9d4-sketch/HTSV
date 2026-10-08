@@ -7,6 +7,7 @@ import { AuthLayout } from './layouts/AuthLayout';
 import { PortalLayout } from './layouts/PortalLayout';
 import { useAuthBootstrap } from './lib/use-current-user';
 
+/* ── Lazy-loaded pages ── */
 const DashboardPage = lazy(() => import('./features/admin/DashboardPage').then((m) => ({ default: m.DashboardPage })));
 const ForumAdminPage = lazy(() => import('./features/admin/ForumAdminPage').then((m) => ({ default: m.ForumAdminPage })));
 const PermissionsPage = lazy(() => import('./features/admin/PermissionsPage').then((m) => ({ default: m.PermissionsPage })));
@@ -22,17 +23,41 @@ const ForumCreatePage = lazy(() => import('./features/forum/ForumCreatePage').th
 const ForumDetailPage = lazy(() => import('./features/forum/ForumDetailPage').then((m) => ({ default: m.ForumDetailPage })));
 const ForumFeedPage = lazy(() => import('./features/forum/ForumFeedPage').then((m) => ({ default: m.ForumFeedPage })));
 const ChatbotWidget = lazy(() => import('./features/chatbot/ChatbotWidget').then((m) => ({ default: m.ChatbotWidget })));
+const StudentHomePage = lazy(() => import('./features/student/StudentHomePage').then((m) => ({ default: m.StudentHomePage })));
+const ProfilePage = lazy(() => import('./features/student/ProfilePage').then((m) => ({ default: m.ProfilePage })));
 
-const StudentHomePage = lazy(() => import('./features/student/StudentHomePage').then((module) => ({ default: module.StudentHomePage })));
+/* ── Fallback dùng chung ── */
+const PageFallback = (
+  <main className="ambient-canvas min-h-screen px-4 py-12">
+    <div className="mx-auto max-w-2xl">
+      <LoadingSkeleton count={2} />
+    </div>
+  </main>
+);
+
+/* ── Routes StudentHomePage (tự sinh từ mảng, bớt lặp) ── */
+const studentViewRoutes = [
+  'schedule', 'services', 'requests', 'faq', 'support', 'tuition',
+  'dorm', 'conduct-score', 'grade-appeal', 'class-sections', 'transcript',
+  'scholarship', 'jobs', 'cv-builder', 'career-guidance', 'development-path',
+  'personal-path', 'interview-practice', 'campus-map', 'library', 'announcements',
+] as const;
+
+const studentStaffRoutes = [
+  { path: 'staff/lecturer', view: 'staff-lecturer' },
+  { path: 'staff/advisor', view: 'staff-advisor' },
+  { path: 'staff/office', view: 'staff-office' },
+] as const;
 
 function App() {
   const ready = useAuthBootstrap();
-  if (!ready) return <main className="ambient-canvas min-h-screen px-4 py-12"><div className="mx-auto max-w-2xl"><LoadingSkeleton count={2} /></div></main>;
+  if (!ready) return PageFallback;
 
   return (
     <>
-      <Suspense fallback={<main className="ambient-canvas min-h-screen px-4 py-12"><div className="mx-auto max-w-2xl"><LoadingSkeleton count={2} /></div></main>}>
+      <Suspense fallback={PageFallback}>
         <Routes>
+          {/* ── Auth ── */}
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -41,40 +66,27 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
           </Route>
 
+          {/* ── Portal (Student + Forum) ── */}
           <Route element={<PortalLayout />}>
             <Route path="/" element={<StudentHomePage />} />
-            <Route path="/schedule" element={<StudentHomePage view="schedule" />} />
-            <Route path="/services" element={<StudentHomePage view="services" />} />
-            <Route path="/requests" element={<StudentHomePage view="requests" />} />
-            <Route path="/faq" element={<StudentHomePage view="faq" />} />
-            <Route path="/support" element={<StudentHomePage view="support" />} />
-            <Route path="/tuition" element={<StudentHomePage view="tuition" />} />
-            <Route path="/dorm" element={<StudentHomePage view="dorm" />} />
-            <Route path="/conduct-score" element={<StudentHomePage view="conduct-score" />} />
-            <Route path="/grade-appeal" element={<StudentHomePage view="grade-appeal" />} />
-            <Route path="/class-sections" element={<StudentHomePage view="class-sections" />} />
-            <Route path="/transcript" element={<StudentHomePage view="transcript" />} />
-            <Route path="/scholarship" element={<StudentHomePage view="scholarship" />} />
-            <Route path="/jobs" element={<StudentHomePage view="jobs" />} />
-            <Route path="/cv-builder" element={<StudentHomePage view="cv-builder" />} />
-            <Route path="/career-guidance" element={<StudentHomePage view="career-guidance" />} />
-            <Route path="/development-path" element={<StudentHomePage view="development-path" />} />
-            <Route path="/personal-path" element={<StudentHomePage view="personal-path" />} />
-            <Route path="/interview-practice" element={<StudentHomePage view="interview-practice" />} />
-            <Route path="/staff/lecturer" element={<StudentHomePage view="staff-lecturer" />} />
-            <Route path="/staff/advisor" element={<StudentHomePage view="staff-advisor" />} />
-            <Route path="/staff/office" element={<StudentHomePage view="staff-office" />} />
-            <Route path="/campus-map" element={<StudentHomePage view="campus-map" />} />
-            <Route path="/library" element={<StudentHomePage view="library" />} />
-            <Route path="/announcements" element={<StudentHomePage view="announcements" />} />
+            {studentViewRoutes.map((view) => (
+              <Route key={view} path={`/${view}`} element={<StudentHomePage view={view} />} />
+            ))}
+            {studentStaffRoutes.map(({ path, view }) => (
+              <Route key={path} path={`/${path}`} element={<StudentHomePage view={view} />} />
+            ))}
+
             <Route path="/forum" element={<ForumFeedPage />} />
             <Route path="/forum/:id" element={<ForumDetailPage />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/forum/new" element={<ForumCreatePage />} />
+             <Route path="/profile" element={<ProfilePage />} />
+
             </Route>
           </Route>
 
+          {/* ── Admin ── */}
           <Route element={<ProtectedRoute roles={['ADMIN']} />}>
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<DashboardPage />} />

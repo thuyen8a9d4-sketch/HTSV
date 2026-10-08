@@ -35,12 +35,58 @@ export function AdminLayout() {
     clearSession();
     navigate('/login');
   };
-  const navigation = <nav aria-label="Quản trị" className="space-y-1">{NAV_ITEMS.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === '/admin'} className="nav-item" onClick={() => setMenuOpen(false)}><Icon />{label}</NavLink>)}</nav>;
-  const account = <div className="mt-auto border-t border-slate-200/80 pt-5">
-    <Link to="/forum" className="nav-item" onClick={() => setMenuOpen(false)}><ArrowLeft />Về cổng sinh viên</Link>
-    <div className="my-4 flex min-w-0 items-center gap-3"><Avatar name={user?.fullName} /><div className="min-w-0"><p className="truncate font-semibold" title={user?.fullName}>{user?.fullName}</p><p className="text-xs text-slate-600">Quản trị viên</p></div></div>
-    <GlassButton variant="ghost" onClick={logout} loading={loggingOut} className="w-full justify-start text-red-700"><Logout />Đăng xuất</GlassButton>
-  </div>;
+  const navigation = (
+    <nav aria-label="Quản trị" className="space-y-1">
+      {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={to === '/admin'}
+          className="nav-item"
+          onClick={() => setMenuOpen(false)}
+        >
+          <Icon />
+          {label}
+        </NavLink>
+      ))}
+    </nav>
+  );
+
+  const account = (
+    <div className="mt-auto border-t border-slate-200/80 pt-5">
+      <Link
+        to="/forum"
+        className="nav-item"
+        onClick={() => setMenuOpen(false)}
+      >
+        <ArrowLeft />
+        Về cổng sinh viên
+      </Link>
+      <div className="my-4 flex min-w-0 items-center gap-3">
+        <Avatar name={user?.fullName} />
+        <div className="min-w-0">
+          <p
+            className="truncate font-semibold"
+            title={user?.fullName}
+          >
+            {user?.fullName}
+          </p>
+          <p className="text-xs text-slate-600">
+            Quản trị viên
+          </p>
+        </div>
+      </div>
+      <GlassButton
+        variant="ghost"
+        onClick={logout}
+        loading={loggingOut}
+        className="w-full justify-start text-red-700"
+      >
+        <Logout />
+        Đăng xuất
+      </GlassButton>
+    </div>
+  );
   return <div className="ambient-canvas min-h-screen">
     <a href="#main-content" className="skip-link">Đến nội dung chính</a>
     <aside className="liquid-glass-header fixed inset-y-0 left-0 hidden w-64 flex-col overflow-y-auto border-r border-slate-200/70 p-5 lg:flex">

@@ -1,6 +1,6 @@
 import { formatRelativeTime } from '../../lib/format-relative-time';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Avatar } from '../../components/Avatar';
 import { EmptyState } from '../../components/EmptyState';
@@ -70,27 +70,61 @@ export function ForumDetailPage() {
 
   const { data: post, isLoading, isError, refetch } = useQuery<PostDetail>({
     queryKey: ['forum-post', id],
-    queryFn: async () => (await apiClient.get(`/forum/posts/${id}`)).data,
+    queryFn: async () => {
+      const response = await apiClient.get(`/forum/posts/${id}`);
+      return response.data;
+    },
+    retry: 1,
+    staleTime: 30_000,
   });
 
-  const mergeIntoPost = (patch: Partial<PostDetail>) =>
-    queryClient.setQueryData<PostDetail>(['forum-post', id], (old) =>
-      old ? { ...old, ...patch } : old,
-    );
+  const mergeIntoPost = useCallback(
+    (patch: Partial<PostDetail>) => {
+      console.log('[mergeIntoPost]', patch);
+      queryClient.setQueryData<PostDetail>(['forum-post', id], (old) =>
+        old ? { ...old, ...patch } : old,
+      );
+    },
+    [id, queryClient],
+  );
 
   const react = useMutation({
     mutationFn: (type: string) => apiClient.post(`/forum/posts/${id}/react`, { type }),
     onSuccess: (res) => {
-      mergeIntoPost(res.data);
-      void queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      console.log('[react] response:', res.data);
+      // Validate response data
+      if (!res.data || typeof res.data !== 'object') {
+        console.error('[react] Invalid response format');
+        return;
+      }
+      const { reactions, myReaction } = res.data;
+      // Type guard: reactions must be an object
+      if (reactions && typeof reactions === 'object') {
+        mergeIntoPost({ reactions, myReaction });
+        void queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      } else {
+        console.error('[react] Invalid reactions data:', reactions);
+      }
     },
   });
 
   const share = useMutation({
     mutationFn: () => apiClient.post(`/forum/posts/${id}/share`),
     onSuccess: (res) => {
-      mergeIntoPost(res.data);
-      void queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      console.log('[share] response:', res.data);
+      // Validate response data
+      if (!res.data || typeof res.data !== 'object') {
+        console.error('[share] Invalid response format');
+        return;
+      }
+      const { shareCount } = res.data;
+      // Type guard: shareCount must be a number
+      if (typeof shareCount === 'number') {
+        mergeIntoPost({ shareCount });
+        void queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      } else {
+        console.error('[share] Invalid shareCount data:', shareCount);
+      }
     },
   });
 
