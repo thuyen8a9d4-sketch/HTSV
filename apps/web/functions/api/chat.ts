@@ -84,7 +84,7 @@ export async function onRequestPost({ request, env }: RequestContext): Promise<R
     if (timer) clearTimeout(timer);
     if (!response.ok) {
       const errDetail = await response.text().catch(() => '');
-      if (errDetail.includes('User location is not supported')) {
+      if (errDetail.includes('User location is not supported') || errDetail.includes('API key not valid')) {
         return json({ fallbackKey: key }, 200);
       }
       return json({ error: 'AI unavailable', status: response.status, details: errDetail }, response.status === 429 ? 429 : 502);
