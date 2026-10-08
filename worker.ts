@@ -3,7 +3,7 @@ import { onRequestPost as handleChat } from './functions/api/chat.ts';
 interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
   API_BACKEND_URL?: string;
-  GEMINI_API_KEY?: string;
+  GEMINI_API_KEY?: { get(): Promise<string> };
 }
 
 const DEFAULT_BACKEND_ORIGIN = 'https://htsv-api.onrender.com';
@@ -31,7 +31,8 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === '/api/chat' && request.method === 'POST') {
-      return handleChat({ request, env: { GEMINI_API_KEY: env.GEMINI_API_KEY } });
+      const geminiKey = await env.GEMINI_API_KEY?.get();
+      return handleChat({ request, env: { GEMINI_API_KEY: geminiKey } });
     }
     if (url.pathname.startsWith('/api/')) {
       return proxyToBackend(request, env);

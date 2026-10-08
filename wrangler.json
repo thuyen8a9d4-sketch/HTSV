@@ -8,5 +8,12 @@
     "directory": "./apps/web/dist",
     "not_found_handling": "single-page-application",
     "binding": "ASSETS"
-  }
+  },
+  "secrets_store_secrets": [
+    {
+      "binding": "GEMINI_API_KEY",
+      "store_id": "dffbab8d44b8414ba80eadeca8c74179",
+      "secret_name": "gemini-api-key"
+    }
+  ]
 }
