@@ -1,14 +1,7 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
-import {
-  ConfessionStatus,
-  KiemDuyetAction,
-  LikeType,
-} from '../../generated/core-client';
+import { ConfessionStatus, LikeType } from '../../generated/core-client';
+import { ForumOrchestrator } from './forum-orchestrator';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -26,7 +19,10 @@ function sanitizeAuthor<
 
 @Injectable()
 export class ForumService {
-  constructor(private readonly prisma: CorePrismaService) {}
+  constructor(
+    private readonly prisma: CorePrismaService,
+    private readonly orchestrator: ForumOrchestrator,
+  ) {}
 
   async findApprovedPosts() {
     const posts = await this.prisma.baiConfession.findMany({
@@ -102,32 +98,9 @@ export class ForumService {
   }
 
   async react(confessionId: number, userId: number, type: LikeType) {
-    const [, existing] = await Promise.all([
-      this.getPostOrThrow(confessionId, { requireApproved: true }),
-      this.getMyReaction(confessionId, userId),
-    ]);
-    let myReaction: LikeType | null;
-    if (existing === type) {
-      // Same reaction clicked again: toggle off. deleteMany (rather than
-      // delete-by-id) is a no-op instead of throwing if a concurrent click
-      // already removed or changed it.
-      await this.prisma.luotThich.deleteMany({
-        where: { confessionId, userId, type },
-      });
-      myReaction = null;
-    } else {
-      // Create-or-switch. upsert lets Postgres's own unique index
-      // (confessionId, userId) resolve a concurrent duplicate click
-      // atomically, instead of a hand-rolled read-then-write race.
-      await this.prisma.luotThich.upsert({
-        where: { confessionId_userId: { confessionId, userId } },
-        create: { confessionId, userId, type },
-        update: { type },
-      });
-      myReaction = type;
-    }
-
+    await this.orchestrator.orchestrateReact(confessionId, userId, type);
     const reactions = await this.getReactionCounts(confessionId);
+    const myReaction = await this.getMyReaction(confessionId, userId);
     return { reactions, myReaction };
   }
 
@@ -185,54 +158,19 @@ export class ForumService {
     });
   }
 
-  approvePost(id: number, moderatorUserId: number) {
-    return this.transitionPost(
-      id,
+  async approvePost(id: number, moderatorUserId: number) {
+    await this.orchestrator.orchestrateApprovePost({
+      postId: id,
       moderatorUserId,
-      ConfessionStatus.APPROVED,
-      KiemDuyetAction.APPROVE,
-      {
-        status: ConfessionStatus.APPROVED,
-        approvedAt: new Date(),
-        approvedByUserId: moderatorUserId,
-        rejectReason: null,
-      },
-      'Bài đăng đã được duyệt',
-    );
+    });
   }
 
-  rejectPost(id: number, moderatorUserId: number, dto: RejectPostDto) {
-    return this.transitionPost(
-      id,
+  async rejectPost(id: number, moderatorUserId: number, dto: RejectPostDto) {
+    await this.orchestrator.orchestrateRejectPost({
+      postId: id,
       moderatorUserId,
-      ConfessionStatus.REJECTED,
-      KiemDuyetAction.REJECT,
-      { status: ConfessionStatus.REJECTED, rejectReason: dto.reason },
-      'Bài đăng đã bị từ chối',
-    );
-  }
-
-  /** Shared by approvePost/rejectPost: guard against a no-op transition, then update + log together. */
-  private async transitionPost(
-    id: number,
-    moderatorUserId: number,
-    target: ConfessionStatus,
-    action: KiemDuyetAction,
-    data: {
-      status: ConfessionStatus;
-      rejectReason?: string | null;
-      approvedAt?: Date;
-      approvedByUserId?: number;
-    },
-    alreadyDoneMsg: string,
-  ) {
-    const post = await this.getPostOrThrow(id);
-    if (post.status === target) throw new ForbiddenException(alreadyDoneMsg);
-    const [updated] = await Promise.all([
-      this.prisma.baiConfession.update({ where: { id }, data }),
-      this.logModeration(id, moderatorUserId, action, post.status, target),
-    ]);
-    return updated;
+      reason: dto.reason,
+    });
   }
 
   private async getPostOrThrow(
@@ -245,18 +183,6 @@ export class ForumService {
       throw new NotFoundException('Không tìm thấy bài đăng');
     }
     return post;
-  }
-
-  private logModeration(
-    confessionId: number,
-    moderatorUserId: number,
-    action: KiemDuyetAction,
-    oldStatus: string,
-    newStatus: string,
-  ) {
-    return this.prisma.nhatKyKiemDuyet.create({
-      data: { confessionId, moderatorUserId, action, oldStatus, newStatus },
-    });
   }
 
   findAllCategories() {

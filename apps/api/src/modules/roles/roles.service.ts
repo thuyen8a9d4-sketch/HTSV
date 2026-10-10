@@ -1,18 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
 import { AssignPermissionsDto } from './dto/assign-permissions.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-
-const CORE_SYSTEM_ROLE_CODES = ['ADMIN', 'LECTURER', 'STUDENT'];
+import { RolesOrchestrator } from './roles-orchestrator';
 
 @Injectable()
 export class RolesService {
-  constructor(private readonly prisma: CorePrismaService) {}
+  constructor(
+    private readonly prisma: CorePrismaService,
+    private readonly orchestrator: RolesOrchestrator,
+  ) {}
 
   findAll() {
     return this.prisma.vaiTro.findMany({
@@ -40,24 +38,11 @@ export class RolesService {
   }
 
   async remove(id: number) {
-    const role = await this.findOne(id);
-    if (CORE_SYSTEM_ROLE_CODES.includes(role.code)) {
-      throw new BadRequestException(
-        `Không thể xóa vai trò hệ thống "${role.code}" - toàn bộ gán quyền của người dùng sẽ bị mất theo.`,
-      );
-    }
-    await this.prisma.vaiTro.delete({ where: { id } });
+    await this.orchestrator.orchestrateRemoveRole(id);
   }
 
   async assignPermissions(id: number, dto: AssignPermissionsDto) {
-    await this.findOne(id);
-    await this.prisma.vaiTroQuyen.deleteMany({ where: { roleId: id } });
-    await this.prisma.vaiTroQuyen.createMany({
-      data: dto.permissionIds.map((permissionId) => ({
-        roleId: id,
-        permissionId,
-      })),
-    });
+    await this.orchestrator.orchestrateAssignPermissions(id, dto.permissionIds);
     return this.findOne(id);
   }
 }

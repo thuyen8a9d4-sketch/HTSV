@@ -2,10 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { PermissionsOrchestrator } from './permissions-orchestrator';
 
 @Injectable()
 export class PermissionsService {
-  constructor(private readonly prisma: CorePrismaService) {}
+  constructor(
+    private readonly prisma: CorePrismaService,
+    private readonly orchestrator: PermissionsOrchestrator,
+  ) {}
 
   findAll() {
     return this.prisma.quyen.findMany({ orderBy: { id: 'asc' } });
@@ -27,7 +31,6 @@ export class PermissionsService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
-    await this.prisma.quyen.delete({ where: { id } });
+    await this.orchestrator.orchestrateRemovePermission(id);
   }
 }

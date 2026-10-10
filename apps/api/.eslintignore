@@ -1,0 +1,5 @@
+node_modules
+dist
+.next
+*.spec.ts
+*.test.ts

@@ -1,14 +1,6 @@
-import { randomInt } from 'crypto';
-import {
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as argon2 from 'argon2';
 import { CorePrismaService } from '../../core-prisma/core-prisma.service';
 import { OtpPurpose } from '../../generated/core-client';
 import { MailService } from '../mail/mail.service';
@@ -19,11 +11,17 @@ import { RegisterDto } from './dto/register.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
-import { JwtPayload } from './jwt-payload.interface';
 import { OAuthProfile } from './oauth-profile.interface';
+import { AuthOrchestrator } from './auth-orchestrator';
 
-const OTP_TTL_MS = 10 * 60 * 1000;
-
+/**
+ * Auth Service - Refactored với cấu trúc 3 tầng
+ * 
+ * Mỗi method gọi AuthOrchestrator để điều phối:
+ * - validate: kiểm tra điều kiện
+ * - execute: thực hiện xử lý
+ * - run: điều phối tuần tự, retry, throw nếu lỗi
+ */
 @Injectable()
 export class AuthService {
   constructor(
@@ -32,50 +30,23 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
+    private readonly orchestrator: AuthOrchestrator,
   ) {}
 
   async register(dto: RegisterDto) {
-    const [existingUsername, existingEmail] = await Promise.all([
-      this.usersService.findByUsername(dto.username),
-      this.usersService.findByEmail(dto.email),
-    ]);
-    if (existingUsername) {
-      throw new ConflictException('Tên đăng nhập đã được sử dụng');
-    }
-    if (existingEmail) {
-      if (!existingEmail.isActive) {
-        await this.sendRegisterOtp(existingEmail.id, existingEmail.email);
-        return {
-          message:
-            'Email này đã đăng ký nhưng chưa xác thực. Mã OTP mới đã được gửi.',
-        };
-      }
-      throw new ConflictException('Email đã được sử dụng');
-    }
-
-    const passwordHash = await argon2.hash(dto.password);
-    const user = await this.usersService.createUser({
+    return this.orchestrator.orchestrateRegister({
       username: dto.username,
       email: dto.email,
+      password: dto.password,
       fullName: dto.fullName,
-      passwordHash,
-      roleCode: 'STUDENT',
     });
-    await this.sendRegisterOtp(user.id, user.email);
-    return {
-      message: 'Đăng ký thành công, vui lòng kiểm tra email để lấy mã OTP.',
-    };
   }
 
   async verifyOtp(dto: VerifyOtpDto) {
-    const user = await this.consumeOtp(
-      dto.email,
-      OtpPurpose.REGISTER,
-      dto.code,
-      'Mã OTP không đúng hoặc đã hết hạn',
-    );
-    await this.usersService.activate(user.id);
-    return { message: 'Xác thực thành công, bạn có thể đăng nhập.' };
+    return this.orchestrator.orchestrateVerifyOtp({
+      email: dto.email,
+      code: dto.code,
+    });
   }
 
   async resendOtp(dto: ResendOtpDto) {
@@ -90,19 +61,10 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.usersService.findByUsername(dto.username);
-    if (!user || !user.passwordHash) {
-      throw new UnauthorizedException('Sai tài khoản hoặc mật khẩu');
-    }
-    const passwordValid = await argon2.verify(user.passwordHash, dto.password);
-    if (!passwordValid) {
-      throw new UnauthorizedException('Sai tài khoản hoặc mật khẩu');
-    }
-    if (!user.isActive) {
-      throw new ForbiddenException('Tài khoản chưa được xác thực OTP');
-    }
-    const roles = user.userRoles.map((ur) => ur.role.code);
-    return this.issueTokens(user, roles);
+    return this.orchestrator.orchestrateLogin({
+      username: dto.username,
+      password: dto.password,
+    });
   }
 
   /**
@@ -198,66 +160,33 @@ export class AuthService {
   }
 
   async resetPassword(dto: ResetPasswordDto) {
-    const user = await this.consumeOtp(
-      dto.email,
-      OtpPurpose.PASSWORD_RESET,
-      dto.code,
-      'Mã đặt lại mật khẩu không đúng hoặc đã hết hạn',
-    );
-    const passwordHash = await argon2.hash(dto.newPassword);
-    await this.usersService.updatePassword(user.id, passwordHash);
-    return { message: 'Đặt lại mật khẩu thành công.' };
+    return this.orchestrator.orchestrateResetPassword({
+      email: dto.email,
+      code: dto.code,
+      newPassword: dto.newPassword,
+    });
   }
 
-  private async sendRegisterOtp(userId: number, email: string) {
-    const code = await this.createOtp(userId, OtpPurpose.REGISTER);
+  /** Helper: Gửi OTP cho register/forgot password */
+  private async sendOtp(userId: number, email: string, purpose: OtpPurpose) {
+    const code = Math.random().toString().slice(2, 8).padStart(6, '0');
+    await this.prisma.maXacThuc.create({
+      data: {
+        userId,
+        code,
+        purpose,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+      },
+    });
+    const subject =
+      purpose === OtpPurpose.REGISTER
+        ? 'Xác thực tài khoản HTSV'
+        : 'Đặt lại mật khẩu HTSV';
     await this.mailService.send(
       email,
-      'Xác thực tài khoản HTSV',
-      `Mã xác thực của bạn là: ${code}. Mã có hiệu lực trong 10 phút.`,
+      subject,
+      `Mã của bạn: ${code} (hết hạn trong 10 phút)`,
     );
-  }
-
-  private async createOtp(userId: number, purpose: OtpPurpose) {
-    const code = randomInt(0, 1_000_000).toString().padStart(6, '0');
-    const expiresAt = new Date(Date.now() + OTP_TTL_MS);
-    await this.prisma.maXacThuc.create({
-      data: { userId, code, purpose, expiresAt },
-    });
-    return code;
-  }
-
-  private async findValidOtp(
-    userId: number,
-    purpose: OtpPurpose,
-    code: string,
-  ) {
-    const otp = await this.prisma.maXacThuc.findFirst({
-      where: { userId, purpose, isUsed: false, expiresAt: { gt: new Date() } },
-      orderBy: { createdAt: 'desc' },
-    });
-    if (!otp || otp.code !== code) {
-      return null;
-    }
-    return otp;
-  }
-
-  /** Shared by verifyOtp/resetPassword: look up the user, validate the code, mark it used. */
-  private async consumeOtp(
-    email: string,
-    purpose: OtpPurpose,
-    code: string,
-    invalidMsg: string,
-  ) {
-    const user = await this.usersService.findByEmail(email);
-    if (!user) throw new BadRequestException(invalidMsg);
-    const otp = await this.findValidOtp(user.id, purpose, code);
-    if (!otp) throw new BadRequestException(invalidMsg);
-    await this.prisma.maXacThuc.update({
-      where: { id: otp.id },
-      data: { isUsed: true },
-    });
-    return user;
   }
 
   private issueTokens(
